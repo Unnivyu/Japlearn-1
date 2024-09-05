@@ -115,6 +115,7 @@ const Login = () => {
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Logo width={150} height={150} />
+                <Text style={styles.titleText}>JAPLEARN</Text>
             </View>
             <KeyboardAvoidingView>
                 <TextInput

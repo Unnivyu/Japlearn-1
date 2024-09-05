@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
         position: 'relative'
     },
     modalContent: {
-        alignItems: 'center',
+        justifyContent: 'center'
     },
     input: {
         height: 65,
@@ -79,7 +79,6 @@ export const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     stackText: {
-        marginLeft: 10,
         fontSize: 16,
         padding: 5,
         borderRadius: 5,

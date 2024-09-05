@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: '#8AC25A',
         borderBottomWidth: 6,
-        height: 80,
+        height: 70,
     },
 
     buttonText: {
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     passwordContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 15,
         position: 'relative',
     },
     passwordInput: {

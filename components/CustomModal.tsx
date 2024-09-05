@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         alignItems: 'center',
-        flexWrap: 'wrap'
     },
     modalMessage: {
         marginBottom: 15,

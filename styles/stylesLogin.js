@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    paddingRight: 40, // Add padding to make space for the eye icon inside the input
+    paddingRight: 40,
   },
   insideInputButton: {
     position: 'absolute',
@@ -74,7 +74,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
+  titleText: {
+    color: '#8ED94D',
+    marginTop: 10,
+    fontSize: 30,
+    fontFamily: 'Jua'  
+  }
 
 });
 
