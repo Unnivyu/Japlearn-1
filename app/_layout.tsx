@@ -89,6 +89,7 @@ const RootLayout = () => {
       <Stack.Screen name="QuackslateEdit" />
       <Stack.Screen name="QuackslateLevels" />
       <Stack.Screen name="ClassDashboard" />
+      <Stack.Screen name="PrivacyPolicy" />
        
     </Stack>
   );

@@ -1,12 +1,12 @@
+import React, { useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TextInput, View, Pressable } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
+import PrivacyModal from '../components/PrivacyModal';
 import styles from '../styles/stylesSignup';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
-import Logo from '../assets/svg/jpLogo.svg';
-import expoconfig from '../expoconfig';
 import { Ionicons } from '@expo/vector-icons';
+import expoconfig from '../expoconfig';
 
 const Signup = () => {
     const [fname, setFname] = useState('');
@@ -19,6 +19,8 @@ const Signup = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showCPassword, setShowCPassword] = useState(false);
+    const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
+    const [hasAgreedToPrivacy, setHasAgreedToPrivacy] = useState(false);
 
     const [errors, setErrors] = useState({
         fname: '',
@@ -28,7 +30,7 @@ const Signup = () => {
         cpassword: ''
     });
 
-    const signup = async () => {
+    const validateForm = () => {
         let validationErrors = {
             fname: '',
             lname: '',
@@ -36,13 +38,14 @@ const Signup = () => {
             password: '',
             cpassword: ''
         };
-    
+
+        // Form Validation
         if (!fname.trim()) {
             validationErrors.fname = 'Please enter your first name';
         }
         if (!lname.trim()) {
             validationErrors.lname = 'Please enter your last name';
-        }        
+        }
         if (!email.trim()) {
             validationErrors.email = 'Please enter your email';
         } else if (!email.endsWith('@gmail.com')) {
@@ -69,16 +72,24 @@ const Signup = () => {
         } else if (password !== cpassword) {
             validationErrors.cpassword = 'Passwords do not match';
         }
-    
+
         setErrors(validationErrors);
-    
-        if (Object.values(validationErrors).some(error => error !== '')) {
-            // Display validation errors in the modal
+
+        return Object.values(validationErrors).every(error => error === '');
+    };
+
+    const signup = async () => {
+        if (!validateForm()) {
             setModalMessage('Please correct the highlighted fields.');
             setModalVisible(true);
             return;
         }
-    
+
+        if (!hasAgreedToPrivacy) {
+            setPrivacyModalVisible(true);
+            return;
+        }
+
         // Perform the signup operation
         try {
             setLoading(true);
@@ -95,7 +106,7 @@ const Signup = () => {
                     role: 'student'
                 })
             });
-    
+
             const data = await response.json();
             if (response.ok) {
                 setModalMessage('Signup successful!');
@@ -105,7 +116,7 @@ const Signup = () => {
                 setEmail('');
                 setPassword('');
                 setCPassword('');
-    
+
                 setTimeout(() => {
                     setModalVisible(false);
                     router.push('/Login');
@@ -122,13 +133,13 @@ const Signup = () => {
             setLoading(false);
         }
     };
-    
+
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <View style={styles.imageContainer}>
-                        <Logo width={150} height={150} />
+                        <Text style={styles.titleText}>Please fill out the necessary fields.</Text>
                     </View>
                         
                     <TextInput
@@ -240,6 +251,17 @@ const Signup = () => {
                     visible={modalVisible}
                     message={modalMessage}
                     onClose={() => setModalVisible(false)}
+                />
+
+                <PrivacyModal
+                    visible={privacyModalVisible}
+                    onAgree={() => {
+                        setHasAgreedToPrivacy(true);
+                        setPrivacyModalVisible(false);
+                        signup();
+                    }}
+                    onDecline={() => setPrivacyModalVisible(false)}
+                    onClose={() => setPrivacyModalVisible(false)}
                 />
             </ScrollView>
         </View>

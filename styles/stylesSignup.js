@@ -93,6 +93,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    titleText: {
+        fontSize: 24,
+        fontFamily: 'Jua',
+    }
 });
 
 export default styles;

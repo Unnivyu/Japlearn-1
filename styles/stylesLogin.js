@@ -79,6 +79,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 30,
     fontFamily: 'Jua'  
+  },
+
+  policyText: {
+    top: 15,
+    text: 16,
+    textAlign: 'center'
   }
 
 });
