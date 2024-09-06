@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, TextInput, View, Pressable, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
+import { Modal, Text, TextInput, View, Pressable, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import { router } from 'expo-router';
 import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
@@ -32,6 +32,10 @@ const Login = () => {
         };
         checkLoginStatus();
     }, []);
+
+    const handleLinkPress = () => {
+        router.push('/PrivacyPolicyPage'); // Navigate to the Privacy Policy page
+    };
 
     const navigateBasedOnRole = (role) => {
         if (role === 'student') {
@@ -157,7 +161,8 @@ const Login = () => {
             </KeyboardAvoidingView>
 
             <View>
-                <Text style={styles.policyText}>By continuing, you agree with Japlearns Terms of Service and Privacy Policy</Text>
+                <Text style={styles.policyText}>By continuing, you agree with <Pressable onPress={handleLinkPress}>
+                <Text style={styles.linkText2}>Japlearns Terms of Service and Privacy Policy</Text></Pressable></Text>
             </View>
 
             <View style={styles.linkContainer}>

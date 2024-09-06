@@ -21,7 +21,7 @@ const PrivacyModal = ({ visible, onAgree, onDecline, onClose }) => {
                         By signing up, you agree to our
                         <Pressable onPress={handleLinkPress}>
                             <Text style={styles.linkText}>
-                                {" "}Privacy Policy
+                                {""}Privacy Policy
                             </Text>
                         </Pressable>.
                     </Text>

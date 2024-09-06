@@ -1,6 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+
+  linkText2: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+},
+
   button: {
     backgroundColor: '#8ED94D',
     padding: 10,
