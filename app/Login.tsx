@@ -21,6 +21,7 @@ const Login = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+
     useEffect(() => {
         const checkLoginStatus = async () => {
             const storedUser = await AsyncStorage.getItem('user');
@@ -162,7 +163,7 @@ const Login = () => {
 
             <View>
                 <Text style={styles.policyText}>By continuing, you agree with <Pressable onPress={handleLinkPress}>
-                <Text style={styles.linkText2}>Japlearns Terms of Service and Privacy Policy</Text></Pressable></Text>
+                <Text style={styles.linkText2}>Japlearnssssssssssssssss Terms of Service and Privacy Policy</Text></Pressable></Text>
             </View>
 
             <View style={styles.linkContainer}>
