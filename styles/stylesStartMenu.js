@@ -16,21 +16,23 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
     },
     header: {
-        backgroundColor: '#8423D9',
+        backgroundColor: '#C7C5C5',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 20,
         paddingTop: 40,
-        marginBottom: 90, 
-        borderBottomWidth: 10, 
-        borderBottomColor: '#6C3A99',
-        height: 130,
+        marginBottom: 20,
+        height:150,
         
     },
-    hText: {
-        fontFamily: 'jua',
-        color: 'white',
-        fontSize: 15,
+    hText1: {
+        fontFamily: 'Jua',
+        fontSize: 30,
+    },
+    hText2: {
+        fontFamily: 'Jua',
+        fontSize: 20,
     },
     leftContainer: {
         flex: 1,
@@ -44,18 +46,20 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     menuText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 30,
     },
     button: {
         backgroundColor:'#8ED94D',
         borderBottomColor: '#74A14C',
-        borderBottomWidth: 6,
+        borderBottomWidth: 4,
         padding: 5,
         height: 60,
         width: 100,
         marginBottom: 20,
-        borderRadius: 30,
+        borderRadius: 10,
+        borderBottomStartRadius: 5,
+        borderBottomEndRadius: 5,
         justifyContent: 'center',
     },
     buttonText: {
@@ -67,6 +71,15 @@ export const styles = StyleSheet.create({
         width: 65, 
         height: 65, 
         borderRadius: 50,
+    },
+    profileButton: {
+        height: 60,
+        backgroundColor: '#7551B0',
+        borderRadius: 10,
+    },
+    profileButtonText: {
+        fontSize: 25,
+        color: "#fff",
     },
     
 });

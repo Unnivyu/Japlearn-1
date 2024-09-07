@@ -73,13 +73,19 @@ const StartMenu = () => {
                 
                 <View style={[styles.header, {padding: 20}]}>
                     <View style={styles.leftContainer}>
-                        <Text style={styles.hText}>Welcome Back</Text>
-                        <Text style={styles.hText}>{user?.fname}</Text>
+                        <Text style={styles.hText1}>Welcome</Text>
+                        <Text style={styles.hText2}>{user?.fname}</Text>
                     </View>
                     <View style={styles.rightContainer}>
-                        <Pressable onPress={undefined}>
-                            <View style={styles.pictureCircle} />
-                        </Pressable>
+                        {/*<Pressable onPress={() => router.push('/Profile')}>
+                            *<Profile width={65} height={65} />*
+                        </Pressable>*/}
+                        <CustomButton
+                            title="Profile"
+                            onPress={() => { console.log('You tapped the button!'); }}
+                            buttonStyle={styles.profileButton} 
+                            textStyle={styles.profileButtonText}
+                        />
                     </View>
                 </View>
 

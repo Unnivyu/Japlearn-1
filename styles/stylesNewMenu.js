@@ -11,19 +11,22 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     header: {
-        backgroundColor: '#8423D9',
+        backgroundColor: '#C7C5C5',
+        
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 20,
         paddingTop: 40,
         marginBottom: 20,
-        borderBottomWidth: 10,
-        borderBottomColor: '#6C3A99',
-        height: 130,
+        height:150,
     },
-    hText: {
+    hText1: {
         fontFamily: 'Jua',
-        color: 'white',
+        fontSize: 30,
+    },
+    hText2: {
+        fontFamily: 'Jua',
         fontSize: 20,
     },
     leftContainer: {
@@ -34,16 +37,8 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     menuContainer: {
-        flex: 1,
+        marginTop: 20,
         paddingHorizontal: 20,
-    },
-    sectionTitle: {
-        fontFamily: 'Jua',
-        fontSize: 18,
-        marginBottom: 10,
-    },
-    flatListContainer: {
-        justifyContent: 'space-between',
     },
     columnWrapper: {
         justifyContent: 'space-between',
@@ -112,12 +107,49 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         flex: 1,
-        resizeMode: 'cover', // Ensure the image covers the entire background
+        resizeMode: 'cover', 
     },
     container: {
         flex: 1,
-        backgroundColor: 'transparent', // Make sure the background is transparent to show the image
+        backgroundColor: 'transparent',
     },
+    menuButton: {
+        backgroundColor: '#8ED94D',
+        height: 160,
+        borderRadius: 5,
+        padding: 5,
+        marginBottom: 20,
+
+    },
+    menuButtonText: {
+        fontSize: 40,
+        color: "#fff",
+    },
+    profileButton: {
+        height: 60,
+        backgroundColor: '#7551B0',
+        borderRadius: 10,
+    },
+    profileButtonText: {
+        fontSize: 25,
+        color: "#fff",
+    },
+    classContainer: {
+        backgroundColor: '#8ED94D',
+        padding: 15,
+        width: 200,
+        marginBottom: 40,
+        borderRadius: 10,
+        borderBottomWidth: 5,
+        borderBottomColor: '#81AF59',
+        borderBottomEndRadius: 5,
+        borderBottomStartRadius: 5,
+    },
+    classText: {
+        fontSize: 20,
+        fontFamily: 'Jua',
+        color: 'white',
+    }
 });
 
 export default styles;
