@@ -54,7 +54,7 @@ public class UserService {
     }
 
     private void sendConfirmationEmail(String email, String token) {
-        String confirmationUrl = "http://192.168.1.5:8080/api/users/confirm?token=" + token;
+        String confirmationUrl = "https://japlearn.vercel.app/api/users/confirm?token=" + token;
     
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {

@@ -22,7 +22,9 @@ import japlearn.demo.Service.UserService;
 @RestController
 @RequestMapping("/api/users")
 // @CrossOrigin(origins = "http://localhost:8081") 
-@CrossOrigin(origins = "*")
+// @CrossOrigin(origins = "*")
+// @CrossOrigin(origins = "https://japlearn.vercel.app:8081")
+@CrossOrigin(origins = {"https://japlearn.vercel.app", "http://localhost:8081"})
 public class UserController {
 
     private final UserService japlearnService;
