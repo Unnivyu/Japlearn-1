@@ -10,8 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
 
 const routeAccessConfig = {
-  student: ['Menu', 'Profile', 'CharacterLessons'],
-  teacher: ['TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit' ],
+  student: ['Menu', 'StartMenu', 'Profile', 'CharacterLessons'],
+  teacher: [, 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit' ],
 };
 
 const defaultRouteByRole = {

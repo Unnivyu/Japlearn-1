@@ -6,7 +6,6 @@ import { styles } from '../styles/stylesModal';
 import { AuthContext } from '../context/AuthContext';
 import expoconfig from '../expoconfig';
 import { useRouter } from 'expo-router';
-import teacherProfile from '../assets/img/teacherProfile.png';
 
 const TeacherDashboard = () => {
     const [classCodes, setClassCodes] = useState([]);
@@ -119,13 +118,16 @@ const TeacherDashboard = () => {
                 <View style={{ flex: 1 }}>
                     <View style={stylesDashboard.header}>
                         <View style={stylesDashboard.leftContainer}>
-                            <Text style={stylesDashboard.hText}>Welcome Back</Text>
-                            <Text style={stylesDashboard.hText}>{user?.fname} {user?.lname}</Text>
+                            <Text style={stylesDashboard.hText1}>Welcome</Text>
+                            <Text style={stylesDashboard.hText2}>{user?.fname} {user?.lname}</Text>
                         </View>
                         <View style={stylesDashboard.rightContainer}>
-                            <Pressable onPress={handleProfilePress}>
-                            <Image source={teacherProfile} style={stylesDashboard.pictureCircle} />
-                            </Pressable>
+                            <CustomButton
+                                title="Profile"
+                                onPress={handleProfilePress}
+                                buttonStyle={stylesDashboard.profileButton} 
+                                textStyle={stylesDashboard.profileButtonText}
+                            />
                         </View>
                     </View>
                     <View style={stylesDashboard.menuContainer}>

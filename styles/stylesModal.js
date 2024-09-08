@@ -79,6 +79,7 @@ export const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     stackText: {
+        marginLeft: 10,
         fontSize: 16,
         padding: 5,
         borderRadius: 5,

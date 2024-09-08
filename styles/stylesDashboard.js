@@ -11,20 +11,23 @@ export const stylesDashboard = StyleSheet.create({
         height: 70,
     },
     header: {
-        backgroundColor: '#8423D9',
+        backgroundColor: '#C7C5C5',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 20,
         paddingTop: 40,
-        marginBottom: 10,
-        borderBottomWidth: 10,
-        borderBottomColor: '#6C3A99',
-        height: 130,
+        marginBottom: 20,
+        height:150,
+        
     },
-    hText: {
-        fontFamily: 'jua',
-        color: 'white',
-        fontSize: 15,
+    hText1: {
+        fontFamily: 'Jua',
+        fontSize: 30,
+    },
+    hText2: {
+        fontFamily: 'Jua',
+        fontSize: 20,
     },
     leftContainer: {
         flex: 1,
@@ -40,7 +43,7 @@ export const stylesDashboard = StyleSheet.create({
         borderBottomColor: '#D9D9D9',
     },
     menuText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 30,
     },
     button: {
@@ -63,7 +66,7 @@ export const stylesDashboard = StyleSheet.create({
         borderRadius: 50,
     },
     titleText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 20,
         marginBottom: 30
     },
@@ -94,13 +97,22 @@ export const stylesDashboard = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 3,
-        width: 300, // Adjust the width to your preference
-        alignSelf: 'center' // Center the classContent boxes
+        width: 300, 
+        alignSelf: 'center' 
     },
     classContentText: {
-        color: '#333', // Use darker text for readability
-        fontFamily: 'jua',
-        fontSize: 18, // Increase font size for visibility
-        textAlign: 'center', // Center the text within the box
-    }
+        color: '#333', 
+        fontFamily: 'Jua',
+        fontSize: 18,
+        textAlign: 'center', 
+    },
+    profileButton: {
+        height: 60,
+        backgroundColor: '#7551B0',
+        borderRadius: 10,
+    },
+    profileButtonText: {
+        fontSize: 25,
+        color: "#fff",
+    },
 });
