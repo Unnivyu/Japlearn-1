@@ -46,9 +46,9 @@ const Signup = () => {
         if (!lname.trim()) {
             validationErrors.lname = 'Please enter your last name';
         }
-        if (!email.trim()) {
+        if (!email.trim()) { 
             validationErrors.email = 'Please enter your email';
-        } else if (!email.endsWith('@gmail.com')) {
+        } else if (!email.endsWith('@cit.edu')) {
             validationErrors.email = 'Invalid email format';
         }
         if (!password) {
@@ -84,51 +84,54 @@ const Signup = () => {
             setModalVisible(true);
             return;
         }
-
+    
         if (!hasAgreedToPrivacy) {
             setPrivacyModalVisible(true);
             return;
         }
-
-        // Perform the signup operation
+    
         try {
             setLoading(true);
             const response = await fetch(`${expoconfig.API_URL}/api/users/register`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     fname,
                     lname,
                     email,
                     password,
-                    role: 'student'
-                })
+                    role: 'student',
+                }),
             });
-
+    
             const data = await response.json();
+    
             if (response.ok) {
-                setModalMessage('Signup successful!');
-                setModalVisible(true);
-                setFname('');
-                setLname('');
-                setEmail('');
-                setPassword('');
-                setCPassword('');
-
-                setTimeout(() => {
-                    setModalVisible(false);
-                    router.push('/Login');
-                }, 2000);
+                if (data.message === 'Registration successful') {
+                    setModalMessage('Signup successful! A confirmation link has been sent to your email.');
+                    setModalVisible(true);  // Show the success modal
+                    setFname('');
+                    setLname('');
+                    setEmail('');
+                    setPassword('');
+                    setCPassword('');
+                    setTimeout(() => {
+                        setModalVisible(false);
+                        router.push('/Login');
+                    }, 3000);
+                } else {
+                    setModalMessage(data.error || 'An unknown error occurred');
+                    setModalVisible(true);  // Show the error modal
+                }
             } else {
-                const errorMessage = await response.text();
-                console.error('Error response:', errorMessage);
-                throw new Error(errorMessage);
+                setModalMessage(data.error || 'An unknown error occurred');
+                setModalVisible(true);  // Show the error modal
             }
         } catch (error) {
-            setModalMessage(`Signup failed: ${error}`);
-            setModalVisible(true);
+            setModalMessage(`Signup failed: ${error.message}`);
+            setModalVisible(true);  // Show the error modal
         } finally {
             setLoading(false);
         }

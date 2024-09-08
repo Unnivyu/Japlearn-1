@@ -163,7 +163,7 @@ const Login = () => {
 
             <View>
                 <Text style={styles.policyText}>By continuing, you agree with <Pressable onPress={handleLinkPress}>
-                <Text style={styles.linkText2}>Japlearnssssssssssssssss Terms of Service and Privacy Policy</Text></Pressable></Text>
+                <Text style={styles.linkText2}>Japlearn's Terms of Service and Privacy Policy</Text></Pressable></Text>
             </View>
 
             <View style={styles.linkContainer}>
