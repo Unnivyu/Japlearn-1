@@ -29,12 +29,9 @@ const NewMenu = () => {
                             <Text style={styles.hText2}>Sample Name</Text>
                         </View>
                         <View style={styles.rightContainer}>
-                            {/*<Pressable onPress={() => router.push('/Profile')}>
-                                *<Profile width={65} height={65} />*
-                            </Pressable>*/}
                             <CustomButton
                                 title="Profile"
-                                onPress={() => { console.log('You tapped the button!'); }}
+                                onPress={() => () => router.push('/Profile')}
                                 buttonStyle={styles.profileButton} 
                                 textStyle={styles.profileButtonText}
                             />
@@ -42,7 +39,7 @@ const NewMenu = () => {
                     </View>
                     <View style={styles.menuContainer}>
                         <View style={styles.classContainer}>
-                            <Text style={styles.classText}>Classname: G1</Text>
+                            <Text style={styles.classText}>FLO33 Classname: G1</Text>
                         </View>
                         <MenuButton 
                             title="Learn" 

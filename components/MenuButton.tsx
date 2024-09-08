@@ -25,7 +25,6 @@ const MenuButton = ({ title, onPress, buttonStyle, textStyle, imageSource, infoT
         </ImageBackground>
       </Pressable>
 
-      {/* Modal for showing info */}
       <Modal
         animationType="slide"
         transparent={true}

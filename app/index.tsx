@@ -18,7 +18,7 @@ const Login = () => {
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <CustomButton title="GET STARTED" onPress={() => router.push("/TeacherDashboard")} buttonStyle={styles.button} textStyle={styles.buttonText} />
+          <CustomButton title="GET STARTED" onPress={() => router.push("/NewMenu")} buttonStyle={styles.button} textStyle={styles.buttonText} />
           <CustomButton title="ALREADY HAVE AN ACCOUNT" onPress={() => router.push("/Login")} buttonStyle={styles.button} textStyle={styles.buttonText} />
         </View>
     </View>

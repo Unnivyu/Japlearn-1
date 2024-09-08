@@ -11,7 +11,7 @@ const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf'
 
 const routeAccessConfig = {
   student: ['Menu', 'StartMenu', 'Profile', 'CharacterLessons'],
-  teacher: [, 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit' ],
+  teacher: ['TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit' ],
 };
 
 const defaultRouteByRole = {

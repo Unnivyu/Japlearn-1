@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: '#C7C5C5',
-        
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -137,7 +136,6 @@ const styles = StyleSheet.create({
     classContainer: {
         backgroundColor: '#8ED94D',
         padding: 15,
-        width: 200,
         marginBottom: 40,
         borderRadius: 10,
         borderBottomWidth: 5,
@@ -147,6 +145,7 @@ const styles = StyleSheet.create({
     },
     classText: {
         fontSize: 20,
+        textAlign: 'left',
         fontFamily: 'Jua',
         color: 'white',
     }
