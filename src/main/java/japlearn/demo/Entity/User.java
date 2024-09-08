@@ -14,6 +14,9 @@ public class User {
     private String email;
     private String password;
     private String role;
+
+    private String confirmationToken;
+    private boolean isEmailConfirmed = false;
    
 
     
@@ -65,7 +68,21 @@ public class User {
         this.role = role;
     }
 
+    public String getConfirmationToken() {
+        return confirmationToken;
+    }
 
+    public void setConfirmationToken(String confirmationToken) {
+        this.confirmationToken = confirmationToken;
+    }
+
+    public boolean isEmailConfirmed() {
+        return isEmailConfirmed;
+    }
+
+    public void setEmailConfirmed(boolean emailConfirmed) {
+        isEmailConfirmed = emailConfirmed;
+    }
 
 
     

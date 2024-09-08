@@ -9,4 +9,5 @@ import japlearn.demo.Entity.User;
 public interface UserRepository extends MongoRepository<User, String>{
     User findByEmail(String email);
     List<User> findByFname(String fname);
+    User findByConfirmationToken(String confirmationToken);
 }
