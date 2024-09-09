@@ -1,29 +1,22 @@
-import { SafeAreaView, StyleSheet, Text, View, Pressable, FlatList, Modal, Image, ImageBackground } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import { SafeAreaView, Text, View, Pressable, FlatList, Image, ImageBackground } from 'react-native';
+import React, { useContext } from 'react';
 import { useRouter } from 'expo-router';
 import styles from '../styles/stylesMenu';
 import Profile from '../assets/svg/user_pf.svg';
 import Complete from '../assets/img/level_available.png';
-import Locked from '../assets/img/level_locked.png';
 import Background from '../assets/img/MenuBackground.png';
-import expoconfig from '../expoconfig';
 import { AuthContext } from '../context/AuthContext';
-import CustomButton from '../components/CustomButton';
 
 const levels = [
-    { id: '1', title: 'Kana Intro', completed: true },
-    { id: '2', title: 'Kana Basics I', completed: false },
-    { id: '3', title: 'Kana Basics II', completed: false },
-    { id: '4', title: 'Kana Basics III', completed: false },
-    { id: '5', title: 'Kana Basics IV', completed: false },
-    { id: '6', title: 'Kana Basics V', completed: false },
+    { id: 'CharacterMenu', title: 'Characters' },
+    { id: 'SentenceAndGrammarMenu', title: 'Sentence and Grammar' }
 ];
 
-const LevelButton = ({ title, completed, onPress }) => {
+const LevelButton = ({ title, onPress }) => {
     return (
         <Pressable onPress={onPress}>
             <Image
-                source={completed ? Complete : Locked}
+                source={Complete}
                 style={styles.imageIcon}
             />
             <Text style={styles.menuText}>{title}</Text>
@@ -31,83 +24,17 @@ const LevelButton = ({ title, completed, onPress }) => {
     );
 };
 
-// method to retrieve User's Lesson Tracker 
-const userLessonTracker = async (userId) => {
-    try {
-        const response = await fetch (`${expoconfig.API_URL}/api/UserLessonTracker/getLessonTrackerByUser/${userId}`);
-
-        if (!response.ok) {
-            throw new Error('Network error');
-        }
-
-        const data = await response.json();
-        return data;
-
-    } catch (error) {
-        console.error('Error fetching user lesson tracker: ', error);
-        return [];
-    }
-}
-
-// method to retrieve UserId data and assign it to user.UserId;
-const retrieveUserId = async (email) => {
-    try {
-        const response = await fetch(`${expoconfig.API_URL}/api/users/findUser?email=${encodeURIComponent(email)}`);
-        if (response.ok) {           
-            const userData = await response.json();
-            return userData.id;
-        } else {
-            console.error('Error fetching userId: ', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error fetching userId: ', error);
-    }
-    return null;
-}
-
 const Menu = () => {
     const { user } = useContext(AuthContext);
     const router = useRouter();
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedLevel, setSelectedLevel] = useState(null);
-    const [userLessonTrackerData, setUserLessonTrackerData] = useState([]);
-    const [userId, setUserId] = useState(null);
 
     const handleLevelPress = (level) => {
-        if (!level.completed) {
-            setSelectedLevel(level);
-            setModalVisible(true);
-        }
+        router.push(`/${level.id}`);
     };
-
-    // useEffect hook to fetch user lesson tracker.
-    useEffect(() => {
-        const fetchUserLessonTracker = async () => {
-            if (user && user.email) {
-                try {
-                    // Retrieve userId based on email
-                    const id = await retrieveUserId(user.email);
-                    if (id) {
-                        setUserId(id);
-                        const trackerData = await userLessonTracker(id);
-                        setUserLessonTrackerData(trackerData);
-                    } else {
-                        console.error('User ID is not available.');
-                    }
-                } catch (error) {
-                    console.error('Error fetching user lesson tracker:', error);
-                }
-            }
-        };
-
-        fetchUserLessonTracker();
-    },[]);
-
-    console.log("Tracker data: ", userLessonTrackerData);
 
     const renderItem = ({ item }) => (
         <View style={styles.levelContainer}>
-            <LevelButton title={item.title} completed={item.completed} onPress={() => handleLevelPress(item)} />
+            <LevelButton title={item.title} onPress={() => handleLevelPress(item)} />
         </View>
     );
 
@@ -138,20 +65,6 @@ const Menu = () => {
                         />
                     </View>
                 </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(false)}
-                >
-                    <View style={styles.modalContainer}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalTitle}>Level Locked</Text>
-                            <Text style={styles.modalText}>You must complete previous level to unlock "{selectedLevel?.title}".</Text>
-                            <CustomButton title="Close" onPress={() => setModalVisible(false)} buttonStyle={styles.modalButton} textStyle={styles.modalButtonText} />
-                        </View>
-                    </View>
-                </Modal>
             </ImageBackground>
         </SafeAreaView>
     );
