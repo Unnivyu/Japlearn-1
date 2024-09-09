@@ -8,8 +8,8 @@ import Background from '../assets/img/MenuBackground.png';
 import { AuthContext } from '../context/AuthContext';
 
 const levels = [
-    { id: 'CharacterMenu', title: 'Characters' },
-    { id: 'SentenceAndGrammarMenu', title: 'Sentence and Grammar' }
+    { id: 'LearnMenu', title: 'Learn' },
+    { id: 'Exercises', title: 'Exercise' }
 ];
 
 const LevelButton = ({ title, onPress }) => {

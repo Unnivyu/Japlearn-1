@@ -1,12 +1,18 @@
 import { View, Pressable, ImageBackground } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
+import { useRouter } from 'expo-router';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
+import { AuthContext } from '../context/AuthContext';
 
 const LearnMenu = () => {
+    const { user } = useContext(AuthContext);
+    const router = useRouter();
+
+
     const handleBackPress = () => {
-      // Handle back button press
+      router.back();
     };
   
     const handleButtonPress = (buttonTitle) => {
