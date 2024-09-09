@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Font from 'expo-font';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { AuthContext, AuthProvider } from '../context/AuthContext';
@@ -74,25 +75,27 @@ const RootLayout = () => {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" />
-      <Stack.Screen name="Signup" />
-      <Stack.Screen name="Menu" />
-      <Stack.Screen name="StartMenu" />
-      <Stack.Screen name="Profile" />
-      <Stack.Screen name="TeacherDashboard" />
-      <Stack.Screen name="ProfileTeacher" />
-      <Stack.Screen name ="QuackamoleEdit" />
-      <Stack.Screen name="QuackamoleLevels" />
-      <Stack.Screen name="QuackmanLevels" />
-      <Stack.Screen name="QuackmanEdit" />
-      <Stack.Screen name="QuackslateEdit" />
-      <Stack.Screen name="QuackslateLevels" />
-      <Stack.Screen name="ClassDashboard" />
-      <Stack.Screen name="PrivacyPolicyPage" />
-      <Stack.Screen name="NewMenu" />
-       
-    </Stack>
+    <GestureHandlerRootView>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" />
+        <Stack.Screen name="Signup" />
+        <Stack.Screen name="Menu" />
+        <Stack.Screen name="StartMenu" />
+        <Stack.Screen name="Profile" />
+        <Stack.Screen name="TeacherDashboard" />
+        <Stack.Screen name="ProfileTeacher" />
+        <Stack.Screen name ="QuackamoleEdit" />
+        <Stack.Screen name="QuackamoleLevels" />
+        <Stack.Screen name="QuackmanLevels" />
+        <Stack.Screen name="QuackmanEdit" />
+        <Stack.Screen name="QuackslateEdit" />
+        <Stack.Screen name="QuackslateLevels" />
+        <Stack.Screen name="ClassDashboard" />
+        <Stack.Screen name="PrivacyPolicyPage" />
+        <Stack.Screen name="NewMenu" />
+        
+      </Stack>
+    </GestureHandlerRootView>
   );
 };
 
