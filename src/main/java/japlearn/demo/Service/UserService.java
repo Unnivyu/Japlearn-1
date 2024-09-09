@@ -1,5 +1,6 @@
 package japlearn.demo.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,18 @@ public class UserService {
         this.mailSender = mailSender;
     }
 
+    public List<User> getUsersAwaitingApproval() {
+        return userRepository.findByIsEmailConfirmedTrueAndIsApprovedFalse();
+        }
+
+    
+
+    public void approveUser(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setApproved(true); // Set the user as approved
+        userRepository.save(user);
+    }
+
     public String registerUser(User user) {
         try {
             if (userRepository.findByEmail(user.getEmail()) != null) {
@@ -54,7 +67,7 @@ public class UserService {
     }
 
     private void sendConfirmationEmail(String email, String token) {
-        String confirmationUrl = "https://japlearn.vercel.app/api/users/confirm?token=" + token;
+        String confirmationUrl = "https://backend-ten-roan.vercel.app/api/users/confirm?token=" + token;
     
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {

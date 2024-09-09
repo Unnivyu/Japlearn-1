@@ -1,6 +1,7 @@
 package japlearn.demo.Controller;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,7 @@ import japlearn.demo.Service.UserService;
 // @CrossOrigin(origins = "http://localhost:8081") 
 // @CrossOrigin(origins = "*")
 // @CrossOrigin(origins = "https://japlearn.vercel.app:8081")
-@CrossOrigin(origins = {"https://japlearn.vercel.app", "http://localhost:8081"})
+@CrossOrigin(origins = {"https://frontend-seven-zeta-42.vercel.app", "http://localhost:8081"})
 public class UserController {
 
     private final UserService japlearnService;
@@ -32,6 +34,18 @@ public class UserController {
     @Autowired
     public UserController(UserService japlearnService) {
         this.japlearnService = japlearnService;
+    }
+
+    @GetMapping("/pending-approval")
+    public ResponseEntity<List<User>> getPendingUsers() {
+        List<User> usersAwaitingApproval = japlearnService.getUsersAwaitingApproval();
+        return ResponseEntity.ok(usersAwaitingApproval);
+    }
+
+    @PostMapping("/approve/{userId}")
+    public ResponseEntity<?> approveUser(@PathVariable String userId) {
+        japlearnService.approveUser(userId);
+        return ResponseEntity.ok("User approved");
     }
 
     @GetMapping("/confirm")
