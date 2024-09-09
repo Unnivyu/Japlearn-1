@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Modal, View, KeyboardAvoidingView, Text, Pressable, SafeAreaView, ScrollView, Image, TextInput, StyleSheet, } from 'react-native';
+import { Modal, View, KeyboardAvoidingView, Text, Pressable, SafeAreaView, ScrollView, Image, TextInput, StyleSheet, Alert } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { stylesDashboard } from '../styles/stylesDashboard';
-import { styles } from '../styles/stylesModal';
 import { AuthContext } from '../context/AuthContext';
 import expoconfig from '../expoconfig';
 import { useRouter } from 'expo-router';
 import teacherProfile from '../assets/img/teacherProfile.png';
+import { styles } from '../styles/stylesModal';
 
 const TeacherDashboard = () => {
     const [classCodes, setClassCodes] = useState([]);
@@ -17,6 +17,7 @@ const TeacherDashboard = () => {
     const { user } = useContext(AuthContext);
     const router = useRouter();
 
+    // Fetch all class codes
     const fetchClassCodes = async () => {
         try {
             const response = await fetch(`${expoconfig.API_URL}/api/classes/getAllClasses`);
@@ -37,6 +38,7 @@ const TeacherDashboard = () => {
         fetchClassCodes();
     }, []);
 
+    // Add a new class
     const addClass = async () => {
         if (!newClassCode.trim()) { 
             alert("Please enter a class code");
@@ -67,6 +69,7 @@ const TeacherDashboard = () => {
         }
     };
 
+    // Remove a class
     const handleRemoveClass = async () => {
         if (!deleteClassCode.trim()) {
             alert("Please enter a valid class code to delete");
@@ -90,27 +93,37 @@ const TeacherDashboard = () => {
         }
     };
 
+    // Redirect to profile
     const handleProfilePress = () => {
         router.push('/ProfileTeacher');
     };
 
+    // Open the modal to add a class
     const handleAddPress = () => {
         setAddModalVisible(true);
     };
 
+    // Open the modal to remove a class
     const handleRemovePress = () => {
         setDeleteModalVisible(true);
     };
 
+    // Close modals
     const closeModal = () => {
         setAddModalVisible(false);
         setDeleteModalVisible(false);
         setDeleteClassCode('');
     };
 
+    // Handle pressing a class
     const handleClassPress = (classCode) => {
         console.log("Navigating to class:", classCode);
         router.push(`/ClassDashboard?classCode=${classCode}`);
+    };
+
+    // Redirect to pending approval page
+    const handlePendingApprovalPress = () => {
+        router.push('/PendingApproval');
     };
 
     return (
@@ -124,10 +137,11 @@ const TeacherDashboard = () => {
                         </View>
                         <View style={stylesDashboard.rightContainer}>
                             <Pressable onPress={handleProfilePress}>
-                            <Image source={teacherProfile} style={stylesDashboard.pictureCircle} />
+                                <Image source={teacherProfile} style={stylesDashboard.pictureCircle} />
                             </Pressable>
                         </View>
                     </View>
+
                     <View style={stylesDashboard.menuContainer}>
                         <View>
                             <Text style={stylesDashboard.titleText}>Classes</Text>
@@ -135,8 +149,10 @@ const TeacherDashboard = () => {
                         <View style={stylesDashboard.buttonContainer}>
                             <CustomButton title="Add" onPress={handleAddPress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
                             <CustomButton title="Remove" onPress={handleRemovePress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
+                            <CustomButton title="Pending Approval" onPress={handlePendingApprovalPress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
                         </View>
                     </View>
+
                     <ScrollView contentContainerStyle={stylesDashboard.classContainer}>
                         {classCodes.map((code, index) => (
                             <Pressable key={index} onPress={() => handleClassPress(code)}>
@@ -146,6 +162,8 @@ const TeacherDashboard = () => {
                             </Pressable>
                         ))}
                     </ScrollView>
+
+                    {/* Add Class Modal */}
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -164,13 +182,15 @@ const TeacherDashboard = () => {
                                         placeholder="Class Code"
                                         value={newClassCode}
                                         onChangeText={setNewClassCode}
-                                        style={styles.input}
+                                        style={stylesDashboard.input}
                                     />
-                                    <CustomButton title="Add" onPress={addClass} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                                    <CustomButton title="Add" onPress={addClass} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
                                 </View>
                             </View>
                         </View>
                     </Modal>
+
+                    {/* Remove Class Modal */}
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -190,9 +210,9 @@ const TeacherDashboard = () => {
                                         placeholder="Enter Class Code"
                                         value={deleteClassCode}
                                         onChangeText={setDeleteClassCode}
-                                        style={styles.input}
+                                        style={stylesDashboard.input}
                                     />
-                                    <CustomButton title="Delete" onPress={handleRemoveClass} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                                    <CustomButton title="Delete" onPress={handleRemoveClass} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
                                 </View>
                             </View>
                         </View>
@@ -204,3 +224,4 @@ const TeacherDashboard = () => {
 };
 
 export default TeacherDashboard;
+

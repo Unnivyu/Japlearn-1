@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 
 const { manifest } = Constants;
 let localhost = 'http://localhost:8080'; // Default to localhost
-const productionBackendUrl = 'https://backend-omega-pink.vercel.app/api'; // Your production backend URL
+const productionBackendUrl = 'https://backend-ten-roan.vercel.app/api'; // Your production backend URL
 
 if (manifest && manifest.debuggerHost) {
     localhost = `http://${manifest.debuggerHost.split(':').shift()}:8080`;

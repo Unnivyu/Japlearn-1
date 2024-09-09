@@ -52,6 +52,16 @@ export const stylesDashboard = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    button2: {
+        backgroundColor:'#8ED94D',
+        padding: 5,
+        height: 60,
+        width: 100,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: -120,
+    },
     buttonText: {
         fontSize: 20,
         color: 'white', // Ensure text is white
@@ -102,5 +112,49 @@ export const stylesDashboard = StyleSheet.create({
         fontFamily: 'jua',
         fontSize: 18, // Increase font size for visibility
         textAlign: 'center', // Center the text within the box
+    },
+
+    pendingUserText: {
+        color: '#333',
+        fontFamily: 'jua',
+        fontSize: 18,
+        textAlign: 'left', // Align text to the left
+        flex: 1, // Take up available space
+    },
+
+    buttonApprove: {
+        backgroundColor:'#8ED94D',
+        padding: 10,
+        height: 40,
+        width: 90,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    pendingUserContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: 'lightgray', // Light background for contrast
+        marginTop: 20,
+        padding: 20,
+        height: 80,
+        borderRadius: 30,
+        width: 320, // Adjust width
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 3,
+        alignSelf: 'center' // Center the boxes
+    },
+    pendingUserText: {
+        color: '#333',
+        fontFamily: 'jua',
+        fontSize: 18,
+        textAlign: 'left', // Align text to the left
+        flex: 1, // Take up available space
     }
+    
 });
