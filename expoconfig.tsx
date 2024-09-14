@@ -8,7 +8,7 @@ if (manifest && manifest.debuggerHost) {
     localhost = `http://${manifest.debuggerHost.split(':').shift()}:8080`;
 }
 
-const ipProvided = 'http://192.168.1.5:8080'; // Your provided IP address
+const ipProvided = 'http://192.168.1.16:8080'; // Your provided IP address
 
 // Function to determine the API URL
 const getApiUrl = () => {

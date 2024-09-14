@@ -2,6 +2,28 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
 
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent background
+  },
+
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+
   linkText2: {
     color: 'blue',
     textDecorationLine: 'underline',

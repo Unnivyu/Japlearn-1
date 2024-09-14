@@ -149,7 +149,7 @@ const TeacherDashboard = () => {
                         <View style={stylesDashboard.buttonContainer}>
                             <CustomButton title="Add" onPress={handleAddPress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
                             <CustomButton title="Remove" onPress={handleRemovePress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
-                            <CustomButton title="Pending Approval" onPress={handlePendingApprovalPress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
+                            <CustomButton title="Pending" onPress={handlePendingApprovalPress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
                         </View>
                     </View>
 

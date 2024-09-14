@@ -20,8 +20,10 @@ const Login = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [forgotPasswordVisible, setForgotPasswordVisible] = useState(false); // State for Forgot Password modal
+    const [forgotPasswordEmail, setForgotPasswordEmail] = useState(''); // State to capture Forgot Password email
 
-
+    // Check login status on mount
     useEffect(() => {
         const checkLoginStatus = async () => {
             const storedUser = await AsyncStorage.getItem('user');
@@ -35,7 +37,7 @@ const Login = () => {
     }, []);
 
     const handleLinkPress = () => {
-        router.push('/PrivacyPolicyPage'); // Navigate to the Privacy Policy page
+        router.push('/PrivacyPolicyPage'); // Navigate to Privacy Policy page
     };
 
     const navigateBasedOnRole = (role) => {
@@ -109,11 +111,41 @@ const Login = () => {
                 }
             }
         } catch (error) {
-            setModalMessage(`'Login failed: ${error}`);
+            setModalMessage(`Login failed: ${error}`);
             setModalVisible(true);
         } finally {
             setLoading(false);
         }
+    };
+
+    // Handle Forgot Password request
+    const handleForgotPassword = async () => {
+        if (!forgotPasswordEmail.trim()) {
+            setModalMessage("Please provide an email address.");
+            setModalVisible(true);
+            return;
+        }
+    
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/users/forgot-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: forgotPasswordEmail }),
+            });
+    
+            if (response.ok) {
+                setModalMessage("Password reset email sent. Please check your inbox.");
+                setForgotPasswordVisible(false);
+            } else {
+                const error = await response.json();
+                setModalMessage(error.message);
+            }
+        } catch (error) {
+            setModalMessage(`Error: ${error.message}`);
+        }
+        setModalVisible(true);
     };
 
     return (
@@ -163,17 +195,45 @@ const Login = () => {
 
             <View>
                 <Text style={styles.policyText}>By continuing, you agree with <Pressable onPress={handleLinkPress}>
-                <Text style={styles.linkText2}>Japlearn's Terms of Service and Privacy Policy</Text></Pressable></Text>
+                    <Text style={styles.linkText2}>Japlearn's Terms of Service and Privacy Policy</Text>
+                </Pressable></Text>
             </View>
 
             <View style={styles.linkContainer}>
                 <Pressable onPress={() => router.push('/Signup')}>
                     <Text style={styles.linkText}>Create account?</Text>
                 </Pressable>
-                <Pressable onPress={undefined}>
+                <Pressable onPress={() => setForgotPasswordVisible(true)}>
                     <Text style={styles.linkText}>Forgot Password?</Text>
                 </Pressable>
             </View>
+
+            {/* Forgot Password Modal */}
+            <Modal visible={forgotPasswordVisible} transparent animationType="slide">
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Reset Password</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter your email"
+                            value={forgotPasswordEmail}
+                            onChangeText={setForgotPasswordEmail}
+                        />
+                        <CustomButton
+                            title="Reset Password"
+                            onPress={handleForgotPassword}
+                            buttonStyle={styles.button}
+                            textStyle={styles.buttonText}
+                        />
+                        <CustomButton
+                            title="Close"
+                            onPress={() => setForgotPasswordVisible(false)}
+                            buttonStyle={styles.button}
+                            textStyle={styles.buttonText}
+                        />
+                    </View>
+                </View>
+            </Modal>
 
             <CustomModal
                 visible={modalVisible}
