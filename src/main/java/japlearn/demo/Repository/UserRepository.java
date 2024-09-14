@@ -11,4 +11,5 @@ public interface UserRepository extends MongoRepository<User, String>{
     List<User> findByFname(String fname);
     User findByConfirmationToken(String confirmationToken);
     List<User> findByIsEmailConfirmedTrueAndIsApprovedFalse();
+    User findByResetToken(String resetToken);
 }

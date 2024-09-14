@@ -2,6 +2,7 @@ package japlearn.demo.Controller;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,13 @@ import japlearn.demo.Service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
-// @CrossOrigin(origins = "http://localhost:8081") 
+@CrossOrigin(origins = {"http://localhost:8081", "*"}) 
 // @CrossOrigin(origins = "*")
 // @CrossOrigin(origins = "https://japlearn.vercel.app:8081")
-@CrossOrigin(origins = {"https://frontend-seven-zeta-42.vercel.app", "http://localhost:8081"})
+// @CrossOrigin(origins = {"https://frontend-seven-zeta-42.vercel.app", "http://localhost:8081"})
+// @CrossOrigin(origins = {"https://rocky-anchorage-61422.herokuapp.com", "*"})
+
+
 public class UserController {
 
     private final UserService japlearnService;
@@ -35,6 +39,33 @@ public class UserController {
     public UserController(UserService japlearnService) {
         this.japlearnService = japlearnService;
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        try {
+            japlearnService.sendForgotPasswordEmail(request.get("email"));
+            return ResponseEntity.ok(Collections.singletonMap("message", "Password reset email sent"));
+        } catch (UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "User not found"));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody Map<String, String> request) {
+        String result = japlearnService.resetPassword(token, request.get("newPassword"));
+        if ("password_reset".equals(result)) {
+            return ResponseEntity.ok(Collections.singletonMap("message", "Password reset successful"));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Invalid token"));
+        }
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        System.out.println("Endpoint hit!");
+    return "This is a test endpoint";
+}
+
 
     @GetMapping("/pending-approval")
     public ResponseEntity<List<User>> getPendingUsers() {

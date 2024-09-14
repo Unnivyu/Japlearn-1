@@ -29,6 +29,72 @@ public class UserService {
         this.mailSender = mailSender;
     }
 
+    // Method to handle forgot password
+    public String sendForgotPasswordEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        // Generate reset token
+        String resetToken = UUID.randomUUID().toString();
+        user.setResetToken(resetToken);
+        userRepository.save(user);
+
+        // Send reset email
+        sendPasswordResetEmail(user.getEmail(), resetToken);
+
+        return "success";
+    }
+
+    // Send reset password email
+private void sendPasswordResetEmail(String email, String token) {
+    // Change the reset URL to use localhost
+    String resetUrl = "http://localhost:8081/reset-password?token=" + token;
+
+    MimeMessage mimeMessage = mailSender.createMimeMessage();
+    try {
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        helper.setTo(email);
+        helper.setFrom("JapLearn <mizuchwaan@gmail.com>"); // Use the same sender details
+        helper.setSubject("Reset Password - JapLearn");
+
+        // HTML email content (following the same design as confirmation email)
+        String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>"
+                           + "<h2 style='text-align: center; color: #333;'>Password Reset Request</h2>"
+                           + "<p style='text-align: center; color: #555;'>You have requested to reset your password. Please click the button below to reset your password:</p>"
+                           + "<div style='text-align: center; margin: 30px;'>"
+                           + "  <a href='" + resetUrl + "' style='background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; font-size: 16px; border-radius: 5px;'>Reset Password</a>"
+                           + "</div>"
+                           + "<p style='text-align: center; color: #777;'>If you did not request this, please ignore this email.</p>"
+                           + "<p style='text-align: center; color: #777;'>Thank you, <br> The JapLearn Team</p>"
+                           + "</div>";
+
+        helper.setText(htmlContent, true); // Set 'true' to send HTML content
+        mailSender.send(mimeMessage);
+    } catch (MessagingException e) {
+        e.printStackTrace();  // Log the exception
+        throw new RuntimeException("Failed to send email", e);
+    }
+}
+
+
+    // Method to reset the password
+    public String resetPassword(String token, String newPassword) {
+        User user = userRepository.findByResetToken(token);
+        if (user == null) {
+            return "invalid";
+        }
+
+        String encryptedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encryptedPassword);
+        user.setResetToken(null); // Invalidate the token after reset
+        userRepository.save(user);
+
+        return "password_reset";
+    }
+
+
     public List<User> getUsersAwaitingApproval() {
         return userRepository.findByIsEmailConfirmedTrueAndIsApprovedFalse();
         }
@@ -67,7 +133,8 @@ public class UserService {
     }
 
     private void sendConfirmationEmail(String email, String token) {
-        String confirmationUrl = "https://backend-ten-roan.vercel.app/api/users/confirm?token=" + token;
+        String confirmationUrl = "http://localhost:8080/api/users/confirm?token=" + token;
+
     
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {

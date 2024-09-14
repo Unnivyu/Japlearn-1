@@ -1,5 +1,7 @@
 package japlearn.demo.Entity;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,6 +20,8 @@ public class User {
     
     // New field to track if the user has been approved by the teacher
     private boolean isApproved = false;
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
 
     public User() {
     }
@@ -38,6 +42,22 @@ public class User {
 
     public void setApproved(boolean approved) {
         isApproved = approved;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 
     // Other Getters and Setters remain unchanged
