@@ -157,7 +157,7 @@ const Login = () => {
             </KeyboardAvoidingView>
 
             <View>
-                <Text style={styles.policyText}>By continuing, you agree with Japlearns Terms of Service and Privacy Policy</Text>
+                <Text style={styles.policyText}>By continuing, you agree with the Terms of Service and Privacy Policy</Text>
             </View>
 
             <View style={styles.linkContainer}>
