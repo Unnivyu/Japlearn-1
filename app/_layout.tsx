@@ -6,6 +6,8 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { AuthContext, AuthProvider } from '../context/AuthContext';
 import { ClassCodeProvider } from '../context/ClassCodeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+
 
 
 const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
@@ -20,11 +22,25 @@ const defaultRouteByRole = {
   teacher: 'TeacherDashboard',
 };
 
+const Drawer = createDrawerNavigator();
+
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem label="Home" onPress={() => props.navigation.navigate('Home')} />
+      <DrawerItem label="Next Page" onPress={() => {/* Handle next page */}} />
+      <DrawerItem label="Previous Page" onPress={() => {/* Handle previous page */}} />
+    </DrawerContentScrollView>
+  );
+}
+
 const RootLayout = () => {
   const [fontLoaded, setFontsLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { user, setUser } = useContext(AuthContext);
   const router = useRouter();
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
   const segments = useSegments();
 
   useEffect(() => {

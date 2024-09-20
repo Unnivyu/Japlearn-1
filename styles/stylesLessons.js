@@ -9,15 +9,6 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: 'cover',
     },
-    header: {
-        height: 105,
-        backgroundColor: '#8423D9',
-        borderBottomWidth: 10,
-        borderBottomColor: '#6C3A99',
-        justifyContent: 'center',
-        padding: 10,
-        paddingTop: 40,
-    },
     backButtonContainer: {
         height: 50,
         width: 50,
@@ -31,6 +22,7 @@ const styles = StyleSheet.create({
       marginHorizonatal: 20,
     },
     lessonBlock: {
+      marginVertical: 20,
       marginHorizontal: 20,
       paddingHorizontal: 25,
       paddingVertical: 20,
