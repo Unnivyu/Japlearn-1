@@ -5,7 +5,7 @@ import styles from '../styles/stylesLessons';
 import CustomButton from '../components/CustomButton';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import lessonsData from '../assets/data/lessonsData'; // Ensure the path is correct
+import lessonsData from '../assets/data/lessonsData';
 
 const Drawer = createDrawerNavigator();
 
@@ -42,7 +42,7 @@ function LessonsDrawerNavigator() {
       screenOptions={{
         headerShown: true,
         drawerStyle: {
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#8423D9',
           width: 240,
         },
         headerStyle: {
@@ -57,8 +57,9 @@ function LessonsDrawerNavigator() {
           fontWeight: 'bold',
           fontFamily: 'Jua',
         },
-        drawerActiveTintColor: '#e91e63',
-        drawerItemStyle: { marginVertical: 5 },
+        drawerActiveTintColor: '#f5f5f5',
+          drawerItemStyle: { marginVertical: 5,
+        },
       }}
     >
       {lessonsData[0].pages.map((page, index) => (
