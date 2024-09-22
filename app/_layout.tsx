@@ -111,6 +111,7 @@ const RootLayout = () => {
         <Stack.Screen name="LearnMenu" />
         <Stack.Screen name="Exercises" />
         <Stack.Screen name="Lessons" />
+        <Stack.Screen name="LessonKanaGames" />
       </Stack>
     </GestureHandlerRootView>
   );
