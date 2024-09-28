@@ -1,13 +1,18 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
 
 const styles = StyleSheet.create({
 
     container: {
         flex: 1,
+        justifyContent: 'center',  // Vertically center the card container
+        alignItems: 'center',      // Horizontally center the card container
+    },
+    cardContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'center',  // Horizontally center the cards within the card container
+        alignItems: 'center',      // Vertically center the cards within the card container
         padding: 20,
     },
     card: {
@@ -68,4 +73,5 @@ const styles = StyleSheet.create({
     }
 
 });
+
 export default styles;

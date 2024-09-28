@@ -6,11 +6,17 @@ import CustomButton from '../components/CustomButton';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import lessonsData from '../assets/data/lessonsData';
+import LessonKanaGame from './LessonKanaGame';
 
 const Drawer = createDrawerNavigator();
 
 function LessonPage({ route }) {
   const { pageData } = route.params;
+
+  if (pageData.game === 'LessonKanaGame') {
+    return <LessonKanaGame data={pageData.gameData} />;
+  }
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.lessonBlock}>
       <View style={styles.content}>
