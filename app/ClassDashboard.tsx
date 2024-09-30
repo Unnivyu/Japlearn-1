@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Modal, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Modal, Alert, TextInput } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { stylesClass } from '../styles/stylesClass';
 import { styles } from '../styles/stylesModal';
@@ -23,6 +23,11 @@ const ClassDashboard = () => {
     const [showConfirmRemoveModal, setShowConfirmRemoveModal] = useState(false);
     const [selectedGame, setSelectedGame] = useState(null);
     const router = useRouter();
+    const [lessonsData, setLessonsData] = useState([]);
+    const [showAddLessonModal, setShowAddLessonModal] = useState(false);
+    const [newLessonTitle, setNewLessonTitle] = useState('');
+    const [selectedLessons, setSelectedLessons] = useState(new Set());
+    const [showConfirmRemoveLessonModal, setShowConfirmRemoveLessonModal] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -191,6 +196,77 @@ const ClassDashboard = () => {
         return 'quackmanScores';
     };
 
+    // Lessons Code 
+    useEffect(() => {
+        if (activeCategory === 'LESSONS') {
+            fetchLessonsData();
+        }
+    }, [activeCategory]);
+
+     const fetchLessonsData = async () => {
+
+     }
+
+     const handleAddLessons = () => {
+        setShowAddLessonModal(true);
+     }
+
+     const handleSaveLesson = () => {
+        if (newLessonTitle.trim() === "") {
+            alert("Please enter a lesson title.");
+            return;
+        }
+    
+        const newLesson = {
+            id: Math.random().toString(36).substr(2, 9),
+            title: newLessonTitle
+        };
+    
+        setLessonsData([...lessonsData, newLesson]);
+    
+        setNewLessonTitle('');
+        setShowAddLessonModal(false);
+    };
+
+     const handleRemoveLessons = () => {
+        if (selectedLessons.size === 0) {
+            return;
+        }
+        setShowConfirmRemoveLessonModal(true);
+     }
+
+     const confirmRemoveLessons = async () => {
+        try {
+            for (let id of selectedLessons) {
+                console.log(`Removing lesson with ID: ${id}`);
+            }
+            setLessonsData(prev => prev.filter(lesson => !selectedLessons.has(lesson.id)));
+            setSelectedLessons(new Set());
+            setShowConfirmRemoveLessonModal(false);
+        } catch (error) {
+            console.error('Error removing lessons:', error);
+            alert('Error removing lessons');
+        }
+    };
+
+     const toggleSelectLesson = (id) => {
+        const newSelectedLessons = new Set(selectedLessons);
+        if (newSelectedLessons.has(id)) {
+            newSelectedLessons.delete(id);
+        } else {
+            newSelectedLessons.add(id);
+        }
+        setSelectedLessons(newSelectedLessons);
+    };
+
+    const handleLessonLongPress = (lessonId) => {
+        router.push('/LessonPageEdit');
+    }
+
+    const handleLessonEdit = (lessonId) => {
+
+    }
+
     return (
         <View style={stylesClass.container}>
             <View style={stylesClass.header}>
@@ -206,6 +282,7 @@ const ClassDashboard = () => {
                     <CustomButton title="MEMBERS" onPress={() => handleCategoryPress('MEMBERS')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                     <CustomButton title="SCORES" onPress={() => handleCategoryPress('SCORES')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                     <CustomButton title="GAMES" onPress={() => handleCategoryPress('GAMES')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
+                    <CustomButton title="LESSONS" onPress={() => handleCategoryPress('LESSONS')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                 </View>
             </View>
 
@@ -221,6 +298,13 @@ const ClassDashboard = () => {
                         <CustomButton title="Filter" onPress={() => setShowFilterModal(true)} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
                     </View>
                 )}
+                {activeCategory === 'LESSONS' && (
+                    <View style={stylesClass.buttonContainer}>
+                        <CustomButton title="Add" onPress={handleAddLessons} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
+                        <CustomButton title="Remove" onPress={handleRemoveLessons} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
+                    </View>
+                )}
+
             </View>
             <ScrollView contentContainerStyle={stylesClass.contentScrollContainer}>
                 <View style={stylesClass.contentContainer}>
@@ -278,7 +362,24 @@ const ClassDashboard = () => {
                             </View>
                         </View>
                     )}
+
+                    {activeCategory === 'LESSONS' && (
+                        <View style={stylesClass.membersContentContainer}>
+                            {lessonsData.map((lesson, index) => (
+                                <TouchableOpacity key={index} onPress={() => toggleSelectLesson(lesson.id)} 
+                                onLongPress={() => handleLessonLongPress(lesson.id)}
+                                >
+                                    <View style={[stylesClass.lessonContent, selectedLessons.has(lesson.id) && stylesClass.selectedScore]}>
+                                        <Text style={stylesClass.lessonContentText}>{lesson.title}</Text>
+                                        <CustomButton title="Edit" onPress={() => handleLessonEdit(lesson.id)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
+                    
                 </View>
+
             </ScrollView>
             <Modal
                 animationType="slide"
@@ -333,6 +434,48 @@ const ClassDashboard = () => {
                     </View>
                 </View>
             </Modal>
+
+            {/*Modal for Adding Lessons*/}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showAddLessonModal}
+                onRequestClose={() => setShowAddLessonModal(false)}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TextInput
+                            style={styles.input}
+                            value={newLessonTitle}
+                            onChangeText={setNewLessonTitle}
+                            placeholder="Lesson Title"
+                        />
+                        <View style={styles.buttonRow}>
+                            <CustomButton title="Save" onPress={handleSaveLesson} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                            <CustomButton title="Cancel" onPress={() => setShowAddLessonModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/*Modal for Removing Lessons*/}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showConfirmRemoveLessonModal}
+                onRequestClose={() => setShowConfirmRemoveLessonModal(false)}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Are you sure you want to remove the selected lessons?</Text>
+                        <View style={styles.buttonRow}>
+                            <CustomButton title="Yes" onPress={confirmRemoveLessons} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                            <CustomButton title="No" onPress={() => setShowConfirmRemoveLessonModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
         </View>
     );
 }

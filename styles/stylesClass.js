@@ -168,5 +168,23 @@ export const stylesClass = StyleSheet.create({
         transform: [{ translateX: -60 }, { translateY: -60 }], // Adjust icon size and position
         zIndex: -1,
     },
+
+    lessonContent: {
+        flexDirection: 'row', // Align items in a row
+        alignItems: 'center', // Vertically center the text and button
+        justifyContent: 'space-between', // Push the items apart
+        backgroundColor: '#C7C3C3',
+        height: 100,
+        padding: 20,
+        borderRadius: 10,
+        width: '100%',
+    },
+    
+    lessonContentText: {
+        color: 'white',
+        fontFamily: 'jua',
+        fontSize: 17,
+        marginRight: 20, // Add spacing between text and the button
+    },
     
 });
