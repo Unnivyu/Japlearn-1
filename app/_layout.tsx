@@ -13,8 +13,8 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemL
 const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
 
 const routeAccessConfig = {
-  student: ['Menu', 'StartMenu', 'Profile'],
-  teacher: ['TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit' ],
+  student: ['Menu', 'StartMenu', 'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises'],
+  teacher: ['TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit' ],
 };
 
 const defaultRouteByRole = {
@@ -111,7 +111,9 @@ const RootLayout = () => {
         <Stack.Screen name="LearnMenu" />
         <Stack.Screen name="Exercises" />
         <Stack.Screen name="Lessons" />
-        <Stack.Screen name="LessonKanaGames" />
+        <Stack.Screen name="LessonKanaGame" />
+        <Stack.Screen name="LessonPageEdit" />
+        <Stack.Screen name="LessonContentEdit" />
       </Stack>
     </GestureHandlerRootView>
   );
