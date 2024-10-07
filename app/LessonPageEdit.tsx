@@ -15,6 +15,8 @@ const LessonPageEdit = () => {
     const [lessonPageData, setLessonPageData] = useState([]);
     const [newPageTitle, setNewPageTitle] = useState('');
     const [selectedPages, setSelectedPages] = useState(new Set());
+    const [showEditPageTitleModal, setShowEditPageTitleModal] = useState(false);
+    const [pageToEditId, setPageToEditId] = useState(null);
 
     const fetchLessonPageData = () => {
 
@@ -81,8 +83,31 @@ const LessonPageEdit = () => {
       }
     }
  
-    const handleLessonPageEdit = (pageId) => {
+    const handleLessonPageEdit = (pageId, currentTitle) => {
 
+      setPageToEditId(pageId);
+      setNewPageTitle(currentTitle)
+      setShowEditPageTitleModal(true);
+    }
+
+    const editLessonPageTitle = () => {
+      if(newPageTitle.length === 0){
+        alert("Please input a title");
+        return;
+      }
+
+      setLessonPageData(prevPages =>
+        prevPages.map(Page =>
+            Page.id === pageToEditId
+                ? { ...Page, title: newPageTitle }
+                : Page
+        )
+    );
+
+
+      setNewPageTitle('');
+      setPageToEditId(null);
+      setShowEditPageTitleModal(false);
     }
 
     return (
@@ -108,7 +133,7 @@ const LessonPageEdit = () => {
                   >
                       <View style={[stylesLessonPage.pageContent, selectedPages.has(page.id) && stylesLessonPage.selectedPage]}>
                           <Text style={stylesLessonPage.pageContentText}>{page.title}</Text>
-                          <CustomButton title="Edit" onPress={() => handleLessonPageEdit(page.id)} buttonStyle={stylesLessonPage.lessonButton} textStyle={stylesLessonPage.buttonText} />
+                          <CustomButton title="Edit" onPress={() => handleLessonPageEdit(page.id, page.title)} buttonStyle={stylesLessonPage.lessonButton} textStyle={stylesLessonPage.buttonText} />
                       </View>
                   </TouchableOpacity>
               ))}
@@ -154,6 +179,29 @@ const LessonPageEdit = () => {
                   </View>
               </View>
           </Modal>
+
+          {/*Modal for Editing Page title*/}
+          <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showEditPageTitleModal}
+          onRequestClose={() => setShowEditPageTitleModal(false)}
+            >
+              <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                      <TextInput
+                          style={styles.input}
+                          value={newPageTitle}
+                          onChangeText={setNewPageTitle}
+                          placeholder="Page Title"
+                      />
+                      <View style={styles.buttonRow}>
+                          <CustomButton title="Save" onPress={editLessonPageTitle} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                          <CustomButton title="Cancel" onPress={() => setShowEditPageTitleModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                      </View>
+                  </View>
+              </View>
+         </Modal>
 
         </View>
     );

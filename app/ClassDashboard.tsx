@@ -28,6 +28,8 @@ const ClassDashboard = () => {
     const [newLessonTitle, setNewLessonTitle] = useState('');
     const [selectedLessons, setSelectedLessons] = useState(new Set());
     const [showConfirmRemoveLessonModal, setShowConfirmRemoveLessonModal] = useState(false);
+    const [showEditLessonTitleModal, setShowEditLessonTitleModal] = useState(false);
+    const [lessontoEditId, setLessonToEditId] = useState(null);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -263,8 +265,29 @@ const ClassDashboard = () => {
         router.push('/LessonPageEdit');
     }
 
-    const handleLessonEdit = (lessonId) => {
+    const handleLessonEdit = (lessonId, currentTitle) => {
+        setLessonToEditId(lessonId)
+        setNewLessonTitle(currentTitle)
+        setShowEditLessonTitleModal(true);
+    }
 
+    const editLessonTitle = () => {
+        if(newLessonTitle.length === 0){
+            alert("Please enter a lesson title");
+            return;
+        }
+
+        setLessonsData(prevLessons =>
+            prevLessons.map(lesson =>
+                lesson.id === lessontoEditId
+                    ? { ...lesson, title: newLessonTitle }
+                    : lesson
+            )
+        );
+
+        setNewLessonTitle('');
+        setLessonToEditId(null);
+        setShowEditLessonTitleModal(false);
     }
 
     return (
@@ -371,7 +394,7 @@ const ClassDashboard = () => {
                                 >
                                     <View style={[stylesClass.lessonContent, selectedLessons.has(lesson.id) && stylesClass.selectedScore]}>
                                         <Text style={stylesClass.lessonContentText}>{lesson.title}</Text>
-                                        <CustomButton title="Edit" onPress={() => handleLessonEdit(lesson.id)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
+                                        <CustomButton title="Edit" onPress={() => handleLessonEdit(lesson.id, lesson.title)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
                                     </View>
                                 </TouchableOpacity>
                             ))}
@@ -471,6 +494,30 @@ const ClassDashboard = () => {
                         <View style={styles.buttonRow}>
                             <CustomButton title="Yes" onPress={confirmRemoveLessons} buttonStyle={styles.button} textStyle={styles.buttonText} />
                             <CustomButton title="No" onPress={() => setShowConfirmRemoveLessonModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/*Modal for Editing Lesson title*/}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showEditLessonTitleModal}
+                onRequestClose={() => setShowEditLessonTitleModal(false)}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                    <Text style={styles.modalText}>Input new Lesson title</Text>
+                    <TextInput
+                            style={styles.input}
+                            value={newLessonTitle}
+                            onChangeText={setNewLessonTitle}
+                            placeholder="New Lesson Title"
+                        />
+                        <View style={styles.buttonRow}>
+                            <CustomButton title="Yes" onPress={editLessonTitle} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                            <CustomButton title="No" onPress={() => setShowEditLessonTitleModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
                         </View>
                     </View>
                 </View>
