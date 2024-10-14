@@ -113,11 +113,14 @@ const LessonPageEdit = () => {
     return (
         <View style={stylesLessonPage.container}>
           <View style={stylesLessonPage.header}>
-            <Pressable onPress={handleBackPress}>
-              <View style={stylesLessonPage.backButtonContainer}>
-                <BackIcon width={20} height={20} fill={'white'} />
-              </View>
-            </Pressable>
+            <TouchableOpacity onPress={handleBackPress}>
+                <View style={stylesLessonPage.backButtonContainer}>
+                  <BackIcon width={20} height={20} fill={'white'} />
+                </View>
+            </TouchableOpacity>
+            <View style={stylesLessonPage.centerContainer}>
+                <Text style={stylesLessonPage.headerText}>Lesson Page Edit</Text>
+            </View>
           </View>
           {/* Buttons section */}
           <View style={stylesLessonPage.buttonContainer}>

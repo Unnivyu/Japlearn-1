@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     },
     leftContainer: {
         flex: 1,
+        alignItems: 'center'
     },
     rightContainer: {
         flex: 1,

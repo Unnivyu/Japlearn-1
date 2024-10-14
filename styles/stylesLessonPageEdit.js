@@ -9,7 +9,8 @@ export const stylesLessonPage = StyleSheet.create({
         backgroundColor: '#8423D9',
         borderBottomWidth: 10,
         borderBottomColor: '#6C3A99',
-        justifyContent: 'center',
+        flexDirection: 'row', // Make sure this is in place to align back button and text horizontally
+        alignItems: 'center',
         padding: 10,
         paddingTop: 40,
     },
@@ -73,4 +74,16 @@ export const stylesLessonPage = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
     },
+    centerContainer: {
+        flex: 1, 
+        alignItems: 'center',  // Center horizontally
+        justifyContent: 'center', // Center vertically
+        marginLeft: -40
+    },
+    headerText:{
+        fontSize: 20,
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    }
 })
