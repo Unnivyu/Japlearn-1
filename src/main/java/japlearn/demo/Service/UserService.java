@@ -13,20 +13,24 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import japlearn.demo.Entity.Student;
 import japlearn.demo.Entity.User;
+import japlearn.demo.Repository.StudentRepository;
 import japlearn.demo.Repository.UserRepository;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender; // Add JavaMailSender for sending emails
 
     @Autowired
-    public UserService(UserRepository userRepository, JavaMailSender mailSender) {
+    public UserService(UserRepository userRepository, JavaMailSender mailSender, StudentRepository studentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.mailSender = mailSender;
+        this.studentRepository = studentRepository; // Initialize studentRepository here
     }
 
     // Method to handle forgot password
@@ -50,7 +54,7 @@ public class UserService {
     // Send reset password email
 private void sendPasswordResetEmail(String email, String token) {
     // Change the reset URL to use localhost
-    String resetUrl = "http://localhost:8081/reset-password?token=" + token;
+    String resetUrl = "http://localhost:8081/ResetPassword?token=" + token;
 
     MimeMessage mimeMessage = mailSender.createMimeMessage();
     try {
@@ -81,18 +85,27 @@ private void sendPasswordResetEmail(String email, String token) {
 
     // Method to reset the password
     public String resetPassword(String token, String newPassword) {
-        User user = userRepository.findByResetToken(token);
-        if (user == null) {
-            return "invalid";
-        }
-
-        String encryptedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encryptedPassword);
-        user.setResetToken(null); // Invalidate the token after reset
-        userRepository.save(user);
-
-        return "password_reset";
+    User user = userRepository.findByResetToken(token);
+    if (user == null) {
+        return "invalid";
     }
+
+    // Encrypt new password
+    String encryptedPassword = passwordEncoder.encode(newPassword);
+    user.setPassword(encryptedPassword);
+    user.setResetToken(null); // Invalidate the token after reset
+    userRepository.save(user);
+
+    // If the user is also in the Student table, update the password there
+    Student student = studentRepository.findByEmail(user.getEmail());
+    if (student != null) {
+        student.setPassword(encryptedPassword);
+        studentRepository.save(student);
+    }
+
+    return "password_reset";
+}
+
 
 
     public List<User> getUsersAwaitingApproval() {
@@ -101,11 +114,13 @@ private void sendPasswordResetEmail(String email, String token) {
 
     
 
-    public void approveUser(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        user.setApproved(true); // Set the user as approved
-        userRepository.save(user);
-    }
+        public void approveUser(String userId) {
+            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+            user.setApproved(true); // Set the user as approved
+            userRepository.save(user);
+            
+            // Transfer user data to Student if the user has a "student" role
+        }
 
     public String registerUser(User user) {
         try {
@@ -169,14 +184,25 @@ private void sendPasswordResetEmail(String email, String token) {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        if (!user.isEmailConfirmed()) {
-            throw new IllegalStateException("Email not confirmed");
+    
+        // If the user is a student, check both email confirmation and approval status
+        if ("student".equals(user.getRole())) {
+            if (!user.isEmailConfirmed()) {
+                throw new IllegalStateException("Email not confirmed");
+            }
+            if (!user.isApproved()) {
+                throw new IllegalStateException("User not approved");
+            }
         }
+    
+        // Check password regardless of role
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
+    
         return user;
     }
+    
 
     public String confirmUser(String token) {
         User user = userRepository.findByConfirmationToken(token);

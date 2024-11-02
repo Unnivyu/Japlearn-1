@@ -51,14 +51,16 @@ public class UserController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody Map<String, String> request) {
-        String result = japlearnService.resetPassword(token, request.get("newPassword"));
-        if ("password_reset".equals(result)) {
-            return ResponseEntity.ok(Collections.singletonMap("message", "Password reset successful"));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Invalid token"));
-        }
+public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody Map<String, String> request) {
+    String newPassword = request.get("newPassword");
+    String result = japlearnService.resetPassword(token, newPassword);
+    if ("password_reset".equals(result)) {
+        return ResponseEntity.ok(Collections.singletonMap("message", "Password reset successful"));
+    } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Invalid token"));
     }
+}
+
 
     @GetMapping("/test")
     public String test() {
