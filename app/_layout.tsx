@@ -80,6 +80,7 @@ const RootLayout = () => {
       <Stack.Screen name="Menu" />
       <Stack.Screen name="StartMenu" />
       <Stack.Screen name="Profile" />
+      <Stack.Screen name="ResetPassword" />
       <Stack.Screen name="TeacherDashboard" />
       <Stack.Screen name="PendingApproval" />
       <Stack.Screen name="ProfileTeacher" />

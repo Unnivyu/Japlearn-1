@@ -60,9 +60,9 @@ const Login = () => {
             setModalVisible(true);
             return;
         }
-
+    
         setLoading(true);
-
+    
         try {
             const studentResponse = await fetch(`${expoconfig.API_URL}/api/students/login`, {
                 method: 'POST',
@@ -71,7 +71,7 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email, password })
             });
-
+    
             if (studentResponse.ok) {
                 const studentData = await studentResponse.json();
                 const userData = {
@@ -92,7 +92,7 @@ const Login = () => {
                     },
                     body: JSON.stringify({ email, password })
                 });
-
+    
                 if (userResponse.ok) {
                     const userDataFromResponse = await userResponse.json();
                     const userData = {
@@ -107,7 +107,16 @@ const Login = () => {
                     navigateBasedOnRole(userData.role);
                 } else {
                     const message = await userResponse.json();
-                    throw new Error(message.error);
+                    
+                    // Update error handling for specific backend messages
+                    if (message.error === "Email not confirmed") {
+                        setModalMessage("Your email is not confirmed. Please check your inbox for the confirmation email.");
+                    } else if (message.error === "User not approved") {
+                        setModalMessage("Your account has not been approved yet. Please contact the administrator.");
+                    } else {
+                        setModalMessage("Invalid credentials");
+                    }
+                    setModalVisible(true);
                 }
             }
         } catch (error) {
@@ -117,6 +126,8 @@ const Login = () => {
             setLoading(false);
         }
     };
+    
+    
 
     // Handle Forgot Password request
     const handleForgotPassword = async () => {

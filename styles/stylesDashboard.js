@@ -118,9 +118,15 @@ export const stylesDashboard = StyleSheet.create({
         color: '#333',
         fontFamily: 'jua',
         fontSize: 18,
-        textAlign: 'left', // Align text to the left
-        flex: 1, // Take up available space
+        textAlign: 'left',
+        marginBottom: 2, // Minor space between name and email
     },
+    pendingUserEmail: {
+        fontSize: 12,
+        color: 'gray',
+        textAlign: 'left',
+    },
+    
 
     buttonApprove: {
         backgroundColor:'#8ED94D',
@@ -134,20 +140,23 @@ export const stylesDashboard = StyleSheet.create({
 
     pendingUserContent: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: 'lightgray', // Light background for contrast
+        justifyContent: 'space-between',
+        backgroundColor: 'lightgray', 
         marginTop: 20,
         padding: 20,
-        height: 80,
-        borderRadius: 30,
-        width: 320, // Adjust width
+        borderRadius: 20,
+        width: 320,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 3,
-        alignSelf: 'center' // Center the boxes
+        alignSelf: 'center'
+    },
+    userInfoContainer: {
+        flex: 1,  // Allows the container to take up available space
+        alignItems: 'flex-start', // Aligns text to the left within the container
     },
     pendingUserText: {
         color: '#333',

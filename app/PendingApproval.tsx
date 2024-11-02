@@ -69,7 +69,10 @@ const PendingApproval = () => {
                     {pendingUsers.length > 0 ? (
                         pendingUsers.map(user => (
                             <View key={user.id} style={stylesDashboard.pendingUserContent}>
-                                <Text style={stylesDashboard.pendingUserText}>{user.fname} {user.lname}</Text>
+                                <View style={stylesDashboard.userInfoContainer}>
+                                    <Text style={stylesDashboard.pendingUserText}>{user.fname} {user.lname}</Text>
+                                    <Text style={stylesDashboard.pendingUserEmail}>{user.email}</Text> {/* Email below name */}
+                                </View>
                                 <CustomButton 
                                     title="Approve" 
                                     onPress={() => approveUser(user.id)} 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Modal, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Modal, TextInput, Alert } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { stylesClass } from '../styles/stylesClass';
 import { styles } from '../styles/stylesModal';
@@ -16,12 +16,28 @@ const ClassDashboard = () => {
     const [userData, setUserData] = useState([]);
     const [scoresData, setScoresData] = useState([]);
     const [filteredScoresData, setFilteredScoresData] = useState([]);
+    const [vocabContent, setVocabContent] = useState([]);
     const [selectedScores, setSelectedScores] = useState(new Set());
     const [selectedStudents, setSelectedStudents] = useState(new Set());
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [showConfirmRemoveModal, setShowConfirmRemoveModal] = useState(false);
     const [selectedGame, setSelectedGame] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [confirmRemoveModalVisible, setConfirmRemoveModalVisible] = useState(false);
+
+    // Updated to reflect new fields
+    const [word, setWord] = useState(''); 
+    const [hint, setHint] = useState(''); 
+    const [kanji, setKanji] = useState(''); // New state for kanji
+
+    const [editWord, setEditWord] = useState(''); 
+    const [editHint, setEditHint] = useState('');
+    const [editKanji, setEditKanji] = useState(''); // New state for kanji
+
+    const [selectedVocabId, setSelectedVocabId] = useState(null);
+    const [selectedVocabIndex, setSelectedVocabIndex] = useState(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -64,9 +80,21 @@ const ClassDashboard = () => {
         }
     };
 
+    const fetchVocabContent = async () => {
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/vocabulary/${classCode}`);
+            const data = await response.json();
+            setVocabContent(data);
+        } catch (error) {
+            console.error('Error fetching vocabulary:', error);
+        }
+    };
+
     useEffect(() => {
         if (activeCategory === 'SCORES' || activeCategory === 'GAMES') {
             fetchScoresData();
+        } else if (activeCategory === 'VOCAB') {
+            fetchVocabContent();
         }
     }, [activeCategory]);
 
@@ -96,8 +124,6 @@ const ClassDashboard = () => {
             console.error('Error removing students:', error);
         }
     };
-    
-    
 
     const handleCategoryPress = (category) => {
         setActiveCategory(category);
@@ -147,7 +173,6 @@ const ClassDashboard = () => {
         }
         setSelectedStudents(newSelectedStudents);
     };
-    
 
     const handleRemoveScores = () => {
         if (selectedScores.size === 0) {
@@ -191,6 +216,76 @@ const ClassDashboard = () => {
         return 'quackmanScores';
     };
 
+    // Modified to include kanji
+    const handleAddVocab = async () => {
+        try {
+            const newVocab = { english: word, japanese: hint, kanji: kanji };  // Updated to include kanji
+            const response = await fetch(`${expoconfig.API_URL}/api/vocabulary`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newVocab),
+            });
+            if (response.ok) {
+                setModalVisible(false);
+                setWord('');
+                setHint('');
+                setKanji('');  // Reset Kanji after adding
+                fetchVocabContent();  // Refresh the list
+            }
+        } catch (error) {
+            console.error('Error adding vocabulary:', error);
+        }
+    };
+
+    // Modified to include kanji
+    const handleEditVocab = async () => {
+        try {
+            const updatedVocab = { english: editWord, japanese: editHint, kanji: editKanji };  // Updated to include kanji
+            const response = await fetch(`${expoconfig.API_URL}/api/vocabulary/${selectedVocabId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedVocab),
+            });
+            if (response.ok) {
+                setEditModalVisible(false);
+                setEditWord('');
+                setEditHint('');
+                setEditKanji('');  // Reset Kanji after editing
+                fetchVocabContent();  // Refresh the list
+            }
+        } catch (error) {
+            console.error('Error editing vocabulary:', error);
+        }
+    };
+
+    const handleDeleteVocab = async () => {
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/vocabulary/${selectedVocabId}`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                setConfirmRemoveModalVisible(false);
+                fetchVocabContent();  // Refresh the list
+            }
+        } catch (error) {
+            console.error('Error deleting vocabulary:', error);
+        }
+    };
+
+    // Modified to include kanji
+    const handleOpenEditModal = (vocabId, wordIndex, word, hint, kanji) => {
+        setSelectedVocabId(vocabId);
+        setSelectedVocabIndex(wordIndex);
+        setEditWord(word);
+        setEditHint(hint);
+        setEditKanji(kanji);  // Set Kanji for editing
+        setEditModalVisible(true);
+    };
+
     return (
         <View style={stylesClass.container}>
             <View style={stylesClass.header}>
@@ -206,6 +301,7 @@ const ClassDashboard = () => {
                     <CustomButton title="MEMBERS" onPress={() => handleCategoryPress('MEMBERS')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                     <CustomButton title="SCORES" onPress={() => handleCategoryPress('SCORES')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                     <CustomButton title="GAMES" onPress={() => handleCategoryPress('GAMES')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
+                    <CustomButton title="VOCAB" onPress={() => handleCategoryPress('VOCAB')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />   
                 </View>
             </View>
 
@@ -215,6 +311,11 @@ const ClassDashboard = () => {
                         <CustomButton title="Remove" onPress={handleRemoveStudents} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
                     </View>
                 )}
+                {activeCategory === 'VOCAB' && (
+                    <View style={stylesClass.buttonContainer}>
+                        <CustomButton title="Add" onPress={() => setModalVisible(true)} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
+                    </View>
+                )}
                 {activeCategory === 'SCORES' && (
                     <View style={stylesClass.buttonContainer}>
                         <CustomButton title="Remove" onPress={handleRemoveScores} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
@@ -222,6 +323,7 @@ const ClassDashboard = () => {
                     </View>
                 )}
             </View>
+
             <ScrollView contentContainerStyle={stylesClass.contentScrollContainer}>
                 <View style={stylesClass.contentContainer}>
                     {activeCategory === 'MEMBERS' && (
@@ -232,6 +334,20 @@ const ClassDashboard = () => {
                                         <Text style={stylesClass.classContentText}>
                                             {user.fname} {user.lname}
                                         </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
+
+                    {activeCategory === 'VOCAB' && (
+                        <View style={stylesClass.membersContentContainer}>
+                            {vocabContent.map((vocab, index) => (
+                                <TouchableOpacity key={index} onLongPress={() => handleOpenEditModal(vocab.id, index, vocab.english, vocab.japanese, vocab.kanji)}>
+                                    <View style={stylesClass.content}>
+                                        <Text style={stylesClass.classContentText}>Word: {vocab.english}</Text>
+                                        <Text style={stylesClass.classContentText}>Hint: {vocab.japanese}</Text>
+                                        <Text style={stylesClass.classContentText}>Kanji: {vocab.kanji}</Text>  {/* Display Kanji */}
                                     </View>
                                 </TouchableOpacity>
                             ))}
@@ -274,61 +390,106 @@ const ClassDashboard = () => {
                                     <Text style={stylesClass.gameContentText}>Quackman</Text>
                                 </View>
                                 <Icon3 style={stylesClass.floatingIcon} width={175} height={175} fill={'#fff'} />
-
                             </View>
                         </View>
                     )}
                 </View>
             </ScrollView>
+
+            {/* Modal for adding vocabulary */}
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showFilterModal}
-                onRequestClose={() => setShowFilterModal(false)}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Filter by Game</Text>
-                        <CustomButton title="All" onPress={() => handleFilterPress(null)} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                        <CustomButton title="Quackslate" onPress={() => handleFilterPress('Quackslate')} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                        <CustomButton title="Quackamole" onPress={() => handleFilterPress('Quackamole')} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                        <CustomButton title="Quackman" onPress={() => handleFilterPress('Quackman')} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>X</Text>
+                        </TouchableOpacity>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.text}>Enter new vocabulary:</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={word}
+                                onChangeText={setWord}
+                                placeholder="Enter word"
+                            />
+                            <TextInput
+                                style={styles.input}
+                                value={hint}
+                                onChangeText={setHint}
+                                placeholder="Enter hint"
+                            />
+                            <TextInput
+                                style={styles.input}
+                                value={kanji}
+                                onChangeText={setKanji}
+                                placeholder="Enter Kanji"  // Added Kanji input
+                            />
+                            <CustomButton title="Add" onPress={handleAddVocab} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        </View>
                     </View>
                 </View>
             </Modal>
+
+            {/* Modal for editing vocabulary */}
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showDeleteModal}
-                onRequestClose={() => setShowDeleteModal(false)}
+                visible={editModalVisible}
+                onRequestClose={() => setEditModalVisible(false)}
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <View style={styles.closeButtonContainer}>
-                            <TouchableOpacity onPress={() => setShowDeleteModal(false)} style={styles.closeButton}>
-                                <Text style={styles.closeButtonText}>X</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <Text style={styles.text}>Are you sure you want to remove these students?</Text>
-                        <View style={styles.buttonRow}>
-                            <CustomButton title="Yes" onPress={handleDeleteModalConfirm} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                            <CustomButton title="No" onPress={() => setShowDeleteModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        <TouchableOpacity onPress={() => setEditModalVisible(false)} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>X</Text>
+                        </TouchableOpacity>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.text}>Edit vocabulary:</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={editWord}
+                                onChangeText={setEditWord}
+                                placeholder="Edit word"
+                            />
+                            <TextInput
+                                style={styles.input}
+                                value={editHint}
+                                onChangeText={setEditHint}
+                                placeholder="Edit hint"
+                            />
+                            <TextInput
+                                style={styles.input}
+                                value={editKanji}
+                                onChangeText={setEditKanji}
+                                placeholder="Edit Kanji"  // Added Kanji input for editing
+                            />
+                            <CustomButton title="Save" onPress={handleEditVocab} buttonStyle={styles.button} textStyle={styles.buttonText} />
                         </View>
                     </View>
                 </View>
             </Modal>
+
+            {/* Modal for deleting vocabulary */}
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showConfirmRemoveModal}
-                onRequestClose={() => setShowConfirmRemoveModal(false)}
+                visible={confirmRemoveModalVisible}
+                onRequestClose={() => setConfirmRemoveModalVisible(false)}
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Are you sure you want to remove these scores?</Text>
-                        <View style={styles.buttonRow}>
-                            <CustomButton title="Yes" onPress={confirmRemoveScores} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                            <CustomButton title="No" onPress={() => setShowConfirmRemoveModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        <TouchableOpacity onPress={() => setConfirmRemoveModalVisible(false)} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>X</Text>
+                        </TouchableOpacity>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.text}>Are you sure you want to delete this vocabulary?</Text>
+                            <View style={styles.buttonRow}>
+                                <CustomButton title="Yes" onPress={handleDeleteVocab} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                                <CustomButton title="No" onPress={() => setConfirmRemoveModalVisible(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                            </View>
                         </View>
                     </View>
                 </View>
