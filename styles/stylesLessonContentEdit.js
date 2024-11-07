@@ -52,5 +52,53 @@ export const stylesLessonContent = StyleSheet.create ({
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
-    }
+    },
+    textContainer: {
+        alignSelf: 'flex-start', // Align text container to the left
+        marginLeft: 20, // Add padding to the left for the text
+    },
+    lessonContentContainer: {
+        rowGap: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        height: '100%',
+    },
+    contentScrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        width: '100%',
+    },
+    LessonContent: {
+        flexDirection: 'column', // Change to column layout
+        alignItems: 'center', // Center items horizontally
+        backgroundColor: '#C7C3C3',
+        padding: 20,
+        borderRadius: 10,
+        width: '100%',
+    },
+    LessonContentText: {
+        color: 'white',
+        fontFamily: 'jua',
+        fontSize: 17,
+        marginVertical: 5, // Add vertical spacing between items
+    },
+
+    selectedLessonContent: {
+        backgroundColor: '#8ed94d',
+    },
+    lessonContentButton: {
+        backgroundColor: '#8ED94D',
+        padding: 5,
+        height: 40,
+        width: 75,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginTop: 10, // Add space above the button
+    },
+    lessonContentImage: {
+        width: 300, // Adjust as needed
+        height: 300, // Adjust as needed
+        resizeMode: 'contain', // Or 'cover' based on your needs
+        marginBottom: 10, // Add some space below the image
+    },
 })

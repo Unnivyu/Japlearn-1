@@ -170,21 +170,48 @@ export const stylesClass = StyleSheet.create({
     },
 
     lessonContent: {
-        flexDirection: 'row', // Align items in a row
-        alignItems: 'center', // Vertically center the text and button
-        justifyContent: 'space-between', // Push the items apart
+        flexDirection: 'column', // Stack text and button vertically
         backgroundColor: '#C7C3C3',
-        height: 100,
         padding: 20,
         borderRadius: 10,
         width: '100%',
+        marginBottom: 10,
+    },
+
+    editButtonContainer: {
+        flexShrink: 1, // Prevent button from overflowing
+    },
+
+    textButtonContainer: {
+        flexDirection: 'row', // Align text and button horizontally
+        alignItems: 'flex-start',
+        justifyContent: 'space-between', // Place button to the right of text
+    },
+
+    titleTextSpacing: {
+        marginBottom: 5
     },
     
     lessonContentText: {
         color: 'white',
         fontFamily: 'jua',
         fontSize: 17,
-        marginRight: 20, // Add spacing between text and the button
+        lineHeight: 22,
+        flexWrap: 'wrap',
+        maxWidth: '85%', // Ensure text doesn’t exceed this width
     },
-    
+    textContainer: {
+        flex: 1,
+        flexWrap: 'wrap', // Allow text to wrap
+        paddingRight: 10, // Space for button
+    },
+    editButton: {
+        backgroundColor: '#8ED94D',
+        padding: 5,
+        height: 40,
+        width: 75,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });

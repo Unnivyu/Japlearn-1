@@ -9,6 +9,7 @@ import Icon1 from '../assets/svg/gameIcon1.svg';
 import Icon2 from '../assets/svg/gameIcon2.svg';
 import Icon3 from '../assets/svg/gameIcon3.svg';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { Picker } from '@react-native-picker/picker';
 
 const ClassDashboard = () => {
     const [activeCategory, setActiveCategory] = useState('MEMBERS');
@@ -30,6 +31,7 @@ const ClassDashboard = () => {
     const [showConfirmRemoveLessonModal, setShowConfirmRemoveLessonModal] = useState(false);
     const [showEditLessonTitleModal, setShowEditLessonTitleModal] = useState(false);
     const [lessontoEditId, setLessonToEditId] = useState(null);
+    const [lessonType, setLessonType] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -218,17 +220,30 @@ const ClassDashboard = () => {
             alert("Please enter a lesson title.");
             return;
         }
+
+        if (lessonType === "") {
+            alert("Please enter a lesson type.");
+            return;
+        }
     
         const newLesson = {
             id: Math.random().toString(36).substr(2, 9),
-            title: newLessonTitle
+            title: newLessonTitle,
+            lessonType: lessonType
         };
     
         setLessonsData([...lessonsData, newLesson]);
     
         setNewLessonTitle('');
+        setLessonType('');
         setShowAddLessonModal(false);
     };
+
+    const cancelAdd = () => {
+        setNewLessonTitle('');
+        setLessonType('');
+        setShowAddLessonModal(false);
+    }
 
      const handleRemoveLessons = () => {
         if (selectedLessons.size === 0) {
@@ -265,9 +280,10 @@ const ClassDashboard = () => {
         router.push('/LessonPageEdit');
     }
 
-    const handleLessonEdit = (lessonId, currentTitle) => {
-        setLessonToEditId(lessonId)
-        setNewLessonTitle(currentTitle)
+    const handleLessonEdit = (lesson) => {
+        setLessonToEditId(lesson.id)
+        setNewLessonTitle(lesson.title)
+        setLessonType(lesson.lessonType)
         setShowEditLessonTitleModal(true);
     }
 
@@ -277,16 +293,27 @@ const ClassDashboard = () => {
             return;
         }
 
+        if(lessonType === ""){
+            alert("Please enter a lesson title");
+            return;
+        }
+
         setLessonsData(prevLessons =>
             prevLessons.map(lesson =>
                 lesson.id === lessontoEditId
-                    ? { ...lesson, title: newLessonTitle }
+                    ? { ...lesson, title: newLessonTitle, lessonType: lessonType }
                     : lesson
             )
         );
 
         setNewLessonTitle('');
         setLessonToEditId(null);
+        setShowEditLessonTitleModal(false);
+    }
+
+    const cancelLessonEdit = () => {
+        setNewLessonTitle('');
+        setLessonType('');
         setShowEditLessonTitleModal(false);
     }
 
@@ -393,8 +420,15 @@ const ClassDashboard = () => {
                                 onLongPress={() => handleLessonLongPress(lesson.id)}
                                 >
                                     <View style={[stylesClass.lessonContent, selectedLessons.has(lesson.id) && stylesClass.selectedScore]}>
-                                        <Text style={stylesClass.lessonContentText}>{lesson.title}</Text>
-                                        <CustomButton title="Edit" onPress={() => handleLessonEdit(lesson.id, lesson.title)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
+                                        <View style={stylesClass.textButtonContainer}>
+                                            <View style={stylesClass.textContainer}>
+                                                <Text style={[stylesClass.lessonContentText, stylesClass.titleTextSpacing]}>Title: {lesson.title}</Text>
+                                                <Text style={stylesClass.lessonContentText}>Type: {lesson.lessonType}</Text>
+                                            </View>
+                                            <View style={stylesClass.editButtonContainer}>
+                                                <CustomButton title="Edit" onPress={() => handleLessonEdit(lesson)} buttonStyle={stylesClass.editButton} textStyle={stylesClass.buttonText} />
+                                            </View>
+                                        </View>
                                     </View>
                                 </TouchableOpacity>
                             ))}
@@ -473,9 +507,19 @@ const ClassDashboard = () => {
                             onChangeText={setNewLessonTitle}
                             placeholder="Lesson Title"
                         />
+                        <Picker
+                        selectedValue={lessonType}
+                        onValueChange={(itemValue) =>
+                            setLessonType(itemValue)
+                          }>
+                        <Picker.Item label="None" value=""/>
+                        <Picker.Item label="Characters" value="Characters"/>
+                        <Picker.Item label="Vocabulary" value="Vocabulary"/>
+                        <Picker.Item label="Sentence and Grammar" value="Sentence and Grammar"/>
+                        </Picker>
                         <View style={styles.buttonRow}>
                             <CustomButton title="Save" onPress={handleSaveLesson} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                            <CustomButton title="Cancel" onPress={() => setShowAddLessonModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                            <CustomButton title="Cancel" onPress={() => cancelAdd()} buttonStyle={styles.button} textStyle={styles.buttonText} />
                         </View>
                     </View>
                 </View>
@@ -515,9 +559,19 @@ const ClassDashboard = () => {
                             onChangeText={setNewLessonTitle}
                             placeholder="New Lesson Title"
                         />
+                    <Picker
+                        selectedValue={lessonType}
+                        onValueChange={(itemValue) =>
+                            setLessonType(itemValue)
+                          }>
+                        <Picker.Item label="None" value=""/>
+                        <Picker.Item label="Characters" value="Characters"/>
+                        <Picker.Item label="Vocabulary" value="Vocabulary"/>
+                        <Picker.Item label="Sentence and Grammar" value="Sentence and Grammar"/>
+                    </Picker>
                         <View style={styles.buttonRow}>
                             <CustomButton title="Yes" onPress={editLessonTitle} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                            <CustomButton title="No" onPress={() => setShowEditLessonTitleModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                            <CustomButton title="No" onPress={() => cancelLessonEdit()} buttonStyle={styles.button} textStyle={styles.buttonText} />
                         </View>
                     </View>
                 </View>

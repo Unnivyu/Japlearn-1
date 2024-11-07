@@ -1,8 +1,8 @@
-import { Text, View, Pressable, ImageBackground, Modal, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, Pressable, ImageBackground, Modal, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { stylesLessonPage } from '../styles/stylesLessonPageEdit';
-import { styles } from '../styles/stylesModal';
+import { styles } from '../styles/stylesLessonModal';
 import BackIcon from '../assets/svg/back-icon.svg';
 import { AuthContext } from '../context/AuthContext';
 import CustomButton from '../components/CustomButton';
@@ -57,6 +57,11 @@ const LessonPageEdit = () => {
 
       setLessonPageData([...lessonPageData, newPage]);
 
+      setNewPageTitle('');
+      setShowAddPageModal(false);
+    }
+
+    const canelAdd = () => {
       setNewPageTitle('');
       setShowAddPageModal(false);
     }
@@ -129,18 +134,20 @@ const LessonPageEdit = () => {
           </View>
 
           {/* Page container view */}
-          <View style={stylesLessonPage.pageContentContainer}>
-              {lessonPageData.map((page, index) => (
-                  <TouchableOpacity key={index} onPress={() => toggleSelectPage(page.id)} 
-                  onLongPress={() => handleLessonPageLongPress(page.id)}
-                  >
-                      <View style={[stylesLessonPage.pageContent, selectedPages.has(page.id) && stylesLessonPage.selectedPage]}>
-                          <Text style={stylesLessonPage.pageContentText}>{page.title}</Text>
-                          <CustomButton title="Edit" onPress={() => handleLessonPageEdit(page.id, page.title)} buttonStyle={stylesLessonPage.lessonButton} textStyle={stylesLessonPage.buttonText} />
-                      </View>
-                  </TouchableOpacity>
-              ))}
-          </View>
+          <ScrollView contentContainerStyle={stylesLessonPage.contentScrollContainer}>
+            <View style={stylesLessonPage.pageContentContainer}>
+                {lessonPageData.map((page, index) => (
+                    <TouchableOpacity key={index} onPress={() => toggleSelectPage(page.id)} 
+                    onLongPress={() => handleLessonPageLongPress(page.id)}
+                    >
+                        <View style={[stylesLessonPage.pageContent, selectedPages.has(page.id) && stylesLessonPage.selectedPage]}>
+                            <Text style={stylesLessonPage.pageContentText}>{page.title}</Text>
+                            <CustomButton title="Edit" onPress={() => handleLessonPageEdit(page.id, page.title)} buttonStyle={stylesLessonPage.lessonButton} textStyle={stylesLessonPage.buttonText} />
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </View>
+          </ScrollView>
 
           {/*Modal for Adding Pages*/}
           <Modal
@@ -159,7 +166,7 @@ const LessonPageEdit = () => {
                       />
                       <View style={styles.buttonRow}>
                           <CustomButton title="Save" onPress={handleSavePage} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                          <CustomButton title="Cancel" onPress={() => setShowAddPageModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                          <CustomButton title="Cancel" onPress={() => canelAdd()} buttonStyle={styles.button} textStyle={styles.buttonText} />
                       </View>
                   </View>
               </View>

@@ -47,6 +47,11 @@ export const stylesLessonPage = StyleSheet.create({
         paddingRight: 10,
         height: '100%',
     },
+    contentScrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        width: '100%',
+    },
     pageContent: {
         flexDirection: 'row', // Align items in a row
         alignItems: 'center', // Vertically center the text and button
