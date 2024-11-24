@@ -38,12 +38,12 @@ const HiraganaSet1 = () => {
   };
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/HiraganaMenu");
   };
 
   const handleCompletePress = () => {
     setModalVisible(false);
-    router.back();
+    router.push("/CharacterExercise1");
   };
 
   return (

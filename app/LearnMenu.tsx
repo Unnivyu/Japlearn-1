@@ -11,7 +11,7 @@ const LearnMenu = () => {
   const router = useRouter();
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/Menu");
   };
 
   const handleButtonPress = (buttonTitle) => {

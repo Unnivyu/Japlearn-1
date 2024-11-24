@@ -38,12 +38,12 @@ const KatakanaSet1 = () => {
   };
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/KatakanaMenu");
   };
 
   const handleCompletePress = () => {
     setModalVisible(false);
-    router.back();
+    router.push("/CharacterExercise4");
   };
 
   return (

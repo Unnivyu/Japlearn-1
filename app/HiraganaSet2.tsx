@@ -41,12 +41,12 @@ const HiraganaSet2 = () => {
   };
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/HiraganaMenu");
   };
 
   const handleCompletePress = () => {
     setModalVisible(false);
-    router.back();
+    router.push("/CharacterExercise2");
   };
 
   return (

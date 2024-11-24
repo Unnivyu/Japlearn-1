@@ -13,7 +13,10 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemL
 const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
 
 const routeAccessConfig = {
-  student: ['Menu','NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1', 'HiraganaSet2','HiraganaSet3', 'KatakanaSet1','KatakanaSet2','KatakanaSet3','Quackman','StartMenu', 'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3'],
+  student: ['Menu','NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1', 
+    'HiraganaSet2','HiraganaSet3', 'KatakanaSet1','KatakanaSet2','KatakanaSet3','Quackman','StartMenu', 
+    'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3', 'CharacterExercise1', 
+    'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6'],
   teacher: ['TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit' ],
 };
 
@@ -114,6 +117,12 @@ const RootLayout = () => {
         <Stack.Screen name="LessonKanaGame" />
         <Stack.Screen name="LessonPageEdit" />
         <Stack.Screen name="LessonContentEdit" />
+        <Stack.Screen name="CharacterExercise1" />
+        <Stack.Screen name="CharacterExercise2" />
+        <Stack.Screen name="CharacterExercise3" />
+        <Stack.Screen name="CharacterExercise4" />
+        <Stack.Screen name="CharacterExercise5" />
+        <Stack.Screen name="CharacterExercise6" />
       </Stack>
     </GestureHandlerRootView>
   );

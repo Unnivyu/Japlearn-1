@@ -11,7 +11,7 @@ const KanaMenu = () => {
   const router = useRouter();
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/LearnMenu");
   };
 
   const handleButtonPress = (buttonTitle) => {

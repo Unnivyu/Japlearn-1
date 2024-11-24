@@ -11,7 +11,7 @@ const HiraganaMenu = () => {
   const router = useRouter();
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/KanaMenu");
   };
 
   const handleButtonPress = (buttonTitle) => {
