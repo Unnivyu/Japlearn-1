@@ -13,8 +13,8 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemL
 const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
 
 const routeAccessConfig = {
-  student: ['Menu','NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1', 'HiraganaSet2','HiraganaSet3', 'KatakanaSet1','KatakanaSet2','KatakanaSet3','Quackman','StartMenu', 'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3'],
-  teacher: ['TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit' ],
+  student: ['Menu','NewMenu', 'Quackamole', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1', 'HiraganaSet2','HiraganaSet3', 'KatakanaSet1','KatakanaSet2','KatakanaSet3','Quackman','StartMenu', 'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3'],
+  teacher: ['TeacherDashboard', 'QuackamoleContent', 'QuackmanContent', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit' ],
 };
 
 const defaultRouteByRole = {

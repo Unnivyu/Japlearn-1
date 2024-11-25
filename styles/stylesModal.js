@@ -5,70 +5,71 @@ export const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 50,
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Add semi-transparent background for focus
     },
     modalView: {
-        margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 35,
+        padding: 25, // Adjust padding for better spacing
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 2
+            height: 2,
         },
-        
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: 300,
-        position: 'relative'
+        width: '85%', // Make it responsive to screen size
+        maxWidth: 400, // Ensure it doesn't get too wide
+        alignItems: 'center', // Center content inside the modal
+        position: 'relative',
     },
     modalContent: {
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center', // Center text and inputs inside the modal
     },
     input: {
-        height: 65,
-        width: 250,
-        margin: 12,
-        padding: 10,
-        backgroundColor: '#ececec',
-        borderRadius: 10
+        height: 50, // Adjust input height for consistency
+        width: '90%', // Make inputs responsive to modal width
+        marginVertical: 10, // Add vertical spacing between inputs
+        paddingHorizontal: 15,
+        backgroundColor: '#f7f7f7', // Subtle background color for inputs
+        borderRadius: 10,
+        borderColor: '#ddd', // Add border for input clarity
+        borderWidth: 1,
+        fontSize: 14,
     },
     text: {
         marginBottom: 20,
         fontSize: 16,
         fontFamily: 'jua',
         textAlign: 'center',
+        color: '#333', // Slightly darker text for better readability
     },
     closeButtonContainer: {
-        alignItems: 'flex-end'
+        position: 'absolute', // Position close button at the top-right corner
+        top: 10,
+        right: 10,
     },
     buttonRow: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 10,
-        gap: 15,
-    },
-    button: {
-        width: 50, // Adjust the width to your preference
-        marginHorizontal: 10, // Adds space between the buttons
+        justifyContent: 'space-between', // Space buttons apart
+        width: '70%', // Adjust button row width
+        marginTop: 15,
     },
     closeButton: {
-        height: 40,
-        width: 40,
-        backgroundColor: '#ececec',
-        padding: 5,
+        height: 35,
+        width: 35,
+        backgroundColor: '#f0f0f0', // Subtle background color
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 20,
+        borderRadius: 17.5, // Perfect circle
+        elevation: 2,
     },
     closeButtonText: {
-        fontSize: 20,
-        color: 'grey',
-        fontFamily: 'jua',
-        textAlign: 'center'
+        fontSize: 18,
+        color: '#888', // Subtle text color for the close button
+        fontWeight: 'bold',
     },
     stack: {
         flexDirection: 'row',
@@ -76,7 +77,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 10,
         columnGap: 10,
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     stackText: {
         marginLeft: 10,
@@ -92,25 +93,28 @@ export const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#8ED94D',
-        padding: 15,
-        height: 60,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        height: 50,
         borderRadius: 5,
         justifyContent: 'center',
-        marginTop: 10
+        marginTop: 10,
+        alignItems: 'center',
     },
     buttonText: {
         color: 'white',
         fontFamily: 'jua',
         fontSize: 15,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     removeModalContainer: {
-        
+        // Removed for now (not needed based on context provided)
     },
     contentText: {
         fontSize: 16,
         fontFamily: 'jua',
         color: 'white',
+        textAlign: 'center', // Ensure text is centered in content areas
     },
     selected: {
         padding: 15,
@@ -118,6 +122,7 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 15,
         justifyContent: 'center',
+        alignItems: 'center',
     },
     contentModalContainer: {
         backgroundColor: '#8ED94D',
@@ -125,9 +130,9 @@ export const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         justifyContent: 'center',
-        
+        alignItems: 'center',
     },
     scrollContainer: {
-        maxHeight: 200, 
-    }
+        maxHeight: 200,
+    },
 });
