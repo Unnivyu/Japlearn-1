@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, Modal, Alert, TextInput } fro
 import CustomButton from '../components/CustomButton';
 import { stylesClass } from '../styles/stylesClass';
 import { styles } from '../styles/stylesModal';
+import { styles1 } from '../styles/stylesModal1';
 import BackIcon from '../assets/svg/back-icon.svg';
 import expoconfig from '../expoconfig';
 import Icon1 from '../assets/svg/gameIcon1.svg';
@@ -30,8 +31,16 @@ const ClassDashboard = () => {
     const [selectedLessons, setSelectedLessons] = useState(new Set());
     const [showConfirmRemoveLessonModal, setShowConfirmRemoveLessonModal] = useState(false);
     const [showEditLessonTitleModal, setShowEditLessonTitleModal] = useState(false);
-    const [lessontoEditId, setLessonToEditId] = useState(null);
+    const [lessonToEditId, setLessonToEditId] = useState(null);
     const [lessonType, setLessonType] = useState('');
+    const [showAddLessonMenuModal, setShowAddLessonMenuModal] = useState(false);
+    const [showDatabankLessonChoicesModal, setShowDatabankLessonChoicesModal] = useState(false);
+    const [databankLessonsData, setdatabankLessonsData] = useState([]);
+    const [databankLessonData, setdatabankLessonData] = useState(null);
+    const [databankLessonPageData, setdatabankLessonPageData] = useState(null);
+    const [lessonPageData, setShowLessonPageData] = useState(null);
+    const [databankLessonContentData, setdatabankLessonContentData] = useState(null);
+    const [refreshTrigger, setRefreshTrigger] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -203,19 +212,70 @@ const ClassDashboard = () => {
     // Lessons Code 
     useEffect(() => {
         if (activeCategory === 'LESSONS') {
-            fetchLessonsData();
+            const classId = classCode;
+            fetchLessonsData(classId);
         }
     }, [activeCategory]);
 
-     const fetchLessonsData = async () => {
+    const fetchLessonsData = async (classId) => {
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/lesson/getLessonByClass/${classId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                setLessonsData(data); // Update state with fetched data
+            } else {
+                Alert.alert('Error', 'Failed to fetch lessons data');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Something went wrong while fetching lessons data');
+            console.error(error);
+        }
+    };
 
-     }
+    const fetchLessonFromDatabank = async() => {
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/DatabankLesson/getAllDatabankLessons`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                setdatabankLessonsData(data); // Update state with fetched data
+                console.log(data);
+            } else {
+                Alert.alert('Error', 'Failed to fetch lessons data');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Something went wrong while fetching lessons data');
+            console.error(error);
+        }
+    }
 
      const handleAddLessons = () => {
+        setShowAddLessonMenuModal(false);
         setShowAddLessonModal(true);
      }
 
-     const handleSaveLesson = () => {
+     const handleAddLessonMenu = () => {
+        setShowAddLessonMenuModal(true);
+     }
+
+     const handleAddExistingLessons = () => {
+        setShowAddLessonMenuModal(false);
+        fetchLessonFromDatabank();
+        setShowDatabankLessonChoicesModal(true);
+     }
+
+     const handleSaveLesson = async () => {
         if (newLessonTitle.trim() === "") {
             alert("Please enter a lesson title.");
             return;
@@ -227,16 +287,115 @@ const ClassDashboard = () => {
         }
     
         const newLesson = {
-            id: Math.random().toString(36).substr(2, 9),
-            title: newLessonTitle,
-            lessonType: lessonType
+            lesson_title: newLessonTitle,
+            lesson_type: lessonType,
+            classId: classCode
         };
     
-        setLessonsData([...lessonsData, newLesson]);
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/lesson/createLesson`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newLesson),
+            });
     
-        setNewLessonTitle('');
-        setLessonType('');
-        setShowAddLessonModal(false);
+            if (response.ok) {
+                await fetchLessonsData(classCode);
+                setNewLessonTitle('');
+                setLessonType('');
+                setShowAddLessonModal(false);
+                fetchLessonsData(classCode);
+            } else {
+                alert('Error: Failed to save the lesson.');
+            }
+        } catch (error) {
+            alert('Error: Unable to save the lesson.');
+            console.error(error);
+        }
+    };
+
+    const handleAddLessonFromDatabank = async (lessonId) => {
+        try {
+            // Step 1: Fetch the lesson from the databank
+            const lessonResponse = await fetch(`${expoconfig.API_URL}/api/DatabankLesson/getDatabankLesson/${lessonId}`);
+            const lessonData = await lessonResponse.json();
+    
+            // Step 2: Create the lesson in the class
+            const newLesson = {
+                classId: classCode,
+                lesson_title: lessonData.lesson_title,
+                lesson_type: lessonData.lesson_type,
+            };
+            const createLessonResponse = await fetch(`${expoconfig.API_URL}/api/lesson/createLesson`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newLesson),
+            });
+            const createdLesson = await createLessonResponse.json();
+            const createdLessonId = createdLesson.id;
+    
+            // Step 3: Fetch all databank lesson pages
+            const pageResponse = await fetch(`${expoconfig.API_URL}/api/DatabankLessonPage/getAllDatabankLessonPage/${lessonId}`);
+            const pages = await pageResponse.json();
+    
+            console.log(pages);
+            // Step 4: Create pages for the new lesson
+            for (const page of pages) {
+                const { id, ...lessonPageData } = page;
+                const lessonPage = {
+                    ...lessonPageData,
+                    lessonId: createdLessonId,
+                };
+
+                console.log("LessonPage: ", lessonPage);
+                const createPageResponse = await fetch(`${expoconfig.API_URL}/api/lessonPage/addLessonPage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(lessonPage),
+                });
+                
+                const createdPage = await createPageResponse.json();
+
+                console.log("CreatedPage: ", createdPage);
+                const createdPageId = createdPage.id;
+    
+                // Step 5: Fetch and process content for each page
+                const contentResponse = await fetch(`${expoconfig.API_URL}/api/DatabankLessonContent/getAllDatabankLessonContentWithFiles/${page.id}`);
+                const contents = await contentResponse.json();
+    
+                console.log("Contents: ", contents);
+                for (const content of contents) {
+                    const lessonContent = {
+                        ...content,
+                        lessonPageId: createdPageId,
+                    };
+
+                    const formData = new FormData();
+                    formData.append("lessonContent", JSON.stringify(lessonContent));
+
+                    console.log("lessonContent: ",lessonContent);
+                    const lessonContentResponse = await fetch(`${expoconfig.API_URL}/api/lessonContent/addLessonContent`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const lessonContentData = await lessonContentResponse.json();
+                    console.log("lessonContentData: ",lessonContentData);
+                }
+            }
+    
+            // Step 6: Optionally update the state or UI
+            console.log('Lesson added successfully');
+            alert('Lesson added to class successfully!');
+            fetchLessonsData(classCode);
+        } catch (error) {
+            console.error('Error while adding lesson from databank:', error);
+            alert('Failed to add lesson. Please try again.');
+        }
+
+        setShowDatabankLessonChoicesModal(false);
     };
 
     const cancelAdd = () => {
@@ -254,10 +413,25 @@ const ClassDashboard = () => {
 
      const confirmRemoveLessons = async () => {
         try {
+            // Loop through selected lessons and send DELETE requests
             for (let id of selectedLessons) {
-                console.log(`Removing lesson with ID: ${id}`);
+                const response = await fetch(`${expoconfig.API_URL}/api/lesson/deleteLesson?classId=${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+    
+                if (response.ok) {
+                    console.log(`Successfully removed lesson with ID: ${id}`);
+                } else {
+                    console.error(`Failed to remove lesson with ID: ${id}`);
+                    alert(`Failed to remove lesson with ID: ${id}`);
+                }
             }
-            setLessonsData(prev => prev.filter(lesson => !selectedLessons.has(lesson.id)));
+    
+            // Update the local state after deletion
+            setLessonsData((prev) => prev.filter((lesson) => !selectedLessons.has(lesson.id)));
             setSelectedLessons(new Set());
             setShowConfirmRemoveLessonModal(false);
         } catch (error) {
@@ -277,39 +451,66 @@ const ClassDashboard = () => {
     };
 
     const handleLessonLongPress = (lessonId) => {
-        router.push('/LessonPageEdit');
+        router.push(`/LessonPageEdit?lessonId=${lessonId}`);
     }
 
     const handleLessonEdit = (lesson) => {
-        setLessonToEditId(lesson.id)
-        setNewLessonTitle(lesson.title)
-        setLessonType(lesson.lessonType)
+        setLessonToEditId(lesson.id);
+        setNewLessonTitle(lesson.lesson_title);
+        setLessonType(lesson.lesson_type);
         setShowEditLessonTitleModal(true);
-    }
+    };
 
-    const editLessonTitle = () => {
-        if(newLessonTitle.length === 0){
-            alert("Please enter a lesson title");
+    const editLessonTitle = async () => {
+        if (newLessonTitle.trim() === "") {
+            alert("Please enter a lesson title.");
             return;
         }
-
-        if(lessonType === ""){
-            alert("Please enter a lesson title");
+    
+        if (lessonType === "") {
+            alert("Please select a lesson type.");
             return;
         }
-
-        setLessonsData(prevLessons =>
-            prevLessons.map(lesson =>
-                lesson.id === lessontoEditId
-                    ? { ...lesson, title: newLessonTitle, lessonType: lessonType }
-                    : lesson
-            )
-        );
-
-        setNewLessonTitle('');
-        setLessonToEditId(null);
-        setShowEditLessonTitleModal(false);
-    }
+    
+        const updatedLesson = {
+            lesson_title: newLessonTitle,
+            lesson_type: lessonType,
+        };
+    
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/lesson/editLesson/${lessonToEditId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedLesson),
+            });
+    
+            if (response.ok) {
+                const savedLesson = await response.json();
+    
+                // Update local state with the edited lesson
+                setLessonsData((prevLessons) =>
+                    prevLessons.map((lesson) =>
+                        lesson.id === lessonToEditId
+                            ? { ...lesson, ...savedLesson }
+                            : lesson
+                    )
+                );
+    
+                // Clear input fields and close modal
+                setNewLessonTitle('');
+                setLessonType('');
+                setLessonToEditId(null);
+                setShowEditLessonTitleModal(false);
+            } else {
+                alert('Error: Failed to edit the lesson.');
+            }
+        } catch (error) {
+            alert('Error: Unable to edit the lesson.');
+            console.error(error);
+        }
+    };    
 
     const cancelLessonEdit = () => {
         setNewLessonTitle('');
@@ -350,7 +551,7 @@ const ClassDashboard = () => {
                 )}
                 {activeCategory === 'LESSONS' && (
                     <View style={stylesClass.buttonContainer}>
-                        <CustomButton title="Add" onPress={handleAddLessons} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
+                        <CustomButton title="Add" onPress={handleAddLessonMenu} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
                         <CustomButton title="Remove" onPress={handleRemoveLessons} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
                     </View>
                 )}
@@ -422,8 +623,8 @@ const ClassDashboard = () => {
                                     <View style={[stylesClass.lessonContent, selectedLessons.has(lesson.id) && stylesClass.selectedScore]}>
                                         <View style={stylesClass.textButtonContainer}>
                                             <View style={stylesClass.textContainer}>
-                                                <Text style={[stylesClass.lessonContentText, stylesClass.titleTextSpacing]}>Title: {lesson.title}</Text>
-                                                <Text style={stylesClass.lessonContentText}>Type: {lesson.lessonType}</Text>
+                                                <Text style={[stylesClass.lessonContentText, stylesClass.titleTextSpacing]}>Title: {lesson.lesson_title}</Text>
+                                                <Text style={stylesClass.lessonContentText}>Type: {lesson.lesson_type}</Text>
                                             </View>
                                             <View style={stylesClass.editButtonContainer}>
                                                 <CustomButton title="Edit" onPress={() => handleLessonEdit(lesson)} buttonStyle={stylesClass.editButton} textStyle={stylesClass.buttonText} />
@@ -512,15 +713,76 @@ const ClassDashboard = () => {
                         onValueChange={(itemValue) =>
                             setLessonType(itemValue)
                           }>
-                        <Picker.Item label="None" value=""/>
-                        <Picker.Item label="Characters" value="Characters"/>
+                        {/* <Picker.Item label="None" value=""/>
+                        <Picker.Item label="Characters" value="Characters"/> */}
                         <Picker.Item label="Vocabulary" value="Vocabulary"/>
-                        <Picker.Item label="Sentence and Grammar" value="Sentence and Grammar"/>
+                        {/* <Picker.Item label="Sentence and Grammar" value="Sentence and Grammar"/> */}
                         </Picker>
                         <View style={styles.buttonRow}>
                             <CustomButton title="Save" onPress={handleSaveLesson} buttonStyle={styles.button} textStyle={styles.buttonText} />
                             <CustomButton title="Cancel" onPress={() => cancelAdd()} buttonStyle={styles.button} textStyle={styles.buttonText} />
                         </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/*Modal for Add Lessons menu*/}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showAddLessonMenuModal}
+                onRequestClose={() => setShowAddLessonMenuModal(false)}
+                        >
+                        <View style={styles1.centeredView}>
+                            <View style={styles1.modalView}>
+                            <TouchableOpacity
+                        style={styles1.closeButton}
+                        onPress={() => setShowAddLessonMenuModal(false)}
+                        >
+                        <Text style={styles1.closeButtonText}>X</Text>
+                        </TouchableOpacity>
+                        <Text style={styles1.modalText}>Would you like to add new lesson or existing lessons?</Text>
+                        <View>
+                            <CustomButton title="Add new lesson" onPress={handleAddLessons} buttonStyle={styles1.button} textStyle={styles1.buttonText} />
+                            <CustomButton title="Select an existing one" onPress={() => handleAddExistingLessons()} buttonStyle={styles1.button} textStyle={styles1.buttonText} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/* modal for adding lessons in data bank */} 
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showDatabankLessonChoicesModal}
+                onRequestClose={() => setShowDatabankLessonChoicesModal(false)}
+            >
+                <View style={styles1.centeredView}>
+                    <View style={styles1.modalView}>
+                        <TouchableOpacity
+                            style={styles1.closeButton}
+                            onPress={() => setShowDatabankLessonChoicesModal(false)}
+                        >
+                            <Text style={styles1.closeButtonText}>X</Text>
+                        </TouchableOpacity>
+                        <ScrollView contentContainerStyle={styles.scrollContainer}>
+                        <View style={styles1.buttonList}>
+                            {/* Check if databankLessonsData is available */}
+                            {databankLessonsData && databankLessonsData.length > 0 ? (
+                                databankLessonsData.map((lesson, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={styles1.lessonButton}
+                                        onPress={() => handleAddLessonFromDatabank(lesson.id)}
+                                    >
+                                        <Text style={styles1.lessonButtonText}>{lesson.lesson_title}</Text>
+                                    </TouchableOpacity>
+                                ))
+                            ) : (
+                                <Text>No lessons available</Text>
+                            )}
+                        </View>
+                        </ScrollView>
                     </View>
                 </View>
             </Modal>
@@ -543,7 +805,7 @@ const ClassDashboard = () => {
                 </View>
             </Modal>
 
-            {/*Modal for Editing Lesson title*/}
+            {/* Modal for Editing Lesson Title */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -552,26 +814,40 @@ const ClassDashboard = () => {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Input new Lesson title</Text>
-                    <TextInput
+                        <Text style={styles.modalText}>Input new Lesson title</Text>
+                        
+                        {/* TextInput for Lesson Title */}
+                        <TextInput
                             style={styles.input}
-                            value={newLessonTitle}
+                            value={newLessonTitle}  // Use the current title value
                             onChangeText={setNewLessonTitle}
                             placeholder="New Lesson Title"
                         />
-                    <Picker
-                        selectedValue={lessonType}
-                        onValueChange={(itemValue) =>
-                            setLessonType(itemValue)
-                          }>
-                        <Picker.Item label="None" value=""/>
-                        <Picker.Item label="Characters" value="Characters"/>
-                        <Picker.Item label="Vocabulary" value="Vocabulary"/>
-                        <Picker.Item label="Sentence and Grammar" value="Sentence and Grammar"/>
-                    </Picker>
+                        
+                        {/* Picker for Lesson Type */}
+                        <Picker
+                            selectedValue={lessonType}  // Use the current lesson type value
+                            onValueChange={(itemValue) => setLessonType(itemValue)}
+                        >
+                            <Picker.Item label="None" value=""/>
+                            <Picker.Item label="Characters" value="Characters"/>
+                            <Picker.Item label="Vocabulary" value="Vocabulary"/>
+                            <Picker.Item label="Sentence and Grammar" value="Sentence and Grammar"/>
+                        </Picker>
+
                         <View style={styles.buttonRow}>
-                            <CustomButton title="Yes" onPress={editLessonTitle} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                            <CustomButton title="No" onPress={() => cancelLessonEdit()} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                            <CustomButton
+                                title="Yes"
+                                onPress={editLessonTitle}
+                                buttonStyle={styles.button}
+                                textStyle={styles.buttonText}
+                            />
+                            <CustomButton
+                                title="No"
+                                onPress={() => cancelLessonEdit()}
+                                buttonStyle={styles.button}
+                                textStyle={styles.buttonText}
+                            />
                         </View>
                     </View>
                 </View>

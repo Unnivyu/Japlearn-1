@@ -20,7 +20,7 @@ const LearnMenu = () => {
         router.push('/KanaMenu'); // Example route for Kana content
         break;
       case 'WORDS':
-        router.push('/Words'); // Example route for Words content
+        router.push('/WordsMenu'); // Example route for Words content
         break;
       case 'GRAMMAR':
         router.push('/Content3'); // Redirect to Content3

@@ -1,6 +1,6 @@
 import { View, Pressable, ImageBackground, TouchableOpacity, Text, Modal, TextInput, ScrollView , Image } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { stylesLessonContent } from '../styles/stylesLessonContentEdit';
 import { styles } from '../styles/stylesLessonModal';
 import BackIcon from '../assets/svg/back-icon.svg';
@@ -11,10 +11,13 @@ import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { Picker } from '@react-native-picker/picker';
 import { Audio } from 'expo-av';
+import expoconfig from '../expoconfig';
 
 const LessonContentEdit = () => {
     const { user } = useContext(AuthContext);
     const router = useRouter();
+    const { lessonPageId } = useLocalSearchParams();
+    console.log("LessonPageId in LessonContentEdit :", lessonPageId);
     const [showAddContentModal, setShowAddContentModal] = useState(false);
     const [textContent, setTextContent] = useState('');
     const [image, setImage] = useState <string | null>(null);
@@ -29,37 +32,119 @@ const LessonContentEdit = () => {
     const [lessonContentToEditId, setLessonContentToEditId] = useState('');
     const soundObject = new Audio.Sound();
     const [inputHeight, setInputHeight] = useState(65);
+    const [selectedLessonContentToEdit, setSelectedLessonContentToEdit] = useState(null);
 
     const handleBackPress = () => {
       router.back();
     };
 
-    const fetchLessonContent = () => {
+    const fetchLessonContent = async () => {
+      try {
+        console.log("Starting API call.....")
+        const response = await fetch(`${expoconfig.API_URL}/api/lessonContent/getAllLessonContentWithFiles/${lessonPageId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error('Failed to fetch lesson content');
+        }
+    
+        const data = await response.json();
+        console.log("Data: ",data);
+        // Transform the response if needed, e.g., base64 image/audio
+        const transformedData = data.map((content) => ({
+          ...content,
+          contentImage: content.imageData
+            ? { uri: `data:image/jpeg;base64,${content.imageData}` } // Assuming imageData is base64 encoded
+            : null,
+          contentAudio: content.audioData
+            ? { uri: `data:audio/mpeg;base64,${content.audioData}`, name: content.audioFileName } // Assuming audioData is base64 encoded
+            : null,
+        }));
+    
+        setLessonContentData(transformedData);
+      } catch (error) {
+        console.error('Error fetching lesson content:', error.message);
+      }
+    };
 
-    }
+    useEffect(() => {
+        fetchLessonContent();  // Call the fetch function
+    }, [lessonPageId]);
 
     const handleAddLessonContent = () => {
       setShowAddContentModal(true);
     }
 
-    const handleSaveLessonContent = () => {
-      const newlessonContent = {
-        id: Math.random().toString(36).substr(2,9),
-        lessonTextContent: textContent,
-        contentImage: image,
-        contentAudio: audio,
-        contentGame: gamePicked
+    const handleSaveLessonContent = async () => {
+      // console.log("image URI: ", image.uri);
+      const formData = new FormData();
+    
+      // Add JSON data as a string
+      formData.append(
+        "lessonContent",
+        JSON.stringify({
+          text_content: textContent,
+          lessonPageId: lessonPageId,
+        })
+      );
+    
+      // Add image file if selected
+      if (image) {
+        console.log('Adding image file:', image.uri);  // Log image URI to make sure it's correct
+        console.log('Adding image type:', image.type)
+        console.log('Adding image name:', image.fileName)
+        formData.append("imageFile", {
+          uri: image.uri,
+          type: image.mimeType || "image/jpeg",  // Default to JPEG
+          name: image.fileName || "image.jpg",  // Provide a default file name
+        });
+      } else {
+        console.log('No image file selected.');
       }
+    
+      // Add audio file if selected
+      if (audio) {
+        console.log('Adding audio file:', audio.uri);  // Log audio URI to make sure it's correct
+        formData.append("audioFile", {
+          uri: audio.uri,
+          type: audio.type || "audio/mpeg",  // Default to MPEG
+          name: audio.name || "audio.mp3",  // Provide a default file name
+        });
+      } else {
+        console.log('No audio file selected.');
+      }
+    
+      try {
+        // Send the request with FormData
+        const response = await fetch(`${expoconfig.API_URL}/api/lessonContent/addLessonContent`, {
+          method: "POST",
+          body: formData, // Do not set Content-Type, browser will handle it
+          headers: {
+            Accept: "application/json", // This tells the server that the response should be in JSON format
+          },
+        });
 
-      setLessonContentData([...lessonContentData, newlessonContent]);
-
-      setImage(null);
-      setAudio(null);
-      setTextContent('');
-      setGamePicked('');
-      setShowAddContentModal(false);
-    }
-
+        console.log("response: ", response);
+    
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to add lesson content: ${errorText}`);
+        }
+    
+        const newContent = await response.json();
+        setLessonContentData([...lessonContentData, newContent]);
+        console.log("Successfully added lesson content");
+        cancelAdd();
+        setShowAddContentModal(false);
+      } catch (error) {
+        console.error("Error adding lesson content:", error.message);
+      }
+    };
+    
     const cancelAdd = () => {
       setTextContent('');
       setImage(null);
@@ -72,13 +157,43 @@ const LessonContentEdit = () => {
       setShowDeleteContentModal(true);
     }
 
-    const confirmRemoveLessonContent = () => {
-      setLessonContentData(prev => prev.filter(content => !selectedLessonContent.has(content.id)))
-      setselectedLessonContent(new Set());
-      setShowDeleteContentModal(false);
+    const confirmRemoveLessonContent = async () => {
+      try {
+        const selectedIds = Array.from(selectedLessonContent);
+        if (selectedIds.length === 0) {
+          console.log("No lesson content selected for deletion.");
+          return;
+        }
+    
+        // Sending delete request for each selected content
+        for (const id of selectedIds) {
+          const response = await fetch(`${expoconfig.API_URL}/api/lessonContent/deleteLessonContent?lessonContentId=${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+    
+          if (!response.ok) {
+            throw new Error('Failed to delete lesson content');
+          }
+    
+          // Filter out deleted content from the state
+          setLessonContentData(prevData => prevData.filter(content => content.id !== id));
+          console.log(`Lesson content with ID ${id} deleted successfully`);
+        }
+    
+        // Reset selected items after deletion
+        setselectedLessonContent(new Set());
+      } catch (error) {
+        console.error('Error deleting lesson content:', error.message);
+      } finally {
+        setShowDeleteContentModal(false); // Close delete modal
+      }
     }
 
     const handleLessonContentEdit = (content) => {
+      setSelectedLessonContentToEdit(content);
       setLessonContentToEditId(content.id);
       setTextContent(content.lessonTextContent);
       setImage(content.contentImage);
@@ -136,6 +251,8 @@ const LessonContentEdit = () => {
     const pickAudio = async () => {
      let result = await DocumentPicker.getDocumentAsync({type: 'audio/*', copyToCacheDirectory:true});
 
+     console.log(result);
+
      if(!result.canceled){
       setAudio(result.assets[0]);
      }
@@ -152,6 +269,13 @@ const LessonContentEdit = () => {
 
       await soundObject.loadAsync({uri: audioUri});
       await soundObject.playAsync();
+      soundObject.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {;
+
+          soundObject.setPositionAsync(0);
+          unloadAudio();
+        }
+      });
     }
 
     const unloadAudio = async () => {
@@ -197,40 +321,67 @@ const LessonContentEdit = () => {
                 <CustomButton title="Remove" onPress={handleRemoveLessonContent} buttonStyle={stylesLessonContent.button} textStyle={stylesLessonContent.buttonText} />
           </View>
 
-           {/* Lesson Content container view */}
-           <ScrollView contentContainerStyle={stylesLessonContent.contentScrollContainer}>
+          {/* Lesson Content container view */}
+          <ScrollView contentContainerStyle={stylesLessonContent.contentScrollContainer}>
             <View style={stylesLessonContent.lessonContentContainer}>
-                {lessonContentData.map((content, index) => (
-                    <TouchableOpacity key={index} onPress={() => toggleSelectContent(content.id)} onLongPress={() => viewContent(content)}>
-                        <View style={[stylesLessonContent.LessonContent, selectedLessonContent.has(content.id) && stylesLessonContent.selectedLessonContent]}>
-                            {content.contentImage && (
-                              <Image 
-                                source={{ uri: content.contentImage.uri }} 
-                                style={stylesLessonContent.lessonContentImage} 
-                              />)}
-                              <View style={stylesLessonContent.textContainer}>
-                                {content.lessonTextContent && ( 
-                                <Text style={stylesLessonContent.LessonContentText}>
-                                  Text Content: {content.lessonTextContent}
-                                </Text>
-                                )}                              
-                                {content.contentAudio && (
-                                  <Text style={stylesLessonContent.LessonContentText}>
-                                    Audio: {content.contentAudio.name}
-                                  </Text>
-                                )}
-                                {content.contentGame && (
-                                  <Text style={stylesLessonContent.LessonContentText}>
-                                    Game: {content.contentGame}
-                                  </Text>
-                                )}
-                              </View>
-                            <CustomButton title="Edit" onPress={() => handleLessonContentEdit(content)} buttonStyle={stylesLessonContent.lessonContentButton} textStyle={stylesLessonContent.buttonText} />
+              {lessonContentData.map((content, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => toggleSelectContent(content.id)}
+                  onLongPress={() => viewContent(content)}
+                >
+                  <View
+                    style={[
+                      stylesLessonContent.LessonContent,
+                      selectedLessonContent.has(content.id) && stylesLessonContent.selectedLessonContent,
+                    ]}
+                  >
+                    {/* Display Image */}
+                    {content.imageData && (
+                      <Image
+                        source={{ uri: content.contentImage.uri }}
+                        style={stylesLessonContent.lessonContentImage}
+                      />
+                    )}
+
+                    {/* Content Details */}
+                    <View style={stylesLessonContent.textContainer}>
+                      {/* Display Text Content */}
+                      {content.text_content && (
+                        <Text style={stylesLessonContent.LessonContentText}>
+                          Text Content: {content.text_content}
+                        </Text>
+                      )}
+
+                      {/* Display Audio */}
+                      {content.contentAudio && (
+                        <View>
+                          <Text style={stylesLessonContent.LessonContentText}>
+                            Audio: {content.audio_name}
+                          </Text>
                         </View>
-                    </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
+                      )}
+
+                      {/* Display Game Information */}
+                      {content.contentGame && (
+                        <Text style={stylesLessonContent.LessonContentText}>
+                          Game: {content.contentGame}
+                        </Text>
+                      )}
+                    </View>
+
+                    {/* Edit Button */}
+                    <CustomButton
+                      title="Edit"
+                      onPress={() => handleLessonContentEdit(content)}
+                      buttonStyle={stylesLessonContent.lessonContentButton}
+                      textStyle={stylesLessonContent.buttonText}
+                    />
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
 
          { /* modal for Adding content */ }
           <Modal
@@ -265,7 +416,7 @@ const LessonContentEdit = () => {
                           <RemoveButton title="Remove" onPress={removeAudio} buttonStyle={styles.RemoveButton} textStyle={styles.buttonText}/>
                         </>
                       )}
-                      <Picker
+                      {/* <Picker
                         selectedValue={gamePicked}
                         onValueChange={(itemValue, itemIndex) =>
                             setGamePicked(itemValue)
@@ -274,7 +425,7 @@ const LessonContentEdit = () => {
                         <Picker.Item label="Game 1" value="Game1"/>
                         <Picker.Item label="Game 2" value="Game2"/>
                         <Picker.Item label="Game 3" value="Game3"/>
-                      </Picker>
+                      </Picker> */}
 
                       <View style={styles.buttonRow}>
                           <CustomButton title="Save" onPress={handleSaveLessonContent} buttonStyle={styles.button} textStyle={styles.buttonText} />
@@ -303,6 +454,7 @@ const LessonContentEdit = () => {
           </Modal>
 
           { /* modal for Editing content */ }
+          {showLessonContentEdit && selectedLessonContentToEdit && (
           <Modal
           animationType="slide"
           transparent={true}
@@ -313,25 +465,25 @@ const LessonContentEdit = () => {
                   <View style={styles.modalView}>
                       <TextInput
                           style={styles.input}
-                          value={textContent}
+                          value={selectedLessonContentToEdit.text_content}
                           onChangeText={setTextContent}
                           placeholder="Add Lesson Content"
                       />
                       <CustomButton title="Pick an image" onPress={pickImage} buttonStyle={styles.button} textStyle={styles.buttonText}/>
                       {image && (
                         <>
-                          <Text>Selected image: {image.fileName}</Text>
+                          <Text>Selected image: {selectedLessonContentToEdit.image_name}</Text>
                           <RemoveButton title="Remove" onPress={removeImage} buttonStyle={styles.RemoveButton} textStyle={styles.buttonText}/>
                         </>
                       )}
                       <CustomButton title="Pick an audio" onPress={pickAudio}  buttonStyle={styles.button} textStyle={styles.buttonText}/>
                       {audio && (
                         <>
-                          <Text>Selected audio: {audio.name}</Text>
+                          <Text>Selected audio: {selectedLessonContentToEdit.audio_name}</Text>
                           <RemoveButton title="Remove" onPress={removeAudio} buttonStyle={styles.RemoveButton} textStyle={styles.buttonText}/>
                         </>
                       )}
-                      <Picker
+                      {/* <Picker
                         selectedValue={gamePicked}
                         onValueChange={(itemValue) =>
                             setGamePicked(itemValue)
@@ -340,7 +492,7 @@ const LessonContentEdit = () => {
                         <Picker.Item label="Game 1" value="Game1"/>
                         <Picker.Item label="Game 2" value="Game2"/>
                         <Picker.Item label="Game 3" value="Game3"/>
-                      </Picker>
+                      </Picker> */}
 
                       <View style={styles.buttonRow}>
                           <CustomButton title="Save" onPress={confirmLessonContentEdit} buttonStyle={styles.button} textStyle={styles.buttonText} />
@@ -349,6 +501,7 @@ const LessonContentEdit = () => {
                   </View>
               </View>
          </Modal>
+          )}
 
          { /* modal for Viewing content */ }
          <Modal
@@ -374,7 +527,7 @@ const LessonContentEdit = () => {
                     )}
                     {lessonContent.contentAudio && (
                       <Text>
-                        Audio: {lessonContent.contentAudio.name}
+                        Audio: {lessonContent.audio_name}
                         <CustomButton title="Play Audio" onPress={() => playAudio(lessonContent.contentAudio)} buttonStyle={styles.playButton} textStyle={styles.playButtonText} />
                       </Text>
                     )}

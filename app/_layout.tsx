@@ -16,7 +16,7 @@ const routeAccessConfig = {
   student: ['Menu','NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1', 
     'HiraganaSet2','HiraganaSet3', 'KatakanaSet1','KatakanaSet2','KatakanaSet3','Quackman','StartMenu', 
     'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3', 'CharacterExercise1', 
-    'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6'],
+    'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6', 'WordsMenu'],
   teacher: ['TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit' ],
 };
 
@@ -123,6 +123,7 @@ const RootLayout = () => {
         <Stack.Screen name="CharacterExercise4" />
         <Stack.Screen name="CharacterExercise5" />
         <Stack.Screen name="CharacterExercise6" />
+        <Stack.Screen name="WordsMenu" />
       </Stack>
     </GestureHandlerRootView>
   );

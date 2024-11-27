@@ -1,7 +1,7 @@
 import { View, Pressable, ImageBackground } from 'react-native';
 import React, { useContext } from 'react';
 import { useRouter } from 'expo-router';
-import styles from '../styles/stylesLearnMenu';
+import styles from '../styles/stylesWordMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
 import { AuthContext } from '../context/AuthContext';
