@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -19,51 +18,51 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import japlearn.demo.Entity.LessonContent;
-import japlearn.demo.Service.LessonContentService;
+import japlearn.demo.Entity.DatabankLessonContent;
+import japlearn.demo.Service.DatabankLessonContentService;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
-@RequestMapping("/api/lessonContent")
-public class LessonContentController {
+@RequestMapping("/api/DatabankLessonContent")
+public class DatabankLessonContentController {
 
 	@Autowired
-	LessonContentService lessoncontentservice;
+	DatabankLessonContentService databanklessoncontentservice;
 	
-	@PostMapping("/addLessonContent")
-    public LessonContent addLessonContent(
+	@PostMapping("/addDatabankLessonContent")
+    public DatabankLessonContent addLessonContent(
         @RequestPart("lessonContent") String lessonContentJson, 
         @RequestPart(value = "imageFile", required = false) MultipartFile imageFile, 
         @RequestPart(value = "audioFile", required = false) MultipartFile audioFile) throws IOException {
 
         // Deserialize the lessonContent JSON into the LessonContent object
         ObjectMapper objectMapper = new ObjectMapper();
-        LessonContent lessonContent = objectMapper.readValue(lessonContentJson, LessonContent.class);
+        DatabankLessonContent lessonContent = objectMapper.readValue(lessonContentJson, DatabankLessonContent.class);
 
-        return lessoncontentservice.addLessonContent(lessonContent, imageFile, audioFile);
+        return databanklessoncontentservice.addLessonContent(lessonContent, imageFile, audioFile);
     }
 	
 	
-	@GetMapping("/getAllLessonContentWithFiles/{lessonPageId}")
-	public List<LessonContent> getAllLessonContent(@PathVariable String lessonPageId) throws IOException {
-		return lessoncontentservice.getAllLessonContentWithFiles(lessonPageId);
+	@GetMapping("/getAllDatabankLessonContentWithFiles/{lessonPageId}")
+	public List<DatabankLessonContent> getAllLessonContent(@PathVariable String lessonPageId) throws IOException {
+		return databanklessoncontentservice.getAllLessonContentWithFiles(lessonPageId);
 	}
 		
-	@DeleteMapping("/deleteLessonContent")
+	@DeleteMapping("/deleteDatabankLessonContent")
 	public void deleteLessonContent(@RequestParam String lessonContentId) {
-		lessoncontentservice.deleteLessonContent(lessonContentId);
+		databanklessoncontentservice.deleteLessonContent(lessonContentId);
 	}
 	
-	@DeleteMapping("/deleteAllLessonContent")
+	@DeleteMapping("/deleteAllDatabankLessonContent")
 	public void deleteAllLessonContent(@RequestParam String lessonPageId) {
-		lessoncontentservice.deleteAllLessonContent(lessonPageId);
+		databanklessoncontentservice.deleteAllLessonContent(lessonPageId);
 	}
 	
-	@PutMapping("/updateLessonContent/{lessonContentId}")
-	public LessonContent updateLessonContent(@PathVariable("lessonContentId") String lessonContentId,
-			@RequestPart("lessonContent") LessonContent lessonContent,
+	@PutMapping("/updateDatabankLessonContent/{lessonContentId}")
+	public DatabankLessonContent updateLessonContent(@PathVariable("lessonContentId") String lessonContentId,
+			@RequestPart("lessonContent") DatabankLessonContent lessonContent,
 			@RequestPart(value="imageFile", required=false) MultipartFile imageFile, 
 			@RequestPart(value="audioFile", required=false) MultipartFile audioFile) throws IOException {
-		return lessoncontentservice.updateLessonContent(lessonContent, lessonContentId, imageFile, audioFile);
+		return databanklessoncontentservice.updateLessonContent(lessonContent, lessonContentId, imageFile, audioFile);
 	}
 }
