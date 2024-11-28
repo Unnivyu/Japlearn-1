@@ -53,6 +53,10 @@ public class StudentService {
     public List<Student> getStudentsByClassCode(String classCode) {
         return studentRepository.findByClassCode(classCode);
     }
+    
+    public Student getStudentByEmail(String email) {
+    	return studentRepository.findByEmail(email);
+    }
  
     public Student verifyCredentials(String email, String password) {
         Student student = studentRepository.findByEmail(email);

@@ -1,35 +1,25 @@
 package japlearn.demo.Entity;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
-@Document(collection = "quackamoleContent")
+@Document(collection = "quackamole_content")
 public class QuackamoleContent {
 
     @Id
-    private String levelId;
+    private String id;
     private List<String> kana;
     private List<String> romaji;
 
-    // Constructors, getters, and setters
-
-    public QuackamoleContent() {
+    // Getters and Setters
+    public String getId() {
+        return id;
     }
 
-    public QuackamoleContent(String levelId, List<String> kana, List<String> romaji) {
-        this.levelId = levelId;
-        this.kana = kana;
-        this.romaji = romaji;
-    }
-
-    public String getLevelId() {
-        return levelId;
-    }
-
-    public void setLevelId(String levelId) {
-        this.levelId = levelId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<String> getKana() {

@@ -1,38 +1,42 @@
 package japlearn.demo.Service;
 
-import japlearn.demo.Entity.QuackamoleContent;
-import japlearn.demo.Repository.QuackamoleContentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import japlearn.demo.Entity.QuackamoleContent;
+import japlearn.demo.Repository.QuackamoleContentRepository;
 
 @Service
 public class QuackamoleContentService {
 
-    @Autowired
-    private QuackamoleContentRepository quackamoleContentRepository;
+    private final QuackamoleContentRepository repository;
 
-    public QuackamoleContent getContentByLevelId(String levelId) {
-        return quackamoleContentRepository.findByLevelId(levelId).orElse(null);
+    public QuackamoleContentService(QuackamoleContentRepository repository) {
+        this.repository = repository;
     }
 
-    public QuackamoleContent addCharacter(String levelId, String kana, String romaji) {
-        QuackamoleContent content = quackamoleContentRepository.findByLevelId(levelId).orElse(new QuackamoleContent(levelId, new ArrayList<>(), new ArrayList<>()));
+    public List<QuackamoleContent> getAllContent() {
+        return repository.findAll();
+    }
+
+    public QuackamoleContent addCharacter(String kana, String romaji) {
+        // Assuming there is only one document in the collection
+        QuackamoleContent content = repository.findAll().stream().findFirst().orElse(new QuackamoleContent());
+        if (content.getKana() == null || content.getRomaji() == null) {
+            content.setKana(new java.util.ArrayList<>());
+            content.setRomaji(new java.util.ArrayList<>());
+        }
         content.getKana().add(kana);
         content.getRomaji().add(romaji);
-        return quackamoleContentRepository.save(content);
+        return repository.save(content);
     }
 
-    public QuackamoleContent removeCharacter(String levelId, String kana, String romaji) {
-        Optional<QuackamoleContent> optionalContent = quackamoleContentRepository.findByLevelId(levelId);
-        if (optionalContent.isPresent()) {
-            QuackamoleContent content = optionalContent.get();
-            content.getKana().remove(kana);
-            content.getRomaji().remove(romaji);
-            return quackamoleContentRepository.save(content);
-        }
-        return null;
+    public QuackamoleContent removeCharacter(String kana, String romaji) {
+        // Assuming there is only one document in the collection
+        QuackamoleContent content = repository.findAll().stream().findFirst().orElseThrow(() -> new RuntimeException("Content not found"));
+        content.getKana().remove(kana);
+        content.getRomaji().remove(romaji);
+        return repository.save(content);
     }
 }

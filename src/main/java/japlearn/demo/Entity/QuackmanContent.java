@@ -2,66 +2,37 @@ package japlearn.demo.Entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.ArrayList;
-import java.util.List;
 
-@Document(collection = "quackmanContent")
+@Document(collection = "quackman_content")
 public class QuackmanContent {
-    
+
     @Id
-    private String contentId;
-    private String levelId;
-    private List<String> hint;
-    private List<String> word;
-    
-    public QuackmanContent() {
-    	
+    private String id;
+    private String romajiWord;
+    private String description;
+
+    // Getters and Setters
+    public String getId() {
+        return id;
     }
-    
-    public QuackmanContent(String contentId, String levelId, List<String> hint, List<String> word) {
-        this.contentId = contentId;
-        this.levelId = levelId;
-        this.hint = hint;
-        this.word = word;
+
+    public void setId(String id) {
+        this.id = id;
     }
-    
-    public String getContentId() {
-        return contentId;
+
+    public String getRomajiWord() {
+        return romajiWord;
     }
-    
-    public void setContentId(String contentId) {
-        this.contentId = contentId;
+
+    public void setRomajiWord(String romajiWord) {
+        this.romajiWord = romajiWord;
     }
-    
-    public String getLevelId() {
-        return levelId;
+
+    public String getDescription() {
+        return description;
     }
-    
-    public void setLevelId(String levelId) {
-        this.levelId = levelId;
-    }
-    
-    public List<String> getHint() {
-        return hint;
-    }
-    
-    public void setHint(List<String> hint) {
-        this.hint = hint;
-    }
-    
-    public List<String> getWord() {
-        return word;
-    }
-    
-    public void setWord(List<String> word) {
-        this.word = word;
-    }
-    
-    public void addWord(String newWord) {
-        word.add(newWord);
-    }
-    
-    public void addHint(String newHint) {
-        hint.add(newHint);
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

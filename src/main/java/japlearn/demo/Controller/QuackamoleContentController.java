@@ -1,39 +1,63 @@
 package japlearn.demo.Controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import japlearn.demo.Entity.QuackamoleContent;
 import japlearn.demo.Service.QuackamoleContentService;
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/quackamolecontent")
-@CrossOrigin(origins = "http://localhost:8081")
 public class QuackamoleContentController {
 
-    @Autowired
-    private QuackamoleContentService quackamoleContentService;
+    private final QuackamoleContentService service;
 
-    @GetMapping("/getContent/{levelId}")
-    public QuackamoleContent getContent(@PathVariable String levelId) {
-        return quackamoleContentService.getContentByLevelId(levelId);
+    public QuackamoleContentController(QuackamoleContentService service) {
+        this.service = service;
     }
 
-    @PostMapping("/addCharacter")
-    public QuackamoleContent addCharacter(@RequestBody Map<String, String> payload) {
-        String levelId = payload.get("levelId");
-        String kana = payload.get("kana");
-        String romaji = payload.get("romaji");
-        return quackamoleContentService.addCharacter(levelId, kana, romaji);
+    @GetMapping
+    public ResponseEntity<List<QuackamoleContent>> getAllContent() {
+        return ResponseEntity.ok(service.getAllContent());
     }
 
-    @DeleteMapping("/removeCharacter")
-    public QuackamoleContent removeCharacter(@RequestBody Map<String, String> payload) {
-        String levelId = payload.get("levelId");
-        String kana = payload.get("kana");
-        String romaji = payload.get("romaji");
-        return quackamoleContentService.removeCharacter(levelId, kana, romaji);
+    @PostMapping("/add")
+    public ResponseEntity<QuackamoleContent> addCharacter(@RequestBody CharacterRequest request) {
+        return ResponseEntity.ok(service.addCharacter(request.getKana(), request.getRomaji()));
+    }
+
+    @DeleteMapping("/remove")
+    public ResponseEntity<QuackamoleContent> removeCharacter(@RequestBody CharacterRequest request) {
+        return ResponseEntity.ok(service.removeCharacter(request.getKana(), request.getRomaji()));
+    }
+
+    static class CharacterRequest {
+        private String kana;
+        private String romaji;
+
+        public String getKana() {
+            return kana;
+        }
+
+        public void setKana(String kana) {
+            this.kana = kana;
+        }
+
+        public String getRomaji() {
+            return romaji;
+        }
+
+        public void setRomaji(String romaji) {
+            this.romaji = romaji;
+        }
     }
 }

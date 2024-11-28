@@ -53,6 +53,11 @@ public class StudentController {
         List<Student> students = studentService.getStudentsByClassCode(classCode);
         return ResponseEntity.ok(students);
     }
+    
+    @GetMapping("/getStudentByEmail")
+    public Student getStudentByEmail(@RequestParam String email) {
+    	return studentService.getStudentByEmail(email);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody Map<String, String> payload) {
