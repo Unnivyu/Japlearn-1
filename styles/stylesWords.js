@@ -53,6 +53,7 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   nextButton: {
+    marginTop: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: '#6200EE',
@@ -62,5 +63,14 @@ export default StyleSheet.create({
     fontSize: 16,
     color: '#FFF',
     fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  navigationContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  disabledButton: {
+    backgroundColor: '#CCC', // Greyed out for disabled state
   },
 });

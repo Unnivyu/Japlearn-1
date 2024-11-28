@@ -20,9 +20,7 @@ const LearnMenu = () => {
         router.push('/KanaMenu'); // Example route for Kana content
         break;
       case 'WORDS':
-        if (completedLessons.katakanaMenu) {
-          router.push('/Words'); // Example route for Words content
-        }
+        router.push('/WordsMenu'); // Example route for Words content
         break;
       case 'GRAMMAR':
         // Future logic for unlocking Grammar can go here
