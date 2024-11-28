@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import japlearn.demo.Entity.Lesson;
+<<<<<<< HEAD
+=======
+import japlearn.demo.Entity.LessonPage;
+>>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8
 import japlearn.demo.Repository.LessonRepository;
 
 @Service
@@ -41,4 +45,8 @@ public class LessonService {
 			throw new NoSuchElementException("Lesson not found with ID: " + lessonId);
 		}
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

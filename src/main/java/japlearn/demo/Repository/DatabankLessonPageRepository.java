@@ -10,4 +10,8 @@ public interface DatabankLessonPageRepository extends MongoRepository<DatabankLe
 	List<DatabankLessonPage> findByLessonId(String LessonId);
 	
 	void deleteByLessonId(String lessonId);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

@@ -47,4 +47,8 @@ public class DatabankLessonPageService {
 			throw new NoSuchElementException("LessonPage not found with ID: "+ pageId);
 		}
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

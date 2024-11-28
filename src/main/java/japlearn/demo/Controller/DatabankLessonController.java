@@ -55,4 +55,8 @@ public class DatabankLessonController {
 	public DatabankLesson editLesson(@PathVariable String lessonId, @RequestBody DatabankLesson newLesson) {
 		return databanklessonservice.updateLesson(lessonId, newLesson);
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8
