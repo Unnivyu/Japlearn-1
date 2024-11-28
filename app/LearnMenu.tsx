@@ -4,14 +4,14 @@ import { useRouter } from 'expo-router';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
-import { AuthContext } from '../context/AuthContext';
+import { useLessonProgress } from '../context/LessonProgressContext';
 
 const LearnMenu = () => {
-  const { user } = useContext(AuthContext);
+  const { completedLessons } = useLessonProgress(); // Access lesson progress
   const router = useRouter();
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/Menu");
   };
 
   const handleButtonPress = (buttonTitle) => {
@@ -20,10 +20,12 @@ const LearnMenu = () => {
         router.push('/KanaMenu'); // Example route for Kana content
         break;
       case 'WORDS':
-        router.push('/Words'); // Example route for Words content
+        if (completedLessons.katakanaMenu) {
+          router.push('/Words'); // Example route for Words content
+        }
         break;
       case 'GRAMMAR':
-        router.push('/Content3'); // Redirect to Content3
+        // Future logic for unlocking Grammar can go here
         break;
       default:
         console.log(`${buttonTitle} button pressed`);
@@ -44,6 +46,7 @@ const LearnMenu = () => {
           </Pressable>
         </View>
         <View style={styles.menuContainer}>
+          {/* KANA Button */}
           <ImageButton
             title="KANA"
             subtitle="Introduction to KANA"
@@ -51,19 +54,29 @@ const LearnMenu = () => {
             imageSource={require('../assets/img/kana_button.png')}
             infoContent="This lesson introduces you to the KANA characters."
           />
+
+          {/* WORDS Button - Locked unless Katakana Menu is completed */}
           <ImageButton
             title="WORDS"
             subtitle="Learn basic words"
             onPress={() => handleButtonPress('WORDS')}
             imageSource={require('../assets/img/words_button.png')}
             infoContent="This lesson helps you learn basic Japanese words."
+            buttonStyle={!completedLessons.katakanaMenu ? styles.disabledButton : null}
+            textStyle={!completedLessons.katakanaMenu ? styles.disabledText : null}
+            disabled={!completedLessons.katakanaMenu}
           />
+
+          {/* GRAMMAR Button - Locked by default */}
           <ImageButton
             title="GRAMMAR"
             subtitle="Understand basic grammar"
             onPress={() => handleButtonPress('GRAMMAR')}
             imageSource={require('../assets/img/grammar_button.png')}
             infoContent="This lesson covers basic Japanese grammar."
+            buttonStyle={styles.disabledButton}
+            textStyle={styles.disabledText}
+            disabled={true} // Always disabled for now
           />
         </View>
       </View>

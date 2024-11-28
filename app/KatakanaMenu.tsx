@@ -1,29 +1,53 @@
 import { View, Pressable, ImageBackground } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
-import { AuthContext } from '../context/AuthContext';
+import { useLessonProgress } from '../context/LessonProgressContext';
 
 const KatakanaMenu = () => {
-  const { user } = useContext(AuthContext);
+  const { completedLessons, setCompletedLessons } = useLessonProgress();
   const router = useRouter();
+  
+  // Check and mark Katakana Menu as completed
+  useEffect(() => {
+    if (
+      completedLessons.katakana1 &&
+      completedLessons.katakana2 &&
+      completedLessons.katakana3 &&
+      !completedLessons.katakanaMenu
+    ) {
+      setCompletedLessons({
+        ...completedLessons,
+        katakanaMenu: true,
+      });
+    }
+  }, [
+    completedLessons.katakana1,
+    completedLessons.katakana2,
+    completedLessons.katakana3,
+    completedLessons.katakanaMenu,
+  ]);
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/LearnMenu");
   };
 
   const handleButtonPress = (buttonTitle) => {
     switch (buttonTitle) {
       case 'Katakana Basics 1':
-        router.push('/KatakanaSet1'); // Example route for Katakana Basics 1
+        router.push('/KatakanaSet1');
         break;
       case 'Katakana Basics 2':
-        router.push('/KatakanaSet2'); // Example route for Katakana Basics 2
+        if (completedLessons.katakana1) {
+          router.push('/KatakanaSet2');
+        }
         break;
       case 'Katakana Basics 3':
-        router.push('/KatakanaSet3'); // Example route for Katakana Basics 3
+        if (completedLessons.katakana2) {
+          router.push('/KatakanaSet3');
+        }
         break;
       default:
         console.log(`${buttonTitle} button pressed`);
@@ -57,6 +81,9 @@ const KatakanaMenu = () => {
             onPress={() => handleButtonPress('Katakana Basics 2')}
             imageSource={require('../assets/img/kana_button.png')}
             infoContent="This lesson covers the next set of Katakana characters."
+            buttonStyle={!completedLessons.katakana1 ? [styles.disabledButton] : null}
+            textStyle={!completedLessons.katakana1 ? [styles.disabledText] : null}
+            disabled={!completedLessons.katakana1}
           />
           <ImageButton
             title="Katakana Basics 3"
@@ -64,6 +91,9 @@ const KatakanaMenu = () => {
             onPress={() => handleButtonPress('Katakana Basics 3')}
             imageSource={require('../assets/img/kana_button.png')}
             infoContent="This lesson completes your Katakana learning journey."
+            buttonStyle={!completedLessons.katakana2 ? [styles.disabledButton] : null}
+            textStyle={!completedLessons.katakana2 ? [styles.disabledText] : null}
+            disabled={!completedLessons.katakana2}
           />
         </View>
       </View>

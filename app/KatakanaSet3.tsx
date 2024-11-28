@@ -1,34 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesHiraganaSet1';
 import CompletionModal from '../components/CompletionModal';
+import { useLessonProgress } from '../context/LessonProgressContext';
 
 const KatakanaSet3 = () => {
   const router = useRouter();
+  const { setCompletedLessons, completedLessons } = useLessonProgress();
 
   const katakanaSet = [
-    // "Ma" Set
     { character: 'マ', romaji: 'ma' },
     { character: 'ミ', romaji: 'mi' },
     { character: 'ム', romaji: 'mu' },
     { character: 'メ', romaji: 'me' },
     { character: 'モ', romaji: 'mo' },
-    // "Ya" Set
     { character: 'ヤ', romaji: 'ya' },
     { character: 'ユ', romaji: 'yu' },
     { character: 'ヨ', romaji: 'yo' },
-    // "Ra" Set
     { character: 'ラ', romaji: 'ra' },
     { character: 'リ', romaji: 'ri' },
     { character: 'ル', romaji: 'ru' },
     { character: 'レ', romaji: 're' },
     { character: 'ロ', romaji: 'ro' },
-    // "Wa" Set
     { character: 'ワ', romaji: 'wa' },
     { character: 'ヲ', romaji: 'wo' },
-    // "N"
     { character: 'ン', romaji: 'n' },
   ];
 
@@ -44,12 +41,16 @@ const KatakanaSet3 = () => {
   };
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/KatakanaMenu");
   };
 
-  const handleCompletePress = () => {
-    setModalVisible(false);
-    router.back();
+  const handleCompletePress = async () => {
+    console.log('Marking Katakana Basics 3 as complete...');
+    setCompletedLessons({ ...completedLessons, katakana3: true });
+    console.log('Current Progress State:', completedLessons);
+
+    setModalVisible(false); // Close the modal
+    router.push('/CharacterExercise6');
   };
 
   return (
@@ -73,7 +74,6 @@ const KatakanaSet3 = () => {
           </Pressable>
         </View>
 
-        {/* Completion Modal */}
         <CompletionModal
           isVisible={isModalVisible}
           onComplete={handleCompletePress}

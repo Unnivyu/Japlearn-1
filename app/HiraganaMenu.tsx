@@ -1,32 +1,27 @@
-import { View, Pressable, ImageBackground } from 'react-native';
-import React, { useContext } from 'react';
+import { View, Pressable, ImageBackground, Text } from 'react-native';
+import React from 'react';
 import { useRouter } from 'expo-router';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
-import { AuthContext } from '../context/AuthContext';
+import { useLessonProgress } from '../context/LessonProgressContext'; // Import Lesson Progress Context
 
 const HiraganaMenu = () => {
-  const { user } = useContext(AuthContext);
+  const { completedLessons } = useLessonProgress(); // Access lesson progress state
   const router = useRouter();
+  console.log('Completed Lessons:', completedLessons);
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/KanaMenu");
   };
 
   const handleButtonPress = (buttonTitle) => {
-    switch (buttonTitle) {
-      case 'Hiragana Basics 1':
-        router.push('/HiraganaSet1'); // Example route for Hiragana Basics 1
-        break;
-      case 'Hiragana Basics 2':
-        router.push('/HiraganaSet2'); // Example route for Hiragana Basics 2
-        break;
-      case 'Hiragana Basics 3':
-        router.push('/HiraganaSet3'); // Example route for Hiragana Basics 3
-        break;
-      default:
-        console.log(`${buttonTitle} button pressed`);
+    if (buttonTitle === 'Hiragana Basics 1') {
+      router.push('/HiraganaSet1');
+    } else if (buttonTitle === 'Hiragana Basics 2' && completedLessons.basics1) {
+      router.push('/HiraganaSet2');
+    } else if (buttonTitle === 'Hiragana Basics 3' && completedLessons.basics2) {
+      router.push('/HiraganaSet3');
     }
   };
 
@@ -44,27 +39,41 @@ const HiraganaMenu = () => {
           </Pressable>
         </View>
         <View style={styles.menuContainer}>
+          {/* Hiragana Basics 1 */}
           <ImageButton
             title="Hiragana Basics 1"
-            subtitle="Learn the first set of hiragana characters"
+            subtitle="Learn the first set of Hiragana characters"
             onPress={() => handleButtonPress('Hiragana Basics 1')}
             imageSource={require('../assets/img/kana_button.png')}
             infoContent="This lesson introduces the first set of Hiragana characters."
           />
+
+          {/* Hiragana Basics 2 - Disabled if Basics 1 is not completed */}
           <ImageButton
-            title="Hiragana Basics 2"
-            subtitle="Continue learning Hiragana characters"
-            onPress={() => handleButtonPress('Hiragana Basics 2')}
-            imageSource={require('../assets/img/kana_button.png')}
-            infoContent="This lesson covers the next set of Hiragana characters."
-          />
+  title="Hiragana Basics 2"
+  subtitle="Continue learning Hiragana characters"
+  onPress={() => handleButtonPress('Hiragana Basics 2')}
+  imageSource={require('../assets/img/kana_button.png')}
+  infoContent="This lesson covers the next set of Hiragana characters."
+  buttonStyle={!completedLessons.basics1 ? [styles.disabledButton] : null}
+  textStyle={!completedLessons.basics1 ? [styles.disabledText] : null}
+  disabled={!completedLessons.basics1}
+/>
+
+
+          {/* Hiragana Basics 3 - Disabled if Basics 2 is not completed */}
           <ImageButton
-            title="Hiragana Basics 3"
-            subtitle="Master the remaining Hiragana characters"
-            onPress={() => handleButtonPress('Hiragana Basics 3')}
-            imageSource={require('../assets/img/kana_button.png')}
-            infoContent="This lesson completes your Hiragana learning journey."
-          />
+  title="Hiragana Basics 3"
+  subtitle="Master the remaining Hiragana characters"
+  onPress={() => handleButtonPress('Hiragana Basics 3')}
+  imageSource={require('../assets/img/kana_button.png')}
+  infoContent="This lesson completes your Hiragana learning journey."
+  buttonStyle={!completedLessons.basics2 ? [styles.disabledButton] : null}
+  textStyle={!completedLessons.basics2 ? [styles.disabledText] : null}
+  disabled={!completedLessons.basics2}
+/>
+
+
         </View>
       </View>
     </ImageBackground>

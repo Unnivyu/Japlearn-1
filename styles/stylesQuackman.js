@@ -175,5 +175,29 @@ export const stylesQuackman = StyleSheet.create({
     modButton: {
         height: 40,
         backgroundColor: '#8ED94D'
-    }
+    },
+    loadingContainer: {
+        flex: 1,
+        backgroundColor: '#6A4C93', // Muted purple color
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    
+    loadingQuackLogo: {
+        width: 150,
+        height: 150,
+        marginBottom: 20,
+    },
+    loadingText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        marginTop: 10,
+    },
+    loadingTitle: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        marginBottom: 20,
+    },
 });

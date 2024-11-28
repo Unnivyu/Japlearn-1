@@ -6,7 +6,9 @@ import { stylesClass } from '../styles/stylesClass';
 import BackIcon from '../assets/svg/back-icon.svg';
 import Mole from '../assets/svg/mole.svg';
 import Hammer from '../assets/hammer.png';
-import WhackImage from '../assets/whack.png'; // Import the whack image
+import WhackImage from '../assets/whack.png';
+import CheckImage from '../assets/check.png'; // Import the check image
+import WrongImage from '../assets/wrong.png'; // Import the wrong image
 import CustomButton from '../components/CustomButton';
 import expoconfig from '../expoconfig';
 
@@ -16,6 +18,7 @@ const Quackamole = () => {
     const [holes, setHoles] = useState(new Array(9).fill(null));
     const [gameOver, setGameOver] = useState(false);
     const [attempts, setAttempts] = useState(0);
+    const [correctAnswers, setCorrectAnswers] = useState(0); // Track correct answers
     const [isGameStarted, setIsGameStarted] = useState(false);
     const [kanaCharacters, setKanaCharacters] = useState([]);
     const [romajiCharacters, setRomajiCharacters] = useState([]);
@@ -23,9 +26,13 @@ const Quackamole = () => {
     const [isHammerVisible, setIsHammerVisible] = useState(false);
     const [whackPosition, setWhackPosition] = useState({ x: 0, y: 0 });
     const [isWhackVisible, setIsWhackVisible] = useState(false);
+    const [isCheckVisible, setIsCheckVisible] = useState(false);
+    const [isWrongVisible, setIsWrongVisible] = useState(false); // State for wrong image visibility
+
+    const checkAnimation = useRef(new Animated.Value(0)).current;
+    const wrongAnimation = useRef(new Animated.Value(0)).current; // Animation for the wrong image
     const hammerAnimation = useRef(new Animated.Value(0)).current;
     const whackAnimation = useRef(new Animated.Value(0)).current;
-
     const moleRefs = useRef([]); // Array of refs for moles
     const positionAnimations = useRef(holes.map(() => new Animated.Value(100))).current;
     const opacityAnimations = useRef(holes.map(() => new Animated.Value(0))).current;
@@ -55,7 +62,7 @@ const Quackamole = () => {
 
     // Game logic: moles and counters
     useEffect(() => {
-        if (isGameStarted) {
+        if (isGameStarted && !gameOver) {
             const gameInterval = setInterval(updateMoles, 2000);
             return () => clearInterval(gameInterval);
         }
@@ -67,10 +74,17 @@ const Quackamole = () => {
         setHoles(new Array(9).fill(null));
         setGameOver(false);
         setAttempts(0);
+        setCorrectAnswers(0); // Reset score
         setIsGameStarted(true);
     };
 
     const updateMoles = () => {
+        if (currentIndex >= kanaCharacters.length) {
+            // End the game if all characters are processed
+            setGameOver(true);
+            return;
+        }
+
         if (secondCounter >= 29 || gameOver) {
             setGameOver(true);
             return;
@@ -166,33 +180,66 @@ const Quackamole = () => {
         });
     };
 
+    const animateCheck = () => {
+        setIsCheckVisible(true);
+        checkAnimation.setValue(0);
+
+        Animated.timing(checkAnimation, {
+            toValue: 1,
+            duration: 800,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+        }).start(() => {
+            setIsCheckVisible(false);
+        });
+    };
+
+    const animateWrong = () => {
+        setIsWrongVisible(true);
+        wrongAnimation.setValue(0);
+
+        Animated.timing(wrongAnimation, {
+            toValue: 1,
+            duration: 800,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+        }).start(() => {
+            setIsWrongVisible(false);
+        });
+    };
+
     const handleWhack = (index) => {
-        // Measure the mole's position
         moleRefs.current[index]?.measure((x, y, width, height, pageX, pageY) => {
             const hammerX = pageX + width / 2 - 40;
             const hammerY = pageY - 30;
             animateHammer(hammerX, hammerY);
-            animateWhack(hammerX, hammerY); // Animate the whack
+            animateWhack(hammerX, hammerY);
         });
 
         if (holes[index] === romajiCharacters[currentIndex]) {
+            setCorrectAnswers((prev) => prev + 1); // Increment correct score
+            animateCheck();
+            setAttempts(0); // Reset attempts on correct hit
             setTimeout(() => {
                 animateMole(index, false);
-                setCurrentIndex((prev) => prev + 1);
+                setCurrentIndex((prev) => prev + 1); // Move to next character
                 setSecondCounter(0);
             }, 200);
         } else {
             setAttempts((prev) => prev + 1);
             if (attempts + 1 >= 3) {
-                setCurrentIndex((prev) => prev + 1);
-                setSecondCounter(0);
-                setAttempts(0);
+                animateWrong();
+                setTimeout(() => {
+                    setCurrentIndex((prev) => prev + 1);
+                    setSecondCounter(0);
+                    setAttempts(0);
+                }, 800);
             }
         }
     };
 
     const handleBackPress = () => {
-        router.push('/Menu');
+        router.push('/Exercises');
     };
 
     const startGame = () => {
@@ -205,6 +252,9 @@ const Quackamole = () => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.gameOverText}>Game Over!</Text>
+                        <Text style={styles.scoreText}>
+                            Score: {correctAnswers}/{kanaCharacters.length} {/* Display final score */}
+                        </Text>
                         <CustomButton title="OK" onPress={handleBackPress} buttonStyle={undefined} textStyle={undefined} />
                         <CustomButton title="Retry" onPress={resetGame} buttonStyle={undefined} textStyle={undefined} />
                     </View>
@@ -259,6 +309,38 @@ const Quackamole = () => {
                     </View>
                 ))}
             </View>
+            {isCheckVisible && (
+                <Animated.Image
+                    source={CheckImage}
+                    style={[
+                        styles.checkImage,
+                        {
+                            opacity: checkAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0] }),
+                            transform: [
+                                {
+                                    translateY: checkAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, -50] }),
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            )}
+            {isWrongVisible && (
+                <Animated.Image
+                    source={WrongImage}
+                    style={[
+                        styles.wrongImage,
+                        {
+                            opacity: wrongAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0] }),
+                            transform: [
+                                {
+                                    translateY: wrongAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, -50] }),
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            )}
             {isHammerVisible && (
                 <Animated.Image
                     source={Hammer}

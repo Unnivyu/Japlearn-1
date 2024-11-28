@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, Image, TouchableOpacity, Modal, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Modal, Alert, Animated } from 'react-native';
 import { stylesQuackman } from '../styles/stylesQuackman';
 import { stylesClass } from '../styles/stylesClass';
 import BackIcon from '../assets/svg/back-icon.svg';
 import CustomButton from '../components/CustomButton';
 import expoconfig from '../expoconfig';
+import { router } from 'expo-router';
 
 const allRomaji = [
     'a', 'i', 'u', 'e', 'o', 'ka', 'ki', 'ku', 'ke', 'ko', 'sa', 'shi', 'su', 'se', 'so', 'ta', 'chi', 'tsu', 'te', 'to', 
@@ -24,7 +25,40 @@ const Quackman = ({ navigation }) => {
     const [attempts, setAttempts] = useState([null, null, null]); 
     const [gameOver, setGameOver] = useState(false);
 
-    // Updated API fetch to match your backend's new endpoint: "/api/quackmancontent"
+    // New states and animation for loading screen
+    const [isLoading, setIsLoading] = useState(true);
+    const [progress, setProgress] = useState(0);
+    const fadeAnim = new Animated.Value(1);
+
+    // Simulate realistic loading screen
+    useEffect(() => {
+        const simulateProgress = () => {
+            if (progress >= 100) {
+                // End loading animation
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true,
+                }).start(() => setIsLoading(false));
+                return;
+            }
+
+            const randomDelay = Math.random() * 1000 + 500; // Delay between 500ms and 1500ms
+            const randomIncrement = Math.min(100 - progress, Math.random() * 10 + 5); // Increment by 5% to 15%
+
+            // Introduce delays at specific percentages to simulate realism
+            const delayMultiplier = [45, 75].includes(progress) ? 2000 : randomDelay;
+
+            setTimeout(() => {
+                setProgress((prev) => Math.min(100, prev + randomIncrement));
+                simulateProgress();
+            }, delayMultiplier);
+        };
+
+        simulateProgress();
+    }, [progress]);
+
+    // Fetch data from backend
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -161,7 +195,7 @@ const Quackman = ({ navigation }) => {
 
     const handleBackPress = () => {
         setGameOver(false);
-        navigation.navigate('QuackmanOption');
+        router.push('/Exercises');
     };
 
     const handleRetry = () => {
@@ -169,6 +203,20 @@ const Quackman = ({ navigation }) => {
         setCurrentWordIndex(0);
         setAttempts([null, null, null]);
     };
+
+    // Render loading screen
+    if (isLoading) {
+        return (
+            <Animated.View style={[stylesQuackman.loadingContainer, { opacity: fadeAnim }]}>
+                <Text style={stylesQuackman.loadingTitle}>Quackman</Text>
+                <Image
+                    source={require('../assets/quacklogo.png')}
+                    style={stylesQuackman.loadingQuackLogo}
+                />
+                <Text style={stylesQuackman.loadingText}>Loading... {Math.round(progress)}%</Text>
+            </Animated.View>
+        );
+    }
 
     if (gameOver) {
         return (

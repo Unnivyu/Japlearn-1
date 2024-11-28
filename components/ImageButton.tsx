@@ -1,7 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground, Pressable, Modal, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, Pressable, Modal, StyleSheet, GestureResponderEvent } from 'react-native';
 
-const ImageButton = ({ imageSource, title, subtitle, infoContent, onPress }) => {
+// Define types for props
+interface ImageButtonProps {
+  imageSource: any; // For image source, React Native uses `require()`, so `any` is appropriate here
+  title: string;
+  subtitle: string;
+  infoContent: string;
+  onPress: (event: GestureResponderEvent) => void;
+  buttonStyle?: object;
+  textStyle?: object;
+  disabled?: boolean;
+}
+
+const ImageButton: React.FC<ImageButtonProps> = ({
+  imageSource,
+  title,
+  subtitle,
+  infoContent,
+  onPress,
+  buttonStyle,
+  textStyle,
+  disabled = false,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleInfoPress = () => {
@@ -12,25 +33,41 @@ const ImageButton = ({ imageSource, title, subtitle, infoContent, onPress }) => 
     setModalVisible(false);
   };
 
-  const handlePlayPress = (e) => {
+  const handlePlayPress = (e: GestureResponderEvent) => {
     e.stopPropagation(); // Prevent triggering the container's onPress
-    onPress(); // Trigger the play action
+    if (!disabled) onPress(e); // Trigger the play action if not disabled
   };
 
   return (
-    <Pressable style={styles.buttonContainer} onPress={onPress}>
-      <View style={styles.upperPart}>
-        <ImageBackground source={imageSource} style={styles.imageBackground} resizeMode="cover">
-          <Pressable style={styles.infoButton} onPress={handleInfoPress}>
-            <Text style={styles.infoText}>i</Text>
+    <Pressable
+      style={[styles.buttonContainer, buttonStyle, disabled && styles.disabledButton]}
+      onPress={!disabled ? onPress : undefined}
+      disabled={disabled}
+    >
+      <View style={[styles.upperPart, disabled && styles.disabledUpper]}>
+        <ImageBackground
+          source={imageSource}
+          style={styles.imageBackground}
+          resizeMode="cover"
+        >
+          <Pressable
+            style={[styles.infoButton, disabled && styles.disabledInfoButton]}
+            onPress={handleInfoPress}
+            disabled={disabled}
+          >
+            <Text style={[styles.infoText, disabled && styles.disabledText]}>i</Text>
           </Pressable>
         </ImageBackground>
       </View>
-      <View style={styles.lowerPart}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
-        <Pressable style={styles.playButton} onPress={handlePlayPress}>
-          <Text style={styles.playText}>▶</Text>
+      <View style={[styles.lowerPart, disabled && styles.disabledLower]}>
+        <Text style={[styles.title, textStyle, disabled && styles.disabledText]}>{title}</Text>
+        <Text style={[styles.subtitle, textStyle, disabled && styles.disabledText]}>{subtitle}</Text>
+        <Pressable
+          style={[styles.playButton, disabled && styles.disabledPlayButton]}
+          onPress={handlePlayPress}
+          disabled={disabled}
+        >
+          <Text style={[styles.playText, disabled && styles.disabledPlayText]}>▶</Text>
         </Pressable>
       </View>
 
@@ -145,6 +182,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#8ED94D',
     justifyContent: 'center',
     borderRadius: 5,
+  },
+  // Disabled styles
+  disabledButton: {
+    borderColor: 'gray',
+    opacity: 0.6,
+  },
+  disabledUpper: {
+    backgroundColor: '#ccc',
+  },
+  disabledLower: {
+    backgroundColor: '#999',
+  },
+  disabledInfoButton: {
+    backgroundColor: '#888',
+  },
+  disabledText: {
+    color: '#666',
+  },
+  disabledPlayButton: {
+    backgroundColor: '#ddd',
+  },
+  disabledPlayText: {
+    color: '#bbb',
   },
 });
 

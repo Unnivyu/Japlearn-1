@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesHiraganaSet1'; // Reusing styles
 import CompletionModal from '../components/CompletionModal';
+import { useLessonProgress } from '../context/LessonProgressContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../context/AuthContext';
 
 const KatakanaSet1 = () => {
-  const router = useRouter();
 
+  const { user } = useContext(AuthContext);
+  const router = useRouter();
+  const { setCompletedLessons, completedLessons } = useLessonProgress();
+
+  
   const katakanaSet = [
     { character: 'ア', romaji: 'a' },
     { character: 'イ', romaji: 'i' },
@@ -38,13 +45,19 @@ const KatakanaSet1 = () => {
   };
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/KatakanaMenu");
   };
 
-  const handleCompletePress = () => {
-    setModalVisible(false);
-    router.back();
+  const handleCompletePress = async () => {
+    console.log('Marking Basics2 as complete...');
+    setCompletedLessons({ katakana1: true });
+    console.log('Current Progress State:', completedLessons); // Debugging
+
+    setModalVisible(false); // Close the modal
+    router.push('/CharacterExercise4');
   };
+  
+
 
   return (
     <ImageBackground

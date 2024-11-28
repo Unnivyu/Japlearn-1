@@ -4,9 +4,11 @@ import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesHiraganaSet1';
 import CompletionModal from '../components/CompletionModal';
+import { useLessonProgress } from '../context/LessonProgressContext';
 
 const HiraganaSet1 = () => {
   const router = useRouter();
+  const { setCompletedLessons } = useLessonProgress(); // Access progress context
 
   const hiraganaSet = [
     { character: 'あ', romaji: 'a' },
@@ -37,13 +39,14 @@ const HiraganaSet1 = () => {
     }
   };
 
-  const handleBackPress = () => {
-    router.back();
+  const handleCompletePress = () => {
+    setCompletedLessons({ basics1: true }); // Save progress to AsyncStorage
+    setModalVisible(false);
+    router.push('/CharacterExercise1');
   };
 
-  const handleCompletePress = () => {
-    setModalVisible(false);
-    router.back();
+  const handleBackPress = () => {
+    router.push('/HiraganaMenu');
   };
 
   return (
@@ -67,7 +70,6 @@ const HiraganaSet1 = () => {
           </Pressable>
         </View>
 
-        {/* Completion Modal */}
         <CompletionModal
           isVisible={isModalVisible}
           onComplete={handleCompletePress}

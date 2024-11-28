@@ -197,5 +197,29 @@ export const styles = StyleSheet.create({
         height: 120,
         zIndex: 20,
     },
+
+    checkImage: {
+        position: 'absolute',
+        width: 60, // Adjusted width to fit the image fully
+        height: 60, // Adjusted height to fit the image fully
+        top: '50%', // Center vertically
+        left: '50%', // Center horizontally
+        transform: [{ translateX: -30 }, { translateY: -30 }], // Center image precisely
+        zIndex: 100,
+        resizeMode: 'contain', // Ensure the image scales properly
+        opacity: 0.4, // Added transparency
+    },
+    
+    wrongImage: {
+        position: 'absolute',
+        width: 60,
+        height: 60,
+        top: '50%',
+        left: '50%',
+        transform: [{ translateX: -30 }, { translateY: -30 }],
+        zIndex: 100,
+        resizeMode: 'contain',
+        opacity: 0.4, // Added transparency
+    },
     
 });

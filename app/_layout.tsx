@@ -5,16 +5,23 @@ import * as Font from 'expo-font';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { AuthContext, AuthProvider } from '../context/AuthContext';
 import { ClassCodeProvider } from '../context/ClassCodeContext';
+import { LessonProgressProvider, useLessonProgress } from '../context/LessonProgressContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-
-
 
 const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
 
 const routeAccessConfig = {
-  student: ['Menu','NewMenu', 'Quackamole', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1', 'HiraganaSet2','HiraganaSet3', 'KatakanaSet1','KatakanaSet2','KatakanaSet3','Quackman','StartMenu', 'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3'],
-  teacher: ['TeacherDashboard', 'QuackamoleContent', 'QuackmanContent', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels', 'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit' ],
+  student: [
+    'Menu', 'ResetButton','Quackamole', 'NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1',
+    'HiraganaSet2', 'HiraganaSet3', 'KatakanaSet1', 'KatakanaSet2', 'KatakanaSet3', 'Quackman', 'StartMenu',
+    'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3', 'CharacterExercise1',
+    'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6',
+  ],
+  teacher: [
+    'TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels',
+    'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit',
+  ],
 };
 
 const defaultRouteByRole = {
@@ -29,8 +36,8 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
       <DrawerItem label="Home" onPress={() => props.navigation.navigate('Home')} />
-      <DrawerItem label="Next Page" onPress={() => {/* Handle next page */}} />
-      <DrawerItem label="Previous Page" onPress={() => {/* Handle previous page */}} />
+      <DrawerItem label="Next Page" onPress={() => { /* Handle next page */ }} />
+      <DrawerItem label="Previous Page" onPress={() => { /* Handle previous page */ }} />
     </DrawerContentScrollView>
   );
 }
@@ -39,6 +46,7 @@ const RootLayout = () => {
   const [fontLoaded, setFontsLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { user, setUser } = useContext(AuthContext);
+  const { completedLessons } = useLessonProgress(); // Access lesson progress
   const router = useRouter();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const segments = useSegments();
@@ -69,7 +77,7 @@ const RootLayout = () => {
     if (isMounted && fontLoaded) {
       const currentSegment = segments.length > 0 ? segments[0] : '';
       console.log("Current segment:", currentSegment, "User:", user);
-  
+
       // Check if user is authenticated
       if (!user && (routeAccessConfig.student.includes(currentSegment) || routeAccessConfig.teacher.includes(currentSegment))) {
         router.replace('/Login');
@@ -85,7 +93,7 @@ const RootLayout = () => {
       }
     }
   }, [isMounted, fontLoaded, user, segments]);
-  
+
   if (!fontLoaded || !isMounted) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
@@ -100,7 +108,7 @@ const RootLayout = () => {
         <Stack.Screen name="Profile" />
         <Stack.Screen name="TeacherDashboard" />
         <Stack.Screen name="ProfileTeacher" />
-        <Stack.Screen name ="QuackamoleEdit" />
+        <Stack.Screen name="QuackamoleEdit" />
         <Stack.Screen name="QuackamoleLevels" />
         <Stack.Screen name="QuackmanLevels" />
         <Stack.Screen name="QuackmanEdit" />
@@ -114,6 +122,16 @@ const RootLayout = () => {
         <Stack.Screen name="LessonKanaGame" />
         <Stack.Screen name="LessonPageEdit" />
         <Stack.Screen name="LessonContentEdit" />
+        <Stack.Screen name="CharacterExercise1" />
+        <Stack.Screen name="CharacterExercise2" />
+        <Stack.Screen name="CharacterExercise3" />
+        <Stack.Screen name="CharacterExercise4" />
+        <Stack.Screen name="CharacterExercise5" />
+        <Stack.Screen name="CharacterExercise6" />
+        <Stack.Screen name="HiraganaMenu" />
+        <Stack.Screen name="HiraganaSet1" />
+        <Stack.Screen name="HiraganaSet2" />
+        <Stack.Screen name="HiraganaSet3" />
       </Stack>
     </GestureHandlerRootView>
   );
@@ -129,7 +147,9 @@ const styles = StyleSheet.create({
 const RootLayoutWithProvider = () => (
   <AuthProvider>
     <ClassCodeProvider>
-      <RootLayout />
+      <LessonProgressProvider>
+        <RootLayout />
+      </LessonProgressProvider>
     </ClassCodeProvider>
   </AuthProvider>
 );

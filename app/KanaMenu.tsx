@@ -1,26 +1,28 @@
 import { View, Pressable, ImageBackground } from 'react-native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { useRouter } from 'expo-router';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
-import { AuthContext } from '../context/AuthContext';
+import { useLessonProgress } from '../context/LessonProgressContext'; // Import Lesson Progress Context
 
 const KanaMenu = () => {
-  const { user } = useContext(AuthContext);
+  const { completedLessons } = useLessonProgress(); // Access global lesson progress
   const router = useRouter();
 
   const handleBackPress = () => {
-    router.back();
+    router.push("/LearnMenu");
   };
 
   const handleButtonPress = (buttonTitle) => {
     switch (buttonTitle) {
       case 'Hiragana':
-        router.push('/HiraganaMenu'); // Example route for Hiragana content
+        router.push('/HiraganaMenu');
         break;
       case 'Katakana':
-        router.push('/KatakanaMenu'); // Example route for Katakana content
+        if (completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3) {
+          router.push('/KatakanaMenu'); // Only proceed if Hiragana Basics are complete
+        }
         break;
       default:
         console.log(`${buttonTitle} button pressed`);
@@ -41,6 +43,7 @@ const KanaMenu = () => {
           </Pressable>
         </View>
         <View style={styles.menuContainer}>
+          {/* Hiragana Button */}
           <ImageButton
             title="Hiragana"
             subtitle="Learn Hiragana characters"
@@ -48,12 +51,25 @@ const KanaMenu = () => {
             imageSource={require('../assets/img/kana_button.png')}
             infoContent="This lesson introduces you to Hiragana characters."
           />
+
+          {/* Katakana Button - Disabled if Hiragana Basics are not completed */}
           <ImageButton
             title="Katakana"
             subtitle="Learn Katakana characters"
             onPress={() => handleButtonPress('Katakana')}
             imageSource={require('../assets/img/kana_button.png')}
             infoContent="This lesson introduces you to Katakana characters."
+            buttonStyle={
+              !(completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3)
+                ? styles.disabledButton
+                : null
+            }
+            textStyle={
+              !(completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3)
+                ? styles.disabledText
+                : null
+            }
+            disabled={!(completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3)}
           />
         </View>
       </View>

@@ -2,26 +2,25 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
-import styles from '../styles/stylesHiraganaSet1'; // Reusing styles from HiraganaSet1
+import styles from '../styles/stylesHiraganaSet1';
 import CompletionModal from '../components/CompletionModal';
+import { useLessonProgress } from '../context/LessonProgressContext';
 
 const HiraganaSet2 = () => {
   const router = useRouter();
+  const { setCompletedLessons, completedLessons } = useLessonProgress(); // Access progress context
 
   const hiraganaSet = [
-    // "Ta" Set
     { character: 'た', romaji: 'ta' },
     { character: 'ち', romaji: 'chi' },
     { character: 'つ', romaji: 'tsu' },
     { character: 'て', romaji: 'te' },
     { character: 'と', romaji: 'to' },
-    // "Na" Set
     { character: 'な', romaji: 'na' },
     { character: 'に', romaji: 'ni' },
     { character: 'ぬ', romaji: 'nu' },
     { character: 'ね', romaji: 'ne' },
     { character: 'の', romaji: 'no' },
-    // "Ha" Set
     { character: 'は', romaji: 'ha' },
     { character: 'ひ', romaji: 'hi' },
     { character: 'ふ', romaji: 'fu' },
@@ -41,12 +40,16 @@ const HiraganaSet2 = () => {
   };
 
   const handleBackPress = () => {
-    router.back();
+    router.push('/HiraganaMenu');
   };
 
-  const handleCompletePress = () => {
-    setModalVisible(false);
-    router.back();
+  const handleCompletePress = async () => {
+    console.log('Marking Basics2 as complete...');
+    setCompletedLessons({ basics2: true });
+    console.log('Current Progress State:', completedLessons); // Debugging
+
+    setModalVisible(false); // Close the modal
+    router.push('/CharacterExercise2');
   };
 
   return (
@@ -70,7 +73,6 @@ const HiraganaSet2 = () => {
           </Pressable>
         </View>
 
-        {/* Completion Modal */}
         <CompletionModal
           isVisible={isModalVisible}
           onComplete={handleCompletePress}
