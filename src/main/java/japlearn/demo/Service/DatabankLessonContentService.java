@@ -144,8 +144,4 @@ public class DatabankLessonContentService {
 	public void deleteExistingStoredFile(String id) {
 		template.delete(new Query(Criteria.where("_id").is(id) ));
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

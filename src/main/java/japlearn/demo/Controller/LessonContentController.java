@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-<<<<<<< HEAD
-=======
 import org.springframework.web.bind.annotation.RequestBody;
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -69,8 +66,4 @@ public class LessonContentController {
 			@RequestPart(value="audioFile", required=false) MultipartFile audioFile) throws IOException {
 		return lessoncontentservice.updateLessonContent(lessonContent, lessonContentId, imageFile, audioFile);
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

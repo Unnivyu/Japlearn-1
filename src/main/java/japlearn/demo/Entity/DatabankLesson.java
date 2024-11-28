@@ -55,8 +55,4 @@ public class DatabankLesson {
 	public void setClassId(String classId) {
 		this.classId = classId;
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

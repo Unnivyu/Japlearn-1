@@ -43,8 +43,4 @@ public class DatabankLessonPage {
 	public void setPage_title(String page_title) {
 		this.page_title = page_title;
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

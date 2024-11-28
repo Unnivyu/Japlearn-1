@@ -3,17 +3,14 @@ package japlearn.demo.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
-<<<<<<< HEAD
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
-=======
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.CriteriaDefinition;
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
@@ -152,8 +149,4 @@ public class LessonContentService {
 		template.delete(new Query(Criteria.where("_id").is(id) ));
 	}
 	
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8

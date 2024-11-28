@@ -49,8 +49,4 @@ public class LessonPageController {
 	public LessonPage updateLessonpage(@PathVariable String lessonPageId,@RequestBody LessonPage lessonpage) {
 		return lessonpageservice.updateLessonPage(lessonPageId, lessonpage);
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d9c508c5db0a9530d28eb8e0dd4474b93dbb4ad8
