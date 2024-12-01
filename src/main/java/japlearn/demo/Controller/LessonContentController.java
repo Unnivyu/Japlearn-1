@@ -61,9 +61,12 @@ public class LessonContentController {
 	
 	@PutMapping("/updateLessonContent/{lessonContentId}")
 	public LessonContent updateLessonContent(@PathVariable("lessonContentId") String lessonContentId,
-			@RequestPart("lessonContent") LessonContent lessonContent,
+			@RequestPart("lessonContent") String lessonContentJson,
 			@RequestPart(value="imageFile", required=false) MultipartFile imageFile, 
 			@RequestPart(value="audioFile", required=false) MultipartFile audioFile) throws IOException {
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+        LessonContent lessonContent = objectMapper.readValue(lessonContentJson, LessonContent.class);
 		return lessoncontentservice.updateLessonContent(lessonContent, lessonContentId, imageFile, audioFile);
 	}
 }
