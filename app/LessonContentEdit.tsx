@@ -17,7 +17,6 @@ const LessonContentEdit = () => {
     const { user } = useContext(AuthContext);
     const router = useRouter();
     const { lessonPageId } = useLocalSearchParams();
-    console.log("LessonPageId in LessonContentEdit :", lessonPageId);
     const [showAddContentModal, setShowAddContentModal] = useState(false);
     const [textContent, setTextContent] = useState('');
     const [image, setImage] = useState <string | null>(null);
@@ -195,30 +194,48 @@ const LessonContentEdit = () => {
     const handleLessonContentEdit = (content) => {
       setSelectedLessonContentToEdit(content);
       setLessonContentToEditId(content.id);
-      setTextContent(content.lessonTextContent);
+      setTextContent(content.text_content);
       setImage(content.contentImage);
       setAudio(content.contentAudio);
       setGamePicked(content.contentGame);
       setShowLessonContentEdit(true);
     }
     
-    const confirmLessonContentEdit = () => {
-      setLessonContentData(prevContent => prevContent.map(
-        Content => Content.id === lessonContentToEditId
-        ? {...Content, 
-          lessonTextContent: textContent,
-          contentImage: image,
-          contentAudio: audio,
-          contentGame: gamePicked
-          } : Content
-      ));
+    const confirmLessonContentEdit = async() => {
+      try{ 
+        const formData = new FormData();
+        formData.append('lessonContent', JSON.stringify({
+          text_content: textContent
+        }));
+        if (image) formData.append('imageFile', { uri: image.uri, type: image.mimeType, name: image.name });
+        if (audio) formData.append('audioFile', { uri: audio.uri, type: audio.type, name: audio.name });
 
-      setLessonContentToEditId('');
-      setTextContent('');
-      setImage(null);
-      setAudio(null);
-      setGamePicked('');
-      setShowLessonContentEdit(false);
+        console.log(formData);
+
+        const response = await fetch(`${expoconfig.API_URL}/api/lessonContent/updateLessonContent/${lessonContentToEditId}`,{
+          method: 'PUT',
+          body: formData,
+          headers: {
+            Accept: 'application/json' }
+        });
+
+        const updatedContent = await response.json();
+        console.log("Content: ", updatedContent);
+        setLessonContentData((prevContent) =>
+          prevContent.map((content) =>
+            content.id === lessonContentToEditId ? updatedContent : content
+          )
+        );
+
+        setLessonContentToEditId('');
+        setTextContent('');
+        setImage(null);
+        setAudio(null);
+        setGamePicked('');
+        setShowLessonContentEdit(false);
+      } catch (error) {
+        console.error("Error updating content: ",error);
+      }
     }
 
     const cancelLessonContentEdit = () => {
@@ -465,8 +482,8 @@ const LessonContentEdit = () => {
                   <View style={styles.modalView}>
                       <TextInput
                           style={styles.input}
-                          value={selectedLessonContentToEdit.text_content}
-                          onChangeText={setTextContent}
+                          value={textContent}
+                          onChangeText={(text) => setTextContent(text)}
                           placeholder="Add Lesson Content"
                       />
                       <CustomButton title="Pick an image" onPress={pickImage} buttonStyle={styles.button} textStyle={styles.buttonText}/>
