@@ -19,7 +19,7 @@ const routeAccessConfig = {
     'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6', 'WordsMenu'
   ],
   teacher: [
-    'TeacherDashboard', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels',
+    'TeacherDashboard', 'QuackmanContent', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels',
     'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit',
   ],
 };

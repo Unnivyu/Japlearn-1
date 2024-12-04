@@ -13,7 +13,7 @@ const Profile = () => {
     const [scoresData, setScoresData] = useState([]); // Initialize as an empty array
     const [activeGame, setActiveGame] = useState(null);
     const [noScores, setNoScores] = useState(false);
-    const router = useRouter ();
+    const router = useRouter();
 
     const handleBackPress = () => {
         router.back();
@@ -87,7 +87,8 @@ const Profile = () => {
             </View>
             <View style={styles.description}>
                 <View style={styles.descTextContainer}>
-                    <Text style={styles.descText}>Username: {user ? `${user.fname} ${user.lname}` : ''}</Text>
+                    <Text style={styles.descText}>User: {user ? `${user.fname} ${user.lname}` : ''}</Text>
+                    <Text style={styles.descText}>Email: {user ? user.email : ''}</Text>
                 </View>
             </View>
             <View style={styles.categoryContainer}>

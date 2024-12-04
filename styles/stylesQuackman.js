@@ -3,10 +3,9 @@ import { StyleSheet, Dimensions } from 'react-native';
 const { width, height } = Dimensions.get('window');
 const cellSize = Math.min(width, height - 400) / 5 - 10;
 
-
 export const stylesQuackman = StyleSheet.create({
     progressContainer: {
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
     },
     progress: {
         backgroundColor: '#FDFCFE',
@@ -14,24 +13,30 @@ export const stylesQuackman = StyleSheet.create({
         height: 50,
         borderRadius: 50,
         margin: 20,
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     progressText: {
         textAlign: 'center',
     },
     menuContainer: {
-        flexDirection: 'row', 
-        alignItems: 'center',  
+        flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 10,
     },
+    centeredContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column', // This ensures text is above the image
+    },
     Quacklogo: {
-        width: 100,
-        height: 100,
+        width: 150,
+        height: 150,
     },
     textStyle: {
         fontFamily: 'jua',
         fontSize: 30,
+        marginTop: 10, // Add some margin for spacing between the image and the text
     },
     attemptsContainer: {
         height: 50,
@@ -67,20 +72,23 @@ export const stylesQuackman = StyleSheet.create({
     },
     charCell: {
         width: cellSize,
-        height: cellSize, // Ensure the cell is square
+        height: cellSize, 
         justifyContent: 'center',
         alignItems: 'center',
         margin: 5,
-        backgroundColor: '#8423D9', // Adjusted to match the provided image color
+        backgroundColor: '#8423D9',
         borderRadius: 10,
+        flexDirection: 'column', // Stack the text and character vertically
+        padding: 5, // Add padding to give some space between the text and character
     },
     charCellSelected: {
         backgroundColor: '#6C3A99', // Change color when selected
     },
     charText: {
-        fontSize: 20,
+        fontSize: 18, // Slightly reduce text size for better readability
         fontWeight: 'bold',
-        color: 'white', // Text color to match the provided image
+        color: 'white',
+        marginBottom: 5, // Space between text and the character
     },
     hintInputContainer: {
         padding: 10,
@@ -139,20 +147,30 @@ export const stylesQuackman = StyleSheet.create({
         justifyContent: 'space-between',
         width: '80%',
     },
+    gameOverContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F9F5FF', // Light background color for contrast
+        paddingHorizontal: 20,
+    },
     gameOverText: {
         fontSize: 36,
         fontWeight: 'bold',
-        marginBottom: 20,
-        color: '#8ED94D',
+        color: '#4CAF50', // Bright green for success message
+        marginBottom: 10, // Add spacing below the Game Over text
+        textAlign: 'center',
     },
     scoreText: {
-        fontSize: 24,
-        marginBottom: 40,
+        fontSize: 18,
+        color: '#333333', // Neutral text color for the score
+        marginBottom: 30, // Add spacing below the score text
+        textAlign: 'center',
     },
     buttonRow: {
         flexDirection: 'row',
-        justifyContent: 'space-around',  // This will ensure that buttons are evenly spaced
-        width: '75%',  // Takes full width to spread out buttons
+        justifyContent: 'space-evenly',
+        width: '70%', // Adjust the width of the buttons' container
     },
     endButton: {
         backgroundColor: '#8423D9',
@@ -163,14 +181,47 @@ export const stylesQuackman = StyleSheet.create({
         fontSize: 20,
         color: '#fff'
     },
-    retryButton: {
-        backgroundColor: '#8423D9',
+    backButton: {
+        backgroundColor: '#D9534F', // Red for back button
+        borderRadius: 25,
         height: 50,
-        width: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 100, // Adjust button width
+        shadowColor: '#000', // Add shadow for depth
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5, // Android shadow
+        marginLeft: 10, // Add space between Retry and Back buttons
     },
+    
+    backButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '600',
+        textAlign: 'center',
+    },
+    
+    retryButton: {
+        backgroundColor: '#6200EE', // Purple for the Retry button
+        borderRadius: 25,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 100, // Adjust button width
+        shadowColor: '#000', // Add shadow for depth
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5, // Android shadow
+    },
+    
     retryButtonText: {
-        fontSize: 20,
-        color: '#fff'
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '600',
+        textAlign: 'center',
     },
     modButton: {
         height: 40,
@@ -178,26 +229,96 @@ export const stylesQuackman = StyleSheet.create({
     },
     loadingContainer: {
         flex: 1,
-        backgroundColor: '#6A4C93', // Muted purple color
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#6C3A99', // Lighter purple to match the character color
+        paddingHorizontal: 20, // Add some padding on the sides
     },
-    
+    loadingTitle: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        color: 'white',
+    },
     loadingQuackLogo: {
         width: 150,
         height: 150,
-        marginBottom: 20,
+        marginVertical: 20,
     },
     loadingText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginTop: 10,
+        fontSize: 18,
+        color: 'white',
     },
-    loadingTitle: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: '#FFFFFF',
-        marginBottom: 20,
+    introModalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed background for the modal
     },
+    introModalContainer: {
+        width: '85%',
+        backgroundColor: 'white',
+        borderRadius: 15,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5, // Add shadow for Android
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 }, // iOS shadow
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+    },
+    closeButtonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#8423D9', // Match your theme color
+    },
+    introTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 15,
+        color: '#333',
+        textAlign: 'center',
+    },
+    introText: {
+        fontSize: 16,
+        color: '#555',
+        textAlign: 'center',
+        lineHeight: 22,
+    },
+    angelContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: '50%',
+        transform: [{ translateX: -50 }], // Center horizontally
+        alignItems: 'center',
+    },
+    angelImage: {
+        width: 200,
+        height: 200,
+        resizeMode: 'contain',
+    },
+    modalContentContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    
+    modalImage: {
+        width: 80, // Adjust the size as needed
+        height: 80,
+        marginRight: -100, // Add space between the image and the text content
+        resizeMode: 'contain',
+    },
+    
+    modalTextContent: {
+        flex: 1, // Ensure the text content takes up the remaining space
+    },
+    
+    
 });
