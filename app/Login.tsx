@@ -204,11 +204,15 @@ const Login = () => {
                 </View>
             </KeyboardAvoidingView>
 
-            <View>
-                <Text style={styles.policyText}>By continuing, you agree with <Pressable onPress={handleLinkPress}>
-                    <Text style={styles.linkText2}>Japlearn's Terms of Service and Privacy Policy</Text>
-                </Pressable></Text>
-            </View>
+            <View style={styles.policyTextContainer}>
+                <Text style={styles.policyText}>By continuing, you agree with</Text>
+                <Pressable onPress={handleLinkPress}>
+                    <Text style={styles.linkText2}>
+                    Japlearn's Terms of Service and Privacy Policy
+                    </Text>
+                </Pressable>
+                </View>
+
 
             <View style={styles.linkContainer}>
                 <Pressable onPress={() => router.push('/Signup')}>

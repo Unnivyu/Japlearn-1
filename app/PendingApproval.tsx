@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, SafeAreaView, ScrollView, Image, Alert } from 'react-native';
+import { View, Text, Pressable, SafeAreaView, ScrollView, Image, Alert, TouchableOpacity } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { stylesDashboard } from '../styles/stylesDashboard';
 import expoconfig from '../expoconfig';
 import { useRouter } from 'expo-router';
 import teacherProfile from '../assets/img/teacherProfile.png';
+import BackIcon from '../assets/svg/back-icon.svg';
 
 const PendingApproval = () => {
     const [pendingUsers, setPendingUsers] = useState([]);
@@ -49,19 +50,34 @@ const PendingApproval = () => {
         router.push('/ProfileTeacher');
     };
 
+    // Handle back button press
+    const handleBackPress = () => {
+        router.back(); // This will navigate to the previous screen
+    };
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
-                {/* Header Section */}
+                {/* Header Section with Back Button */}
                 <View style={stylesDashboard.header}>
                     <View style={stylesDashboard.leftContainer}>
-                        <Text style={stylesDashboard.hText}>Users Awaiting Approval</Text>
+                        {/* Back Button */}
+                        <TouchableOpacity onPress={handleBackPress}>
+                    <View style={stylesDashboard.backButtonContainer}>
+                        <BackIcon width={20} height={20} fill={'white'} />
+                    </View>
+                </TouchableOpacity>
                     </View>
                     <View style={stylesDashboard.rightContainer}>
                         <Pressable onPress={handleProfilePress}>
                             <Image source={teacherProfile} style={stylesDashboard.pictureCircle} />
                         </Pressable>
                     </View>
+                </View>
+
+                {/* Title Section */}
+                <View style={stylesDashboard.titleContainer}>
+                    <Text style={stylesDashboard.titleText}>Users waiting for approval</Text>
                 </View>
 
                 {/* Pending Users Section */}
@@ -71,7 +87,7 @@ const PendingApproval = () => {
                             <View key={user.id} style={stylesDashboard.pendingUserContent}>
                                 <View style={stylesDashboard.userInfoContainer}>
                                     <Text style={stylesDashboard.pendingUserText}>{user.fname} {user.lname}</Text>
-                                    <Text style={stylesDashboard.pendingUserEmail}>{user.email}</Text> {/* Email below name */}
+                                    <Text style={stylesDashboard.pendingUserEmail}>{user.email}</Text> 
                                 </View>
                                 <CustomButton 
                                     title="Approve" 

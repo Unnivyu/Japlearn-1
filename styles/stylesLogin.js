@@ -81,12 +81,22 @@ const styles = StyleSheet.create({
     fontFamily: 'Jua'  
   },
 
+  policyTextContainer: {
+    flexDirection: 'row',  // Aligns the child elements horizontally (side by side)
+    justifyContent: 'center', // Centers the content horizontally (optional)
+    alignItems: 'center',  // Aligns vertically in the center (optional)
+    marginTop:20
+  },
   policyText: {
-    top: 15,
-    text: 16,
-    textAlign: 'center'
-  }
-
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  linkText2: {
+    fontSize: 16,
+    color: 'blue',
+    textDecorationLine: 'underline',
+    marginLeft: 5,  // Space between the two texts (optional)
+  },
 });
 
 export default styles;

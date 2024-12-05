@@ -32,7 +32,7 @@ export const stylesClass = StyleSheet.create({
         marginBottom: 28,
     },
     titleText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 20,
     },
     categoryContainer: {
@@ -108,7 +108,7 @@ export const stylesClass = StyleSheet.create({
     },
     gameContentText: {
         color: 'white',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 24,
         width: '100%'
     },
@@ -117,7 +117,7 @@ export const stylesClass = StyleSheet.create({
     },
     classContentText: {
         color: 'white',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 17,
         width: '100%'
     },
@@ -194,7 +194,7 @@ export const stylesClass = StyleSheet.create({
     
     lessonContentText: {
         color: 'white',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 17,
         lineHeight: 22,
         flexWrap: 'wrap',
