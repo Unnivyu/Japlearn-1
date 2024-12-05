@@ -4,10 +4,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesWords';
 import expoconfig from '../expoconfig';
+import { useLessonProgress } from '../context/LessonProgressContext';
 
 const Words = () => {
   const router = useRouter();
   const lessonId = useLocalSearchParams();
+  const { setCompletedLessons, completedLessons, saveProgress } = useLessonProgress(); // Access progress context
   const [lessonContent, setLessonContent] = useState([]);
   const [processedWords, setProcessedWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0); // Current word index
@@ -36,7 +38,7 @@ const Words = () => {
 
       setLessonContent(allLessonContent);
     } catch (error) {
-      console.error("Error in fetching lesson content: ", error);
+      console.error('Error in fetching lesson content: ', error);
     }
   };
 
@@ -73,7 +75,7 @@ const Words = () => {
     if (currentWordIndex < processedWords.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1); // Move to the next word
     } else {
-      console.log("End of word list!");
+      console.log('End of word list!');
     }
   };
 
@@ -82,6 +84,55 @@ const Words = () => {
       setCurrentWordIndex(currentWordIndex - 1); // Move to the previous word
     }
   };
+
+  const handleFinishLesson = async () => {
+    
+    
+    console.log('testing yawa kapoy na');
+
+    try {
+      console.log('Raw Lesson ID:', id); // Log raw ID
+      const idMapping = {
+        '674798f5843fb66cf08dcf7b': '1',
+        'abc12345def67890ghi12345': '2',
+      };
+      const normalizedId = idMapping[id] || 'unknown';
+      console.log('Normalized Lesson ID:', normalizedId); // Log normalized ID
+  
+      if (normalizedId === '1') {
+        setCompletedLessons(prev => {
+          const updated = { ...prev, vocab1: true };
+          saveProgress(updated);
+          console.log('Updating vocab1:', updated); // Log during update
+          return updated;
+        });
+      } else if (normalizedId === '2') {
+        setCompletedLessons(prev => {
+          const updated = { ...prev, vocab2: true };
+          console.log('Updating vocab2:', updated); // Log during update
+          return updated;
+        });
+      } else {
+        console.error('Unexpected Normalized ID:', normalizedId);
+      }
+  
+      setTimeout(() => {
+        console.log('State before routing:', completedLessons); // Log updated state
+        router.push('/WordsMenu'); // Delay to ensure state reflects
+      }, 300); // Delay allows for async updates
+    } catch (error) {
+      console.error('Error marking lesson as complete:', error);
+    }
+  };
+  
+  
+  
+
+  // Log whenever the completedLessons changes
+  useEffect(() => {
+    console.log('State Updated in Completed Lessons:', completedLessons);
+  }, [completedLessons]);
+  
 
   const currentWord = processedWords[currentWordIndex];
 
@@ -123,10 +174,14 @@ const Words = () => {
 
               <Pressable
                 style={styles.nextButton}
-                onPress={handleNextPress}
+                onPress={
+                  currentWordIndex < processedWords.length - 1
+                    ? handleNextPress
+                    : handleFinishLesson
+                }
               >
                 <Text style={styles.nextButtonText}>
-                  {currentWordIndex < processedWords.length - 1 ? "Next" : "Finish"}
+                  {currentWordIndex < processedWords.length - 1 ? 'Next' : 'Finish'}
                 </Text>
               </Pressable>
             </View>

@@ -71,6 +71,14 @@ export const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
+    button: {
+        backgroundColor: '#6200EE', // Purple button
+        borderRadius: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        marginTop: 10,
+    },
     categoryContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -122,5 +130,61 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 20,
         color: 'grey',
+    },
+    // Modal Styles
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontFamily: 'jua',
+        marginBottom: 10,
+    },
+    modalMessage: {
+        fontSize: 16,
+        color: '#555', // Grey color for readability
+        textAlign: 'center',
+        marginTop: 10, // Spacing between title and message
+        fontFamily: 'jua', // Match your app's font style
+    },
+    input: {
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#E1E1E1',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+    },
+    errorInput: {
+        borderColor: 'red',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 14,
+        marginBottom: 10,
+        fontFamily: 'jua',
+    },
+    modalButton: {
+        backgroundColor: '#8ED94D',
+        borderRadius: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginTop: 10,
+    },
+    modalButtonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+        fontFamily: 'jua',
     },
 });
