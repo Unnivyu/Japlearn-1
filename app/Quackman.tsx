@@ -361,11 +361,15 @@ const Quackman = ({ navigation }) => {
     if (isLoading || !userInteracted) {
         return (
             <TouchableOpacity
-                style={[stylesQuackman.loadingContainer, { opacity: fadeAnim }]}
+                style={[stylesQuackman.loadingContainer]}
                 onPress={handleUserInteraction}
-                disabled={progress < 100} // Disable interaction until loading reaches 100%
+                disabled={progress < 100}
             >
-                <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                <Image
+                    source={require('../assets/quackman_loadingscreen.png')}
+                    style={stylesQuackman.loadingBackgroundImage}
+                />
+                <View style={stylesQuackman.loadingContent}>
                     <Text style={stylesQuackman.loadingTitle}>Quackman</Text>
                     <Image
                         source={require('../assets/quacklogo.png')}

@@ -63,5 +63,22 @@ export const stylesLevels = StyleSheet.create ({
         fontFamily: 'jua',
         fontSize: 16,
         color: 'white',
-    }
+    },
+    gameCodeContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 50, // Adjust for space
+    },
+    bigGameCodeText: {
+        fontSize: 40, // Large font size for the game code
+        fontWeight: 'bold', // Make the game code bold
+        textAlign: 'center',
+        color: '#000', // Dark color for contrast
+    },
+    noGameCodeText: {
+        fontSize: 24,
+        textAlign: 'center',
+        color: '#777', // Lighter color for the placeholder
+    },
 });

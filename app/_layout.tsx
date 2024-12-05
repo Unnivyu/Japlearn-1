@@ -13,14 +13,14 @@ const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf'
 
 const routeAccessConfig = {
   student: [
-    'Menu', 'ResetButton','Quackamole', 'NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1',
+    'Menu', 'ResetButton','Quackamole', 'Quackslate', 'QuackslateWait', 'QuackslateMenu', 'NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1',
     'HiraganaSet2', 'HiraganaSet3', 'KatakanaSet1', 'KatakanaSet2', 'KatakanaSet3', 'Quackman', 'StartMenu',
     'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3', 'CharacterExercise1',
     'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6', 'WordsMenu'
   ],
   teacher: [
-    'TeacherDashboard', 'QuackmanContent', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateLevels',
-    'QuackslateEdit', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit',
+    'TeacherDashboard', 'QuackmanContent', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateHost', 'QuackslateLevels',
+    'QuackslateEdit', 'PendingApproval', 'QuackamoleLevels', 'QuackamoleEdit', 'LessonPageEdit', 'LessonContentEdit',
   ],
 };
 

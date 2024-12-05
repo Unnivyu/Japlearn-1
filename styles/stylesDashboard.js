@@ -11,23 +11,20 @@ export const stylesDashboard = StyleSheet.create({
         height: 70,
     },
     header: {
-        backgroundColor: '#C7C5C5',
+        backgroundColor: '#8423D9',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
         padding: 20,
         paddingTop: 40,
-        marginBottom: 20,
-        height:150,
-        
+        marginBottom: 10,
+        borderBottomWidth: 10,
+        borderBottomColor: '#6C3A99',
+        height: 130,
     },
-    hText1: {
-        fontFamily: 'Jua',
-        fontSize: 30,
-    },
-    hText2: {
-        fontFamily: 'Jua',
-        fontSize: 20,
+    hText: {
+        fontFamily: 'jua',
+        color: 'white',
+        fontSize: 15,
     },
     leftContainer: {
         flex: 1,
@@ -43,7 +40,7 @@ export const stylesDashboard = StyleSheet.create({
         borderBottomColor: '#D9D9D9',
     },
     menuText: {
-        fontFamily: 'Jua',
+        fontFamily: 'jua',
         fontSize: 30,
     },
     button: {
@@ -54,6 +51,16 @@ export const stylesDashboard = StyleSheet.create({
         borderRadius: 30,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    button2: {
+        backgroundColor:'#8ED94D',
+        padding: 5,
+        height: 60,
+        width: 100,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: -120,
     },
     buttonText: {
         fontSize: 20,
@@ -66,7 +73,7 @@ export const stylesDashboard = StyleSheet.create({
         borderRadius: 50,
     },
     titleText: {
-        fontFamily: 'Jua',
+        fontFamily: 'jua',
         fontSize: 20,
         marginBottom: 30
     },
@@ -97,22 +104,66 @@ export const stylesDashboard = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 3,
-        width: 300, 
-        alignSelf: 'center' 
+        width: 300, // Adjust the width to your preference
+        alignSelf: 'center' // Center the classContent boxes
     },
     classContentText: {
-        color: '#333', 
-        fontFamily: 'Jua',
+        color: '#333', // Use darker text for readability
+        fontFamily: 'jua',
+        fontSize: 18, // Increase font size for visibility
+        textAlign: 'center', // Center the text within the box
+    },
+
+    pendingUserText: {
+        color: '#333',
+        fontFamily: 'jua',
         fontSize: 18,
-        textAlign: 'center', 
+        textAlign: 'left',
+        marginBottom: 2, // Minor space between name and email
     },
-    profileButton: {
-        height: 60,
-        backgroundColor: '#7551B0',
-        borderRadius: 10,
+    pendingUserEmail: {
+        fontSize: 12,
+        color: 'gray',
+        textAlign: 'left',
     },
-    profileButtonText: {
-        fontSize: 25,
-        color: "#fff",
+    
+
+    buttonApprove: {
+        backgroundColor:'#8ED94D',
+        padding: 10,
+        height: 40,
+        width: 90,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
+
+    pendingUserContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'lightgray', 
+        marginTop: 20,
+        padding: 20,
+        borderRadius: 20,
+        width: 320,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 3,
+        alignSelf: 'center'
+    },
+    userInfoContainer: {
+        flex: 1,  // Allows the container to take up available space
+        alignItems: 'flex-start', // Aligns text to the left within the container
+    },
+    pendingUserText: {
+        color: '#333',
+        fontFamily: 'jua',
+        fontSize: 18,
+        textAlign: 'left', // Align text to the left
+        flex: 1, // Take up available space
+    }
+    
 });

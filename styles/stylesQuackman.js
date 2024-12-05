@@ -319,6 +319,14 @@ export const stylesQuackman = StyleSheet.create({
     modalTextContent: {
         flex: 1, // Ensure the text content takes up the remaining space
     },
-    
+    loadingBackgroundImage: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: width, // Full screen width
+        height: height + 50, // Increase height to stretch further down
+        resizeMode: 'cover', // You can also try 'stretch' if needed
+    },
+
     
 });
