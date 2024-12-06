@@ -29,7 +29,7 @@ const QuackslateLevels = () => {
             if (response.ok) {
                 const data = await response.json();
                 setNewGameCode(data.gameCode);  // Access 'gameCode' from response
-                Alert.alert('Game Code Generated', `Your game code is: ${data.gameCode}`);
+                
             } else {
                 throw new Error('Failed to generate game code');
             }

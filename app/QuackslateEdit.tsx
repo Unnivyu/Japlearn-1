@@ -45,20 +45,6 @@ const QuackslateEdit = () => {
         }
     };
     
-    const fetchStudentsJoined = async () => {
-        try {
-            const response = await fetch(`${expoconfig.API_URL}/api/quackslateContent/studentsJoined/${gameCode}`);
-            if (response.ok) {
-                const data = await response.json();
-                setStudentsJoined(data.count);
-            } else {
-                throw new Error('Failed to fetch students count');
-            }
-        } catch (error) {
-            console.error('Error fetching students count:', error);
-            Alert.alert('Error', 'Failed to fetch students count');
-        }
-    };
 
     // Example navigation code in QuackslateEdit
     const startQuiz = async () => {
@@ -102,7 +88,7 @@ const QuackslateEdit = () => {
     // Use useEffect to fetch content and students count when the component mounts
     useEffect(() => {
         fetchContent(); // Fetch content from the backend
-        fetchStudentsJoined(); // Fetch students who have joined
+         // Fetch students who have joined
     }, []); // Empty dependency array means this runs once when the component mounts
 
     const addTranslationToDatabase = async () => {
@@ -277,10 +263,7 @@ const QuackslateEdit = () => {
                 <CustomButton title="Start Quiz" onPress={startQuiz} buttonStyle={stylesEdit.button} textStyle={stylesEdit.buttonText} />
             </View>
 
-            <View style={stylesSlate.studentsJoinedContainer}>
-                <Text style={stylesSlate.studentsJoinedText}>Students Joined: {studentsJoined}</Text>
-            </View>
-
+            
             <View style={stylesEdit.buttonContainer}>
                 <CustomButton title="Add" onPress={handleAddPress} buttonStyle={stylesEdit.button} textStyle={stylesEdit.buttonText} />
                 <CustomButton title="Remove" onPress={handleRemoveButtonPress} buttonStyle={stylesEdit.button} textStyle={stylesEdit.buttonText} />
@@ -384,30 +367,34 @@ const QuackslateEdit = () => {
 
             {/* Modal for removing content */}
             <Modal
-                animationType="slide"
-                transparent={true}
-                visible={removeModalVisible}
-                onRequestClose={handleCloseModal}
+    animationType="slide"
+    transparent={true}
+    visible={removeModalVisible}
+    onRequestClose={handleCloseModal}
+>
+    <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+            <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}>Select Content to Remove</Text>
+            <ScrollView 
+                contentContainerStyle={stylesSlate.scrollViewContent} 
+                showsVerticalScrollIndicator={true} 
             >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
-                            <Text style={styles.closeButtonText}>X</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.text}>Select Content to Remove</Text>
-                        <ScrollView>
-                            {content.map((item) => (
-                                <TouchableOpacity key={item.id} onPress={() => handleRemovePress(item)}>
-                                    <View style={stylesSlate.quackslateEditContent}>
-                                        <Text style={stylesEdit.contentText}>{item.word}</Text>
-                                        <Text style={stylesEdit.contentText}>{item.translatedWord}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                    </View>
-                </View>
-            </Modal>
+                {content.map((item) => (
+                    <TouchableOpacity key={item.id} onPress={() => handleRemovePress(item)}>
+                        <View style={stylesSlate.quackslateEditContent}>
+                            <Text style={stylesEdit.contentText}>{item.englishWord}</Text>
+                            <Text style={stylesEdit.contentText}>{item.translatedWord}</Text>
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        </View>
+    </View>
+</Modal>
+
 
             {/* Confirmation Modal for Deleting content */}
             <Modal
@@ -422,8 +409,10 @@ const QuackslateEdit = () => {
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
                         <Text style={styles.text}>Are you sure you want to delete this content?</Text>
+                        <View style={styles.buttonRow}>
                         <CustomButton title="Yes" onPress={handleConfirmRemove} buttonStyle={styles.button} textStyle={styles.buttonText} />
                         <CustomButton title="No" onPress={handleCloseModal} buttonStyle={styles.button} textStyle={styles.buttonText} />
+                        </View>
                     </View>
                 </View>
             </Modal>
