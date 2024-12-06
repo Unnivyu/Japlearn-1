@@ -85,6 +85,46 @@ const Words = () => {
     }
   };
 
+  // const handleFinishLesson = async () => {
+    
+    
+  //   console.log('testing yawa kapoy na');
+
+  //   try {
+  //     console.log('Raw Lesson ID:', id); // Log raw ID
+  //     const idMapping = {
+  //       '674798f5843fb66cf08dcf7b': '1',
+  //       'abc12345def67890ghi12345': '2',
+  //     };
+  //     const normalizedId = idMapping[id] || 'unknown';
+  //     console.log('Normalized Lesson ID:', normalizedId); // Log normalized ID
+  
+  //     if (normalizedId === '1') {
+  //       setCompletedLessons(prev => {
+  //         const updated = { ...prev, vocab1: true };
+  //         saveProgress(updated);
+  //         console.log('Updating vocab1:', updated); // Log during update
+  //         return updated;
+  //       });
+  //     } else if (normalizedId === '2') {
+  //       setCompletedLessons(prev => {
+  //         const updated = { ...prev, vocab2: true };
+  //         console.log('Updating vocab2:', updated); // Log during update
+  //         return updated;
+  //       });
+  //     } else {
+  //       console.error('Unexpected Normalized ID:', normalizedId);
+  //     }
+  
+  //     setTimeout(() => {
+  //       console.log('State before routing:', completedLessons); // Log updated state
+  //       router.push('/WordsMenu'); // Delay to ensure state reflects
+  //     }, 300); // Delay allows for async updates
+  //   } catch (error) {
+  //     console.error('Error marking lesson as complete:', error);
+  //   }
+  // };
+  
   const handleFinishLesson = async () => {
     
     
@@ -94,38 +134,27 @@ const Words = () => {
       console.log('Raw Lesson ID:', id); // Log raw ID
       const idMapping = {
         '674798f5843fb66cf08dcf7b': '1',
-        'abc12345def67890ghi12345': '2',
+        '6747c323aafbac40423da288': '2',
       };
       const normalizedId = idMapping[id] || 'unknown';
       console.log('Normalized Lesson ID:', normalizedId); // Log normalized ID
   
       if (normalizedId === '1') {
-        setCompletedLessons(prev => {
-          const updated = { ...prev, vocab1: true };
-          saveProgress(updated);
-          console.log('Updating vocab1:', updated); // Log during update
-          return updated;
-        });
+        setCompletedLessons({ vocab1: true });
       } else if (normalizedId === '2') {
-        setCompletedLessons(prev => {
-          const updated = { ...prev, vocab2: true };
-          console.log('Updating vocab2:', updated); // Log during update
-          return updated;
-        });
+        setCompletedLessons({ ...completedLessons, vocab2: true });
       } else {
         console.error('Unexpected Normalized ID:', normalizedId);
       }
   
       setTimeout(() => {
         console.log('State before routing:', completedLessons); // Log updated state
-        router.push('/WordsMenu'); // Delay to ensure state reflects
+        router.push('/WordsMenu?fromWords=true'); // Delay to ensure state reflects
       }, 300); // Delay allows for async updates
     } catch (error) {
       console.error('Error marking lesson as complete:', error);
     }
   };
-  
-  
   
 
   // Log whenever the completedLessons changes

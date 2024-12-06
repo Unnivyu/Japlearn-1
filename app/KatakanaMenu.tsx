@@ -1,6 +1,18 @@
-import { View, Pressable, ImageBackground } from 'react-native';
-import React, { useEffect } from 'react';
-import { useRouter } from 'expo-router';
+import {
+  View,
+  Pressable,
+  ImageBackground,
+  Modal,
+  Animated,
+  Text,
+  Image,
+  Easing,
+  Button,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { useRouter, useLocalSearchParams, usePathname } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
@@ -9,32 +21,115 @@ import { useLessonProgress } from '../context/LessonProgressContext';
 const KatakanaMenu = () => {
   const { completedLessons, setCompletedLessons } = useLessonProgress();
   const router = useRouter();
-  
-  // Check and mark Katakana Menu as completed
+  const { fromExercise } = useLocalSearchParams(); // Get the query parameter
+  const currentPath = usePathname();
+
+  const [isBadgeVisible, setBadgeVisible] = useState(false);
+  const badgeCheckCompleted = useRef(false);
+
+  // Badge animation values
+  const badgeScale = useRef(new Animated.Value(0)).current;
+  const badgeSpin = useRef(new Animated.Value(0)).current;
+  const messageOpacity = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
-    if (
-      completedLessons.katakana1 &&
-      completedLessons.katakana2 &&
-      completedLessons.katakana3 &&
-      !completedLessons.katakanaMenu
-    ) {
-      setCompletedLessons({
-        ...completedLessons,
-        katakanaMenu: true,
-      });
-    }
-  }, [
-    completedLessons.katakana1,
-    completedLessons.katakana2,
-    completedLessons.katakana3,
-    completedLessons.katakanaMenu,
-  ]);
+    const checkBadgeShown = async () => {
+      // Avoid duplicate execution
+      if (badgeCheckCompleted.current) {
+        console.log('Badge logic already processed.');
+        return;
+      }
+
+      // Only execute badge logic if on the KatakanaMenu screen
+      if (currentPath !== '/KatakanaMenu') {
+        console.log('Not on KatakanaMenu. Skipping badge logic.');
+        return;
+      }
+
+      badgeCheckCompleted.current = true;
+
+      // Only show the badge if redirected from CharacterExercise6
+      if (fromExercise !== 'true') {
+        console.log('Not redirected from CharacterExercise6. Skipping badge logic.');
+        return;
+      }
+
+      const hasShownBadge = await AsyncStorage.getItem('badgeShown');
+      console.log('Badge Shown State (from AsyncStorage):', hasShownBadge);
+
+      if (!hasShownBadge && completedLessons.katakana3) {
+        console.log('Badge has not been shown yet. Showing now...');
+        setBadgeVisible(true);
+        await AsyncStorage.setItem('badgeShown', 'true'); // Set badge as shown
+        animateBadge();
+      } else {
+        console.log('Badge has already been shown or no badge trigger.');
+      }
+    };
+
+    checkBadgeShown();
+  }, [completedLessons, fromExercise, currentPath]); // Add currentPath to dependencies
+
+  const animateBadge = () => {
+    Animated.parallel([
+      Animated.timing(badgeScale, {
+        toValue: 1,
+        duration: 2000, // Slow enlargement
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
+      }),
+      Animated.timing(badgeSpin, {
+        toValue: 1, // Coin spin effect
+        duration: 2000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(messageOpacity, {
+        toValue: 1,
+        duration: 1000, // Smooth fade-in
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleBadgeDismiss = () => {
+    Animated.parallel([
+      Animated.timing(badgeScale, {
+        toValue: 0, // Shrink to zero
+        duration: 2000,
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
+      }),
+      Animated.timing(badgeSpin, {
+        toValue: 0, // Reverse spin
+        duration: 2000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(messageOpacity, {
+        toValue: 0, // Fade-out
+        duration: 1000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(() => setBadgeVisible(false));
+  };
+
+
+  // Interpolating rotateY for 3D coin spin effect
+  const coinSpin = badgeSpin.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: ['0deg', '180deg', '360deg'],
+  });
+
 
   const handleBackPress = () => {
-    router.push("/LearnMenu");
+    router.push('/KanaMenu');
   };
 
   const handleButtonPress = (buttonTitle) => {
+    console.log(`Button pressed: ${buttonTitle}`);
     switch (buttonTitle) {
       case 'Katakana Basics 1':
         router.push('/KatakanaSet1');
@@ -50,8 +145,15 @@ const KatakanaMenu = () => {
         }
         break;
       default:
-        console.log(`${buttonTitle} button pressed`);
+        console.log(`Unhandled button: ${buttonTitle}`);
     }
+  };
+
+  const resetBadgeState = async () => {
+    await AsyncStorage.removeItem('badgeShown');
+    console.log('Badge state has been reset. You can now test the animation again.');
+    setBadgeVisible(false); // Ensure badge is not visible after reset
+    badgeCheckCompleted.current = false; // Allow badge check again
   };
 
   return (
@@ -95,6 +197,44 @@ const KatakanaMenu = () => {
             textStyle={!completedLessons.katakana2 ? [styles.disabledText] : null}
             disabled={!completedLessons.katakana2}
           />
+        </View>
+
+        {/* Badge Awarding Animation */}
+        {isBadgeVisible && (
+          <Modal transparent={true} animationType="none" visible={isBadgeVisible}>
+            <TouchableWithoutFeedback onPress={handleBadgeDismiss}>
+              <View style={styles.awardModalContainer}>
+                <Animated.View
+                  style={[
+                    styles.backdropLight,
+                    { transform: [{ scale: badgeScale }] },
+                  ]}
+                />
+                <Animated.Image
+                  source={require('../assets/kana_badge.png')}
+                  style={[
+                    styles.awardBadge,
+                    {
+                      transform: [{ scale: badgeScale }, { rotateY: coinSpin }],
+                    },
+                  ]}
+                />
+                <Animated.Text
+                  style={[
+                    styles.congratsMessage,
+                    { opacity: messageOpacity },
+                  ]}
+                >
+                  Congratulations on mastering the Japanese characters!
+                </Animated.Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+        )}
+
+        {/* Reset Badge Button for Testing */}
+        <View style={{ marginTop: 20, alignItems: 'center' }}>
+          <Button title="Reset Badge State" onPress={resetBadgeState} />
         </View>
       </View>
     </ImageBackground>

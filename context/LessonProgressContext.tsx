@@ -15,6 +15,7 @@ export const LessonProgressProvider = ({ children }) => {
     katakanaMenu: false,
     vocab1: false,
     vocab2: false,
+    sentence: false,
   });
 
   const { user } = useContext(AuthContext); // Access user from AuthContext
@@ -41,6 +42,7 @@ export const LessonProgressProvider = ({ children }) => {
               katakanaMenu: false,
               vocab1: false,
               vocab2: false,
+              sentence: false,
             };
             await AsyncStorage.setItem(key, JSON.stringify(defaultProgress));
             setCompletedLessons(defaultProgress);
@@ -98,7 +100,8 @@ export const LessonProgressProvider = ({ children }) => {
       katakana3: false,
       katakanaMenu: false,
       vocab1: false,
-      vocab2: false, // Ensure Katakana fields are also reset
+      vocab2: false,
+      sentence: false, // Ensure Katakana fields are also reset
     };
     if (user) {
       const key = `completedLessons_${user.email}`;

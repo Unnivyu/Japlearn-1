@@ -136,27 +136,42 @@ export const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dim the background
     },
     modalContent: {
-        width: '80%',
+        width: '80%', // Adjust width to a narrower size
+        maxWidth: 300, // Limit maximum width for better UI
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,
         alignItems: 'center',
+        shadowColor: '#000', // Add shadow for better focus
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5, // For Android
     },
     modalTitle: {
-        fontSize: 20,
+        fontSize: 18, // Slightly smaller title font
         fontFamily: 'jua',
         marginBottom: 10,
+        fontWeight: 'bold',
     },
     modalMessage: {
         fontSize: 16,
-        color: '#555', // Grey color for readability
+        color: '#555',
         textAlign: 'center',
-        marginTop: 10, // Spacing between title and message
-        fontFamily: 'jua', // Match your app's font style
+        marginVertical: 10,
+        lineHeight: 22, // Better readability
     },
+    buttonContainer: {
+        backgroundColor: '#E1E1E1', // Light gray for buttons
+        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginTop: 15,
+    },
+    
     input: {
         width: '100%',
         borderWidth: 1,
@@ -187,4 +202,48 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'jua',
     },
+    badgeContainer: {
+        flexDirection: "row",
+        justifyContent: "center", // Closer alignment
+        alignItems: "center",
+        marginTop: 20, // Slight margin for balance
+        // paddingHorizontal: 400, // Reduced padding
+    },
+    badgeWrapper: {
+        alignItems: "center",
+        marginHorizontal: 10,
+    },
+    badgeImage: {
+        width: 150,
+        height: 150,
+        resizeMode: "contain",
+    },
+    badgeText: {
+        marginTop: 10,
+        fontSize: 14,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+
+    badgesTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginVertical: 20,
+        fontFamily: "jua", // Keep consistent with your app's font style
+      },
+      
+      lockedBadgeWrapper: {
+        backgroundColor: "#E1E1E1", // Light gray background
+        borderRadius: 75, // Rounded container for consistency
+        padding: 5, // Inner padding for better spacing
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      
+      lockedBadgeImage: {
+        opacity: 0.5, // Make the badge image semi-transparent
+      },
+      
+      
 });
