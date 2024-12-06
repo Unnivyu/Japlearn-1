@@ -9,6 +9,8 @@ import mascot from '../assets/adventure.png';
 import lost from '../assets/lost.png';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg'; // Import the Back Icon
+import { useLessonProgress } from '../context/LessonProgressContext';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -51,7 +53,9 @@ const Content3 = () => {
   const [isPostCinematic, setIsPostCinematic] = useState(false);
   const [isFinalDialogue, setIsFinalDialogue] = useState(false); // State to show the final dialogue
   const [showGame3, setShowGame3] = useState(false); // State to conditionally render Game3
+  const [showFinishOverlay, setShowFinishOverlay] = useState(false); // Show overlay after final dialogue
 
+  const { setCompletedLessons, completedLessons } = useLessonProgress();
   const router = useRouter();
 
   const handleBackPress = () => {
@@ -91,6 +95,15 @@ const Content3 = () => {
     setIsFinalDialogue(true);
   };
 
+  const handleFinalClick = () => {
+    if (showFinishOverlay) {
+      setCompletedLessons({ sentence: true });
+      router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });    
+    } else {
+      setShowFinishOverlay(true); // Show the overlay with "Finish..." text
+    }
+  };
+
   const { character, text, image } = dialogues[currentDialogueIndex];
   const postCinematic = postCinematicDialogues[postCinematicIndex];
 
@@ -114,8 +127,8 @@ const Content3 = () => {
           ? nextCinematic
           : isPostCinematic
           ? nextPostCinematicDialogue
-          : isFinalDialogue
-          ? null
+          : isFinalDialogue || showFinishOverlay
+          ? handleFinalClick
           : nextDialogue
       }
     >
@@ -162,6 +175,15 @@ const Content3 = () => {
               </View>
             </>
           ) : null}
+
+          {/* Dark Overlay with "Finish..." */}
+          {showFinishOverlay && (
+            <TouchableWithoutFeedback onPress={handleFinalClick}>
+              <View style={styles.overlay}>
+                <Text style={styles.finishText}>Finish...</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          )}
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>

@@ -48,6 +48,7 @@ const CharacterExercise5 = () => {
         sets.push(characters.slice(i, i + 8));
     }
 
+    
     // Shuffle cards and set the current cards for the match game
     const prepareMatchGame = (setIndex) => {
         const currentSet = sets[setIndex];
@@ -104,9 +105,11 @@ const CharacterExercise5 = () => {
         router.back();
     };
 
+    
     const handleCompleteExercise = () => {
         router.push("/KatakanaMenu")
     }
+    
 
     const handleRestart = () => {
         setCurrentSetIndex(0);

@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesHiraganaSet1';
 import CompletionModal from '../components/CompletionModal';
 import { useLessonProgress } from '../context/LessonProgressContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KatakanaSet3 = () => {
   const router = useRouter();
@@ -31,6 +32,7 @@ const KatakanaSet3 = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalVisible, setModalVisible] = useState(false);
+  
 
   const handleNextPress = () => {
     if (currentIndex < katakanaSet.length - 1) {

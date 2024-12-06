@@ -40,6 +40,38 @@ const styles = StyleSheet.create({
         color: '#7d7d7d',
       },
       
+      awardModalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dim background
+      },
+      awardBadge: {
+        width: 200,
+        height: 200,
+        resizeMode: 'contain',
+      },
+      backdropLight: {
+        position: 'absolute',
+        width: 300, // Ensure it fits your design
+        height: 300,
+        alignSelf: 'center',
+        backgroundColor: 'rgba(144, 228, 193, 0.6)', // Soft teal with transparency
+        borderRadius: 9999, // Maintain circular shape
+        zIndex: 0, // Ensure it's behind the badge
+      },
+      
+      congratsMessage: {
+        color: 'white', // White text color
+        fontSize: 18, // Adjust font size
+        fontWeight: 'bold', // Make it bold
+        textAlign: 'center', // Center the text
+        marginTop: 20, // Add some spacing from the badge
+        paddingHorizontal: 10, // Add padding for better readability
+        textShadowColor: 'rgba(0, 0, 0, 0.8)', // Add a subtle text shadow
+        textShadowOffset: { width: 1, height: 1 }, // Shadow offset
+        textShadowRadius: 3, // Shadow radius
+      },
       
 });
 

@@ -164,6 +164,20 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 10,
   },
-  
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark transparent background
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  finishText: {
+    fontSize: 40, // Increase font size for prominence
+    color: '#f8f8f8', // Slightly off-white color
+    fontStyle: 'italic', // Apply italic style
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)', // Add a shadow for depth
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+  },
 });
 

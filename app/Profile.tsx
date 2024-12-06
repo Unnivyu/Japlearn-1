@@ -1,23 +1,54 @@
-import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, Modal } from "react-native";
+import React, { useContext, useState, useRef } from "react";
+import { View, Text, TouchableOpacity, Image, Modal, Dimensions } from "react-native";
 import BackIcon from "../assets/svg/back-icon.svg";
 import { AuthContext } from "../context/AuthContext";
-import CustomButton from "../components/CustomButton";
-import ForgetPasswordModal from "../components/ForgetPasswordModalProps"; // Import the ForgetPasswordModal
+import ForgetPasswordModal from "../components/ForgetPasswordModalProps";
 import expoconfig from "../expoconfig";
 import studentProfile from "../assets/img/studentProfile.png";
 import { styles } from "../styles/stylesProfile";
+import { useLessonProgress } from "../context/LessonProgressContext";
 import { useRouter } from "expo-router";
 
 const Profile = () => {
   const { user, logout } = useContext(AuthContext);
-  const [forgetPasswordVisible, setForgetPasswordVisible] = useState(false); // State for Forget Password modal
+  const { completedLessons } = useLessonProgress();
+  const [forgetPasswordVisible, setForgetPasswordVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [badgeModalVisible, setBadgeModalVisible] = useState(false);
+  const [badgeInfo, setBadgeInfo] = useState("");
+
   const router = useRouter();
 
+  const badges = [
+    {
+      title: "Character Badge",
+      image: require("../assets/kana_badge.png"),
+      grayImage: require("../assets/kanagray.png"),
+      acquired: completedLessons.katakanaMenu,
+      lockedMessage: "Complete the Characters Lesson to unlock this badge.",
+      unlockedMessage: "This badge is for completing the Characters Lesson.",
+    },
+    {
+      title: "Word Badge",
+      image: require("../assets/word_badge.png"),
+      grayImage: require("../assets/wordgray.png"),
+      acquired: completedLessons.vocab1 && completedLessons.vocab2,
+      lockedMessage: "Complete Vocabulary Lessons to unlock this badge.",
+      unlockedMessage: "This badge is for completing the Vocabulary Lesson.",
+    },
+    {
+      title: "Sentence Badge",
+      image: require("../assets/sentence_badge.png"),
+      grayImage: require("../assets/sentencegray.png"),
+      acquired: completedLessons.sentence,
+      lockedMessage: "Complete Sentence and Grammar Lessons to unlock this badge.",
+      unlockedMessage: "This badge is for completing the Sentence and Grammar Lesson.",
+    },
+  ];
+
   const handleBackPress = () => {
-    router.back();
+    router.push('/Menu');
   };
 
   const handleLogout = () => {
@@ -44,8 +75,17 @@ const Profile = () => {
     } catch (error) {
       setModalMessage(`Error: ${error.message}`);
     }
-    setForgetPasswordVisible(false); // Hide Forget Password modal
-    setModalVisible(true); // Show general modal for feedback
+    setForgetPasswordVisible(false);
+    setModalVisible(true);
+  };
+
+  const handleBadgeClick = (badge) => {
+    setBadgeInfo(badge.acquired ? badge.unlockedMessage : badge.lockedMessage);
+    setBadgeModalVisible(true);
+  };
+
+  const handleCloseBadgeModal = () => {
+    setBadgeModalVisible(false);
   };
 
   return (
@@ -65,7 +105,7 @@ const Profile = () => {
             <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setForgetPasswordVisible(true)} // Open Forget Password modal
+            onPress={() => setForgetPasswordVisible(true)}
             style={styles.buttonContainer}
           >
             <Text style={styles.buttonText}>Forgot Password</Text>
@@ -80,46 +120,58 @@ const Profile = () => {
           <Text style={styles.descText}>Email: {user ? user.email : ""}</Text>
         </View>
       </View>
-      <View style={styles.categoryContainer}>
-        <CustomButton
-          title="QUACKMAN"
-          onPress={() => console.log("QUACKMAN")}
-          buttonStyle={styles.categoryButton}
-          textStyle={styles.categoryButtonText}
-        />
-        <CustomButton
-          title="QUACKAMOLE"
-          onPress={() => console.log("QUACKAMOLE")}
-          buttonStyle={styles.categoryButton}
-          textStyle={styles.categoryButtonText}
-        />
-        <CustomButton
-          title="QUACKSLATE"
-          onPress={() => console.log("QUACKSLATE")}
-          buttonStyle={styles.categoryButton}
-          textStyle={styles.categoryButtonText}
-        />
+
+      {/* Badge Section */}
+      <View>
+        <Text style={styles.badgesTitle}>Badges</Text>
+        <View style={styles.badgeContainer}>
+          {badges.map((badge, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.badgeWrapper}
+              onPress={() => handleBadgeClick(badge)}
+            >
+              <Image
+                source={badge.acquired ? badge.image : badge.grayImage}
+                style={styles.badgeImage}
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
-      {/* Forget Password Modal */}
+      {/* Badge Info Modal */}
+      {badgeModalVisible && (
+        <Modal visible={badgeModalVisible} transparent animationType="fade">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Badge Info</Text>
+              <Text style={styles.modalMessage}>{badgeInfo}</Text>
+              <TouchableOpacity onPress={handleCloseBadgeModal} style={styles.buttonContainer}>
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
+
       <ForgetPasswordModal
         isVisible={forgetPasswordVisible}
-        onClose={() => setForgetPasswordVisible(false)} // Close Forget Password modal
-        onSubmit={handleForgetPassword} // Handle email submission
+        onClose={() => setForgetPasswordVisible(false)}
+        onSubmit={handleForgetPassword}
       />
 
-      {/* General Modal */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Notice</Text>
             <Text style={styles.modalMessage}>{modalMessage}</Text>
-            <CustomButton
-              title="Close"
-              onPress={() => setModalVisible(false)} // Close General Modal
-              buttonStyle={styles.button}
-              textStyle={styles.buttonText}
-            />
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.buttonContainer}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

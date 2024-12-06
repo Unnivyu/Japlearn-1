@@ -4,6 +4,7 @@ import BackIcon from '../assets/svg/back-icon.svg';
 import cardBackImage from '../assets/img/card_back.png';
 import { useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = (array) => {
@@ -49,6 +50,7 @@ const CharacterExercise6 = () => {
         sets.push(characters.slice(i, i + 8));
     }
 
+      
     // Shuffle cards and set the current cards for the match game
     const prepareMatchGame = (setIndex) => {
         const currentSet = sets[setIndex];
@@ -106,8 +108,13 @@ const CharacterExercise6 = () => {
     };
 
     const handleCompleteExercise = () => {
-        router.push("/KatakanaMenu")
-    }
+        router.push("/KatakanaMenu?fromExercise=true");
+    };
+
+    
+    // const handleCompleteExercise = () => {
+    //     router.push("/KatakanaMenu?showBadge=true");
+    // };
 
     const handleRestart = () => {
         setCurrentSetIndex(0);
