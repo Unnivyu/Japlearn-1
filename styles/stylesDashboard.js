@@ -22,7 +22,7 @@ export const stylesDashboard = StyleSheet.create({
         height: 130,
     },
     hText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         color: 'white',
         fontSize: 15,
     },
@@ -40,7 +40,7 @@ export const stylesDashboard = StyleSheet.create({
         borderBottomColor: '#D9D9D9',
     },
     menuText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 30,
     },
     button: {
@@ -73,7 +73,7 @@ export const stylesDashboard = StyleSheet.create({
         borderRadius: 50,
     },
     titleText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 20,
         marginBottom: 30
     },
@@ -109,14 +109,14 @@ export const stylesDashboard = StyleSheet.create({
     },
     classContentText: {
         color: '#333', // Use darker text for readability
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 18, // Increase font size for visibility
         textAlign: 'center', // Center the text within the box
     },
 
     pendingUserText: {
         color: '#333',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 18,
         textAlign: 'left',
         marginBottom: 2, // Minor space between name and email
@@ -132,7 +132,7 @@ export const stylesDashboard = StyleSheet.create({
         backgroundColor:'#8ED94D',
         padding: 10,
         height: 40,
-        width: 90,
+        width: 110,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -146,7 +146,7 @@ export const stylesDashboard = StyleSheet.create({
         marginTop: 20,
         padding: 20,
         borderRadius: 20,
-        width: 320,
+        width: 500,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -160,10 +160,28 @@ export const stylesDashboard = StyleSheet.create({
     },
     pendingUserText: {
         color: '#333',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 18,
         textAlign: 'left', // Align text to the left
         flex: 1, // Take up available space
-    }
-    
+    },
+    titleContainer: {
+        padding: 10,
+        backgroundColor: '#f1f1f1', // Example background color
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd', // Border under the title
+    },
+    titleText: {
+        fontSize: 35,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    backButtonContainer: {
+        height: 50,
+        width: 50,
+        borderRadius: 50,
+        backgroundColor: '#462A5E',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });

@@ -27,6 +27,7 @@ export const styles = StyleSheet.create({
     modalContent: {
         justifyContent: 'center',
         alignItems: 'center', // Center text and inputs inside the modal
+        marginTop:20
     },
     input: {
         height: 50, // Adjust input height for consistency
@@ -42,7 +43,7 @@ export const styles = StyleSheet.create({
     text: {
         marginBottom: 20,
         fontSize: 16,
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         textAlign: 'center',
         color: '#333', // Slightly darker text for better readability
     },
@@ -65,6 +66,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 17.5, // Perfect circle
         elevation: 2,
+        marginLeft: 20
     },
     closeButtonText: {
         fontSize: 18,
@@ -112,7 +114,7 @@ export const styles = StyleSheet.create({
     },
     contentText: {
         fontSize: 16,
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         color: 'white',
         textAlign: 'center', // Ensure text is centered in content areas
     },

@@ -143,9 +143,6 @@ const TeacherDashboard = () => {
                     </View>
 
                     <View style={stylesDashboard.menuContainer}>
-                        <View>
-                            <Text style={stylesDashboard.titleText}>Classes</Text>
-                        </View>
                         <View style={stylesDashboard.buttonContainer}>
                             <CustomButton title="Add" onPress={handleAddPress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
                             <CustomButton title="Remove" onPress={handleRemovePress} buttonStyle={stylesDashboard.button} textStyle={stylesDashboard.buttonText} />
@@ -154,6 +151,7 @@ const TeacherDashboard = () => {
                     </View>
 
                     <ScrollView contentContainerStyle={stylesDashboard.classContainer}>
+                    <Text style={stylesDashboard.titleText}>Classes</Text>
                         {classCodes.map((code, index) => (
                             <Pressable key={index} onPress={() => handleClassPress(code)}>
                                 <View style={stylesDashboard.classContent}>
