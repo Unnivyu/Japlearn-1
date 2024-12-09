@@ -27,7 +27,9 @@ public class QuackamoleContentController {
 
     @GetMapping
     public ResponseEntity<List<QuackamoleContent>> getAllContent() {
-        return ResponseEntity.ok(service.getAllContent());
+        // This returns a list of selected characters from the database
+        List<QuackamoleContent> selectedCharacters = service.getAllContent();
+        return ResponseEntity.ok(selectedCharacters);
     }
 
     @PostMapping("/add")

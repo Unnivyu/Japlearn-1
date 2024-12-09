@@ -17,6 +17,7 @@ public class QuackamoleContentService {
     }
 
     public List<QuackamoleContent> getAllContent() {
+        // Return all QuackamoleContent entities from the database
         return repository.findAll();
     }
 
