@@ -28,8 +28,9 @@ export const stylesEdit = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginBottom: 5,
         paddingHorizontal: 10,
+        marginTop:20
     },
     button: {
         backgroundColor: '#8ED94D',
@@ -47,15 +48,16 @@ export const stylesEdit = StyleSheet.create({
         padding: 20,
     },
     quackmaneditContent: {
-        width: '30%',
+        width: '50%',
         backgroundColor: '#8ED94D',
         borderRadius: 10,
         justifyContent: 'center',
-        padding: 20,
+        padding: 10,
         marginVertical: 5,
         borderBottomColor: '#83C449',
         borderBottomWidth: 5,
         alignSelf: 'center', 
+        marginTop:10
     },
     picker: {
         fontSize: 10,

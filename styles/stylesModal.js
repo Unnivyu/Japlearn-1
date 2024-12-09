@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     modalView: {
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 25, // Adjust padding for better spacing
+        padding: 25,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -19,11 +19,18 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: '85%', // Make it responsive to screen size
-        maxWidth: 400, // Ensure it doesn't get too wide
-        alignItems: 'center', // Center content inside the modal
+        width: '85%',
+        maxWidth: 400,
+        alignItems: 'center',
         position: 'relative',
+        maxHeight: '80%', // Limit modal height to enable scrolling
     },
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    
     modalContent: {
         justifyContent: 'center',
         alignItems: 'center', // Center text and inputs inside the modal
@@ -66,7 +73,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 17.5, // Perfect circle
         elevation: 2,
-        marginLeft: 20
+        marginLeft: 300
     },
     closeButtonText: {
         fontSize: 18,

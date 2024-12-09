@@ -203,7 +203,7 @@ const stylesSlate = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: 300,
+        width: 400,
         position: 'relative'
     },
     quackslateEditContent: {
@@ -237,7 +237,7 @@ const stylesSlate = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalView: {
-        width: 300,
+        width: 400,
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,
@@ -324,7 +324,7 @@ const stylesSlate = StyleSheet.create({
         height: 100, // Size of the image
       },
     modalView: {
-        width: 300,
+        width: 400,
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,
@@ -357,6 +357,10 @@ const stylesSlate = StyleSheet.create({
         marginTop: 20,
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    scrollViewContent: {
+        flexGrow: 1,
+        paddingBottom: 10, // Prevent content from being cut off
     },
 });
 
