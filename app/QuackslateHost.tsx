@@ -156,7 +156,7 @@ const QuackslateHost = () => {
                                 <TouchableOpacity
                                     onPress={() => {
                                         setIsGameFinished(false);
-                                        router.push('/QuackslateLevels');
+                                        router.push(`/QuackslateLevels?classCode=${classCode}`);
                                     }}
                                     style={stylesSlate.modalButton}
                                 >

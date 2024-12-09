@@ -343,6 +343,21 @@ const stylesSlate = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'center',
     },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    loadingBar: {
+        height: 10,
+        backgroundColor: '#4caf50',
+    },
+    loadingText: {
+        marginTop: 20,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
 });
 
 export default stylesSlate;

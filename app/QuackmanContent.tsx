@@ -4,18 +4,20 @@ import { stylesEdit } from '../styles/stylesEdit';
 import { styles } from '../styles/stylesModal';
 import BackIcon from '../assets/svg/back-icon.svg';
 import CustomButton from '../components/CustomButton';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import expoconfig from '../expoconfig';
 
 const QuackmanContent = () => {
+    const { classCode } = useLocalSearchParams();
     const [modalVisible, setModalVisible] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false);
-    const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+    const [confirmDeleteModalVisible, setConfirmDeleteModalVisible] = useState(false);
     const [content, setContent] = useState([]);
     const [word, setWord] = useState('');
     const [description, setDescription] = useState('');
     const [editWord, setEditWord] = useState('');
     const [editDescription, setEditDescription] = useState('');
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [highlightedItems, setHighlightedItems] = useState(new Set());
 
     const router = useRouter();
 
@@ -25,7 +27,7 @@ const QuackmanContent = () => {
 
     const fetchContent = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/quackmancontent');
+            const response = await fetch(`${expoconfig.API_URL}/api/quackmancontent`);
             const data = await response.json();
             if (response.ok) {
                 setContent(data);
@@ -42,7 +44,7 @@ const QuackmanContent = () => {
     const handleAddContent = async () => {
         try {
             const newContent = { romajiWord: word, description };
-            const response = await fetch('http://localhost:8080/api/quackmancontent', {
+            const response = await fetch(`${expoconfig.API_URL}/api/quackmancontent`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,7 +72,7 @@ const QuackmanContent = () => {
     const handleEditContent = async () => {
         try {
             const updatedContent = { romajiWord: editWord, description: editDescription };
-            const response = await fetch(`http://localhost:8080/api/quackmancontent/${content[selectedIndex].id}`, {
+            const response = await fetch(`${expoconfig.API_URL}/api/quackmancontent`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,43 +97,47 @@ const QuackmanContent = () => {
         }
     };
 
-    const handleRemoveContent = async () => {
-        try {
-            const idToRemove = content[selectedIndex].id;
-            const response = await fetch(`http://localhost:8080/api/quackmancontent/${idToRemove}`, {
-                method: 'DELETE',
-            });
-
-            if (response.ok) {
-                Alert.alert('Success', 'Content removed successfully!');
-                setConfirmModalVisible(false);
-                setSelectedIndex(null);
-                fetchContent();
+    const handleHighlight = (index) => {
+        setHighlightedItems((prev) => {
+            const updatedSet = new Set(prev);
+            if (updatedSet.has(index)) {
+                updatedSet.delete(index);
             } else {
-                const errorData = await response.text();
-                console.error('Failed to remove content:', errorData);
-                Alert.alert('Error', 'Failed to remove content.');
+                updatedSet.add(index);
             }
+            return updatedSet;
+        });
+    };
+
+    const handleRemoveHighlighted = async () => {
+        try {
+            const itemsToRemove = Array.from(highlightedItems).map((index) => content[index]);
+
+            for (const item of itemsToRemove) {
+                await fetch(`${expoconfig.API_URL}/api/quackmancontent/${item.id}`, {
+                    method: 'DELETE',
+                });
+            }
+
+            Alert.alert('Success', 'Highlighted content removed successfully!');
+            setHighlightedItems(new Set());
+            fetchContent();
         } catch (error) {
             console.error('Error removing content:', error);
-            Alert.alert('Error', 'Failed to remove content.');
+            Alert.alert('Error', 'Failed to remove highlighted content.');
+        } finally {
+            setConfirmDeleteModalVisible(false);
         }
     };
 
     const handleOpenEditModal = (index) => {
-        setSelectedIndex(index);
         setEditWord(content[index].romajiWord);
         setEditDescription(content[index].description);
         setEditModalVisible(true);
     };
 
-    const handleLongPressForRemoval = (index) => {
-        setSelectedIndex(index);
-        setConfirmModalVisible(true);
-    };
-
     const handleBackPress = () => {
-        router.back();
+        router.push(`/ClassDashboard?classCode=${classCode}`);
     };
 
     return (
@@ -153,24 +159,27 @@ const QuackmanContent = () => {
                     buttonStyle={stylesEdit.button}
                     textStyle={stylesEdit.buttonText}
                 />
+                <CustomButton
+                    title="Remove Selected"
+                    onPress={() => setConfirmDeleteModalVisible(true)}
+                    buttonStyle={stylesEdit.button}
+                    textStyle={stylesEdit.buttonText}
+                />
             </View>
 
             <ScrollView style={{ flex: 1 }}>
                 {content.map((item, index) => (
                     <TouchableOpacity
-                        key={item.id}
-                        onPress={() => handleOpenEditModal(index)}
-                        onLongPress={() => handleLongPressForRemoval(index)}
+                        key={index}
+                        onPress={() => handleHighlight(index)}
+                        onLongPress={() => handleOpenEditModal(index)}
+                        style={[
+                            stylesEdit.quackmaneditContent,
+                            highlightedItems.has(index) && { backgroundColor: 'lightblue' },
+                        ]}
                     >
-                        <View
-                            style={[
-                                stylesEdit.quackmaneditContent,
-                                selectedIndex === index && stylesEdit.selected,
-                            ]}
-                        >
-                            <Text style={stylesEdit.contentText}>{`Word: ${item.romajiWord}`}</Text>
-                            <Text style={stylesEdit.contentText}>{`Description: ${item.description}`}</Text>
-                        </View>
+                        <Text style={stylesEdit.contentText}>{`Word: ${item.romajiWord}`}</Text>
+                        <Text style={stylesEdit.contentText}>{`Description: ${item.description}`}</Text>
                     </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -240,20 +249,20 @@ const QuackmanContent = () => {
             </Modal>
 
             {/* Confirm Delete Modal */}
-            <Modal animationType="slide" transparent={true} visible={confirmModalVisible}>
+            <Modal animationType="slide" transparent={true} visible={confirmDeleteModalVisible}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.text}>Are you sure you want to delete this content?</Text>
+                        <Text style={styles.text}>Are you sure you want to delete the highlighted content?</Text>
                         <View style={styles.buttonRow}>
                             <CustomButton
                                 title="Yes"
-                                onPress={handleRemoveContent}
+                                onPress={handleRemoveHighlighted}
                                 buttonStyle={styles.button}
                                 textStyle={styles.buttonText}
                             />
                             <CustomButton
                                 title="No"
-                                onPress={() => setConfirmModalVisible(false)}
+                                onPress={() => setConfirmDeleteModalVisible(false)}
                                 buttonStyle={styles.button}
                                 textStyle={styles.buttonText}
                             />

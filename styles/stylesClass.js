@@ -214,4 +214,53 @@ export const stylesClass = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    searchInput: {
+        height: 45,                // Increase the height for better touch interaction
+        borderColor: '#E0E0E0',    // Light gray border color for subtlety
+        borderWidth: 1,            // Border width to match the design
+        marginHorizontal: 20,      // Add horizontal margin for better spacing
+        marginVertical: 10,        // Vertical margin for separation from other elements
+        paddingLeft: 20,           // Add padding for the left (icon space)
+        borderRadius: 25,          // Rounded corners for a modern look
+        backgroundColor: '#FFF',   // White background for the input field
+        fontSize: 16,              // Adjust font size for better readability
+        elevation: 3,              // Add shadow for a slightly elevated effect (on Android)
+        shadowColor: '#000',       // Shadow color for iOS
+        shadowOffset: { width: 0, height: 2 },  // Shadow offset for iOS
+        shadowOpacity: 0.1,        // Slight opacity for the shadow
+        shadowRadius: 4,   
+        flex: 1, // Takes up all available space in the container
+        marginRight: 10, // Add margin to the right of the search input        // Shadow blur radius for iOS
+    },
+    
+    searchContainer: {
+        flexDirection: 'row',          // Align the items horizontally
+        alignItems: 'center',         // Vertically center the items
+        justifyContent: 'space-between', // Ensure space between input and button
+        marginHorizontal: 20,         // Add horizontal margin for spacing
+        marginVertical: 10,
+        width: '90%'           // Vertical margin for separation
+    },
+
+    dateContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        marginVertical: 20,
+    },
+    dateButton: {
+        backgroundColor: '#8ED94D', // Set the background color to gray
+        paddingVertical: 12,       // Increase vertical padding for better height
+        paddingHorizontal: 200,     // Add horizontal padding to make it wider
+        margin: 8,                 // Adjust margin for spacing
+        borderRadius: 8,           // Round the corners
+        alignItems: 'center',      // Center the text horizontally
+    },
+    dateButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    
+    
 });

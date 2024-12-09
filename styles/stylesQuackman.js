@@ -32,6 +32,7 @@ export const stylesQuackman = StyleSheet.create({
     Quacklogo: {
         width: 150,
         height: 150,
+        marginBottom: 50,
     },
     textStyle: {
         fontFamily: 'jua',
@@ -327,6 +328,25 @@ export const stylesQuackman = StyleSheet.create({
         height: height + 50, // Increase height to stretch further down
         resizeMode: 'cover', // You can also try 'stretch' if needed
     },
+    loadingContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 
+    progressBarContainer: {
+        width: '80%', // Width of the progress bar container
+        height: 20, // Height of the progress bar
+        backgroundColor: '#ddd', // Background color for the bar
+        borderRadius: 10, // Rounded corners
+        overflow: 'hidden', // Ensure the progress doesn't overflow
+        marginTop: 10, // Space between the bar and other elements
+    },
+    progressBar: {
+        height: '100%',
+        backgroundColor: '#8423D9', // Progress bar color
+        borderRadius: 10, // Match the container's radius
+    },
+    
+    
     
 });

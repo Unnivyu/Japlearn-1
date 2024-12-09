@@ -44,6 +44,31 @@ const Quackman = ({ navigation }) => {
     const [bgMusic, setBgMusic] = useState();
 
     useEffect(() => {
+        const simulateProgress = () => {
+            if (progress >= 100) {
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true,
+                }).start(() => {
+                    setIsLoading(false);
+                });
+                return;
+            }
+    
+            const randomDelay = Math.random() * 1000 + 500;
+            const randomIncrement = Math.min(100 - progress, Math.random() * 10 + 5);
+            setTimeout(() => {
+                setProgress((prev) => Math.min(100, prev + randomIncrement));
+                simulateProgress();
+            }, randomDelay);
+        };
+    
+        simulateProgress();
+    }, [progress]);
+    
+
+    useEffect(() => {
         const loadSounds = async () => {
             const { sound: quackmanSound } = await Audio.Sound.createAsync(
                 require('../assets/audio/sfx/quackmanselect.mp3')
@@ -370,11 +395,15 @@ const Quackman = ({ navigation }) => {
                     style={stylesQuackman.loadingBackgroundImage}
                 />
                 <View style={stylesQuackman.loadingContent}>
-                    <Text style={stylesQuackman.loadingTitle}>Quackman</Text>
-                    <Image
-                        source={require('../assets/quacklogo.png')}
-                        style={stylesQuackman.loadingQuackLogo}
-                    />
+                    <Image source={require('../assets/flipload.gif')} style={stylesQuackman.Quacklogo} />
+                    <View style={stylesQuackman.progressBarContainer}>
+                        <Animated.View
+                            style={[
+                                stylesQuackman.progressBar,
+                                { width: `${progress}%` }, // Update the width dynamically
+                            ]}
+                        />
+                    </View>
                     {progress < 100 ? (
                         <Text style={stylesQuackman.loadingText}>
                             Loading... {Math.round(progress)}%
@@ -386,6 +415,7 @@ const Quackman = ({ navigation }) => {
             </TouchableOpacity>
         );
     }
+    
 
     if (gameOver) {
         return (

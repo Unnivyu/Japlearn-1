@@ -1,57 +1,43 @@
-import {
-  View,
-  Pressable,
-  ImageBackground,
-  Modal,
-  Animated,
-  Text,
-  Easing,
-  Button,
-  TouchableWithoutFeedback,
-} from 'react-native';
 import React, { useContext, useEffect, useState, useRef } from 'react';
+import { View, Pressable, ImageBackground, Modal, Animated, Text, Button, TouchableWithoutFeedback } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
 import { AuthContext } from '../context/AuthContext';
 import expoconfig from '../expoconfig';
-import { useLessonProgress } from '../context/LessonProgressContext'; // Importing progress context
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Easing } from 'react-native-reanimated';
 
 const WordsMenu = () => {
   const { user } = useContext(AuthContext);
-  const { completedLessons } = useLessonProgress(); // Access lesson progress
   const router = useRouter();
-  const { fromWords } = useLocalSearchParams(); // Get the query parameter to handle badge logic
-  const [wordLessons, setWordLessons] = useState([]);
-  const [classCode, setClassCode] = useState('');
-  const [isBadgeVisible, setBadgeVisible] = useState(false);
-  const badgeCheckCompleted = useRef(false); // Prevent duplicate badge logic
+  const { fromWords } = useLocalSearchParams();
+  const badgeCheckCompleted = useRef(false);
 
-  // Badge animation values
   const badgeScale = useRef(new Animated.Value(0)).current;
   const badgeSpin = useRef(new Animated.Value(0)).current;
   const messageOpacity = useRef(new Animated.Value(0)).current;
+  const backdropScale = useRef(new Animated.Value(0)).current; // Added backdrop animation
+
+  const [isBadgeVisible, setBadgeVisible] = useState(false);
+  const [wordLessons, setWordLessons] = useState([]);
+  const [classCode, setClassCode] = useState('');
 
   const handleBackPress = () => {
     router.push("/LearnMenu");
   };
 
   const fetchUserClassCode = async () => {
-    const userEmail = user?.email;
-
     try {
-      const response = await fetch(`${expoconfig.API_URL}/api/students/getStudentByEmail?email=${encodeURIComponent(userEmail)}`, {
+      const response = await fetch(`${expoconfig.API_URL}/api/students/getStudentByEmail?email=${user.email}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
 
       const responseData = await response.json();
       setClassCode(responseData.classCode);
-
     } catch (error) {
-      console.log("Error in fetching user data: ", error);
+      console.log("Error fetching user class code: ", error);
     }
   };
 
@@ -64,9 +50,69 @@ const WordsMenu = () => {
 
       const responseData = await response.json();
       setWordLessons(responseData);
-
     } catch (error) {
       console.log("Error fetching word lessons: ", error);
+    }
+  };
+
+  const checkBadgeConditions = async () => {
+    if (badgeCheckCompleted.current || !fromWords || fromWords !== 'true') return;
+
+    try {
+      const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const progress = await response.json();
+
+      if (progress.vocab1 && progress.vocab2 && !progress.badge2) {
+        setBadgeVisible(true);
+        animateBadge();
+        updateBadgeStatusOnBackend();
+      }
+    } catch (error) {
+      console.log("Error checking badge conditions: ", error);
+    }
+  };
+
+  const animateBadge = () => {
+    Animated.parallel([
+      Animated.timing(badgeScale, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
+      }),
+      Animated.timing(badgeSpin, {
+        toValue: 1,
+        duration: 4000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(messageOpacity, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(backdropScale, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }), // Animate backdrop scale
+    ]).start();
+  };
+
+  const updateBadgeStatusOnBackend = async () => {
+    try {
+      await fetch(`${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=badge2&value=true`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } catch (error) {
+      console.log("Error updating badge status: ", error);
     }
   };
 
@@ -78,84 +124,41 @@ const WordsMenu = () => {
 
   useEffect(() => {
     if (classCode) {
-      fetchWordLesson(); // Only call fetchWordLesson when classCode is available
+      fetchWordLesson();
     }
   }, [classCode]);
 
-  // Badge logic
   useEffect(() => {
-    const checkBadgeShown = async () => {
-      if (badgeCheckCompleted.current) return; // Avoid duplicate execution
-      badgeCheckCompleted.current = true;
+    checkBadgeConditions();
+  }, [fromWords]);
 
-      // Only show the badge if redirected from vocab2 (Finish button)
-      if (fromWords !== 'true') return;
-
-      const hasShownBadge = await AsyncStorage.getItem('wordBadgeShown');
-      if (!hasShownBadge && completedLessons.vocab2) {
-        setBadgeVisible(true);
-        await AsyncStorage.setItem('wordBadgeShown', 'true'); // Mark badge as shown
-        animateBadge();
-      }
-    };
-
-    checkBadgeShown();
-  }, [fromWords, completedLessons]);
-
-  const animateBadge = () => {
-    Animated.parallel([
-      Animated.timing(badgeScale, {
-        toValue: 1,
-        duration: 2000, // Slower animation
-        easing: Easing.out(Easing.exp),
-        useNativeDriver: true,
-      }),
-      Animated.timing(badgeSpin, {
-        toValue: 1, // From 0 to 1 for spin effect
-        duration: 2000, // Slower spinning
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(messageOpacity, {
-        toValue: 1,
-        duration: 1000, // Smoother fade-in
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-  
   const handleBadgeDismiss = () => {
     Animated.parallel([
       Animated.timing(badgeScale, {
         toValue: 0,
-        duration: 2000, // Slower shrink
+        duration: 1000,
         easing: Easing.out(Easing.exp),
         useNativeDriver: true,
       }),
       Animated.timing(badgeSpin, {
-        toValue: 0, // Reset to 0 for reverse spin
-        duration: 2000, // Slower reverse spinning
+        toValue: 0,
+        duration: 1000,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(messageOpacity, {
         toValue: 0,
-        duration: 1000, // Smoother fade-out
+        duration: 500,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
+      Animated.timing(backdropScale, {
+        toValue: 0,
+        duration: 1000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }), // Shrink backdrop along with badge
     ]).start(() => setBadgeVisible(false));
-  };
-
-  const resetBadgeState = async () => {
-    await AsyncStorage.removeItem('wordBadgeShown');
-    setBadgeVisible(false); // Ensure badge is not visible after reset
-    badgeCheckCompleted.current = false; // Allow badge check again
-  };
-
-  const handleButtonPress = (lessonId) => {
-    router.push(`/Words?lessonId=${lessonId}`);
   };
 
   return (
@@ -172,32 +175,31 @@ const WordsMenu = () => {
           </Pressable>
         </View>
         <View style={styles.menuContainer}>
-          {wordLessons.length > 0 && wordLessons.map((lesson, index) => (
+          {wordLessons.map((lesson, index) => (
             <ImageButton
               key={lesson.id}
               title={lesson.lesson_title}
               subtitle={lesson.lesson_type}
-              onPress={() => handleButtonPress(lesson.id)}
+              onPress={() => router.push(`/Words?lessonId=${lesson.id}`)}
               imageSource={require('../assets/img/kana_button.png')}
-              infoContent={`This lesson is about ${lesson.lesson_type}.`}
-              buttonStyle={index > 0 && !completedLessons[`vocab${index}`] ? [styles.disabledButton] : null}
-              textStyle={index > 0 && !completedLessons[`vocab${index}`] ? [styles.disabledText] : null}
-              disabled={index > 0 && !completedLessons[`vocab${index}`]}
             />
           ))}
         </View>
 
-        {/* Badge Awarding Animation */}
         {isBadgeVisible && (
           <Modal transparent={true} animationType="none" visible={isBadgeVisible}>
             <TouchableWithoutFeedback onPress={handleBadgeDismiss}>
               <View style={[styles.awardModalContainer, { backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
+                {/* Animated backdrop */}
                 <Animated.View
                   style={[
                     styles.backdropLight,
-                    { transform: [{ scale: badgeScale }] },
+                    {
+                      transform: [{ scale: backdropScale }]
+                    },
                   ]}
                 />
+                {/* Animated badge */}
                 <Animated.Image
                   source={require('../assets/word_badge.png')}
                   style={[
@@ -205,31 +207,25 @@ const WordsMenu = () => {
                     {
                       transform: [
                         { scale: badgeScale },
-                        { rotateY: badgeSpin.interpolate({
-                            inputRange: [0, 0.5, 1],
-                            outputRange: ['0deg', '180deg', '360deg'],
-                          })
+                        {
+                          rotateY: badgeSpin.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: ['0deg', '360deg'],
+                          }),
                         },
                       ],
                     },
                   ]}
                 />
                 <Animated.Text
-                  style={[
-                    styles.congratsMessage,
-                    { opacity: messageOpacity },
-                  ]}
+                  style={[styles.congratsMessage, { opacity: messageOpacity }]}
                 >
-                  Congratulations on completing the Japanese Vocabulary!
+                  Congratulations on completing the Vocabulary Lessons!
                 </Animated.Text>
               </View>
             </TouchableWithoutFeedback>
           </Modal>
         )}
-
-        <View style={{ marginTop: 20, alignItems: 'center' }}>
-          <Button title="Reset Badge State" onPress={resetBadgeState} />
-        </View>
       </View>
     </ImageBackground>
   );

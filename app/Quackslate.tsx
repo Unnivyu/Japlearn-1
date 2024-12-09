@@ -1,5 +1,5 @@
 import { SafeAreaView, TouchableOpacity, Text, View, Pressable, ImageBackground, Modal, Animated } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Profile from '../assets/svg/user_pf.svg';
 import Background from '../assets/img/MenuBackground.png';
@@ -10,6 +10,7 @@ import { stylesEdit } from '../styles/stylesEdit';
 import expoconfig from '../expoconfig';
 import { Image } from 'react-native';
 import { Audio } from 'expo-av';  // Import expo-av to play audio
+import { AuthContext } from '../context/AuthContext';
 import Sound from 'react-native-sound';
 
 const Quackslate = () => {
@@ -27,6 +28,7 @@ const Quackslate = () => {
     const [isAnswerModalVisible, setIsAnswerModalVisible] = useState(false);
     const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
     const [score, setScore] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
     const [isLastQuestionAnswered, setIsLastQuestionAnswered] = useState(false);
     const pollingInterval = useRef(null);
     const router = useRouter();
@@ -38,6 +40,35 @@ const Quackslate = () => {
     const correctGif = require('../assets/gif/correct.gif');
     const incorrectGif = require('../assets/gif/wrong.gif');
     const image = isAnswerCorrect ? correctGif : incorrectGif;
+    const { user } = useContext(AuthContext); 
+
+    const saveScore = async () => {
+        const fullName = `${user.fname} ${user.lname}`; // Combine first and last names
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`; // Format date as YYYY-MM-DD
+    
+        const scoreData = {
+            name: fullName,
+            email: user.email,
+            date: formattedDate, // Use the formatted date
+            score: score
+        };
+    
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/scores/save`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(scoreData)
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save score');
+            }
+            console.log('Score saved successfully');
+        } catch (error) {
+            console.error('Error saving score:', error);
+        }
+    };
+    
 
     useEffect(() => {
         const playBackgroundMusic = async () => {
@@ -326,12 +357,14 @@ const playAnswerSound = async (isCorrect: boolean) => {
             setIsLastQuestionAnswered(true);
             setIsAnswerModalVisible(true);
             setIsWaitingForNext(true);
+            
         
-            setTimeout(() => {
+            setTimeout(async () => {
                 if (isMounted.current) { // Ensure state changes only if the component is mounted
                     console.log("Hiding modal and marking game as finished.");
                     setIsAnswerModalVisible(false);
                     setIsGameFinished(true);
+                    await saveScore();
                     setIsLastQuestionAnswered(false);
                 }
             }, 3000);

@@ -1,25 +1,17 @@
-import {
-  View,
-  Pressable,
-  ImageBackground,
-  Modal,
-  Animated,
-  Text,
-  Image,
-  Easing,
-  Button,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import { View, Pressable, ImageBackground, Modal, Animated, Text, TouchableWithoutFeedback } from 'react-native';
 import { useRouter, useLocalSearchParams, usePathname } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
-import { useLessonProgress } from '../context/LessonProgressContext';
+import { AuthContext } from '../context/AuthContext'; // Assuming AuthContext holds user data
+import expoconfig from '../expoconfig'; // Configuration for your backend API
+import { Easing } from 'react-native-reanimated'; // Ensure you import Easing for animations
 
 const KatakanaMenu = () => {
-  const { completedLessons, setCompletedLessons } = useLessonProgress();
+  const { user } = useContext(AuthContext); // Get the user object (which includes email)
+  const [completedLessons, setCompletedLessons] = useState({});
+  const [badge1, setBadge1] = useState(false); // To track if the badge has been earned
   const router = useRouter();
   const { fromExercise } = useLocalSearchParams(); // Get the query parameter
   const currentPath = usePathname();
@@ -34,12 +26,6 @@ const KatakanaMenu = () => {
 
   useEffect(() => {
     const checkBadgeShown = async () => {
-      // Avoid duplicate execution
-      if (badgeCheckCompleted.current) {
-        console.log('Badge logic already processed.');
-        return;
-      }
-
       // Only execute badge logic if on the KatakanaMenu screen
       if (currentPath !== '/KatakanaMenu') {
         console.log('Not on KatakanaMenu. Skipping badge logic.');
@@ -48,39 +34,43 @@ const KatakanaMenu = () => {
 
       badgeCheckCompleted.current = true;
 
-      // Only show the badge if redirected from CharacterExercise6
+      // Only execute logic if redirected from CharacterExercise6
       if (fromExercise !== 'true') {
         console.log('Not redirected from CharacterExercise6. Skipping badge logic.');
         return;
       }
 
-      const hasShownBadge = await AsyncStorage.getItem('badgeShown');
-      console.log('Badge Shown State (from AsyncStorage):', hasShownBadge);
+      // Check if all Hiragana and Katakana lessons are completed
+      const allLessonsCompleted = (
+        completedLessons.hiragana1 && completedLessons.hiragana2 && completedLessons.hiragana3 &&
+        completedLessons.katakana1 && completedLessons.katakana2 && completedLessons.katakana3
+      );
 
-      if (!hasShownBadge && completedLessons.katakana3) {
-        console.log('Badge has not been shown yet. Showing now...');
+      // If all lessons are completed and badge1 is false, show the badge
+      if (allLessonsCompleted && !badge1) {
+        console.log('All lessons completed, showing badge now...');
         setBadgeVisible(true);
-        await AsyncStorage.setItem('badgeShown', 'true'); // Set badge as shown
         animateBadge();
+        await updateBadge1(); // Call the function to update badge1 to true in the backend
       } else {
-        console.log('Badge has already been shown or no badge trigger.');
+        console.log('Conditions for badge not met or badge already earned.');
       }
     };
 
     checkBadgeShown();
-  }, [completedLessons, fromExercise, currentPath]); // Add currentPath to dependencies
+  }, [completedLessons, fromExercise, currentPath, badge1]); // Add badge1 to the dependency array
 
   const animateBadge = () => {
     Animated.parallel([
       Animated.timing(badgeScale, {
         toValue: 1,
-        duration: 2000, // Slow enlargement
+        duration: 3500, // Slow enlargement
         easing: Easing.out(Easing.exp),
         useNativeDriver: true,
       }),
       Animated.timing(badgeSpin, {
         toValue: 1, // Coin spin effect
-        duration: 2000,
+        duration: 5000,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
@@ -97,39 +87,79 @@ const KatakanaMenu = () => {
     Animated.parallel([
       Animated.timing(badgeScale, {
         toValue: 0, // Shrink to zero
-        duration: 2000,
+        duration: 1000,
         easing: Easing.out(Easing.exp),
         useNativeDriver: true,
       }),
       Animated.timing(badgeSpin, {
         toValue: 0, // Reverse spin
-        duration: 2000,
+        duration: 4000,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(messageOpacity, {
         toValue: 0, // Fade-out
-        duration: 1000,
+        duration: 600,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
     ]).start(() => setBadgeVisible(false));
   };
 
+  const fetchProgress = async () => {
+    if (user && user.email) {
+      try {
+        const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`);
+        const data = await response.json();
 
-  // Interpolating rotateY for 3D coin spin effect
-  const coinSpin = badgeSpin.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: ['0deg', '180deg', '360deg'],
-  });
+        if (response.ok) {
+          setCompletedLessons({
+            hiragana1: data.hiragana1,
+            hiragana2: data.hiragana2,
+            hiragana3: data.hiragana3,
+            katakana1: data.katakana1,
+            katakana2: data.katakana2,
+            katakana3: data.katakana3,
+          });
 
+          setBadge1(data.badge1); // Update the badge1 state from the backend data
+        } else {
+          console.error('Failed to fetch student progress');
+        }
+      } catch (error) {
+        console.error('Error fetching progress:', error);
+      }
+    }
+  };
+
+  const updateBadge1 = async () => {
+    if (user && user.email) {
+      try {
+        const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=badge1&value=true`, {
+          method: 'PUT',
+        });
+
+        if (response.ok) {
+          console.log('Badge1 updated successfully!');
+          setBadge1(true); // Update the local state to reflect the change
+        } else {
+          console.error('Failed to update badge1');
+        }
+      } catch (error) {
+        console.error('Error updating badge1:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchProgress();
+  }, [user]);
 
   const handleBackPress = () => {
     router.push('/KanaMenu');
   };
 
   const handleButtonPress = (buttonTitle) => {
-    console.log(`Button pressed: ${buttonTitle}`);
     switch (buttonTitle) {
       case 'Katakana Basics 1':
         router.push('/KatakanaSet1');
@@ -147,13 +177,6 @@ const KatakanaMenu = () => {
       default:
         console.log(`Unhandled button: ${buttonTitle}`);
     }
-  };
-
-  const resetBadgeState = async () => {
-    await AsyncStorage.removeItem('badgeShown');
-    console.log('Badge state has been reset. You can now test the animation again.');
-    setBadgeVisible(false); // Ensure badge is not visible after reset
-    badgeCheckCompleted.current = false; // Allow badge check again
   };
 
   return (
@@ -205,37 +228,25 @@ const KatakanaMenu = () => {
             <TouchableWithoutFeedback onPress={handleBadgeDismiss}>
               <View style={styles.awardModalContainer}>
                 <Animated.View
-                  style={[
-                    styles.backdropLight,
-                    { transform: [{ scale: badgeScale }] },
-                  ]}
-                />
+                  style={[styles.backdropLight, { transform: [{ scale: badgeScale }] }]} />
                 <Animated.Image
                   source={require('../assets/kana_badge.png')}
                   style={[
                     styles.awardBadge,
-                    {
-                      transform: [{ scale: badgeScale }, { rotateY: coinSpin }],
-                    },
+                    { transform: [{ scale: badgeScale }, { rotateY: badgeSpin.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0deg', '360deg']
+                      }) }] }
                   ]}
                 />
                 <Animated.Text
-                  style={[
-                    styles.congratsMessage,
-                    { opacity: messageOpacity },
-                  ]}
-                >
+                  style={[styles.congratsMessage, { opacity: messageOpacity }]}>
                   Congratulations on mastering the Japanese characters!
                 </Animated.Text>
               </View>
             </TouchableWithoutFeedback>
           </Modal>
         )}
-
-        {/* Reset Badge Button for Testing */}
-        <View style={{ marginTop: 20, alignItems: 'center' }}>
-          <Button title="Reset Badge State" onPress={resetBadgeState} />
-        </View>
       </View>
     </ImageBackground>
   );

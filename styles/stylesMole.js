@@ -221,5 +221,48 @@ export const styles = StyleSheet.create({
         resizeMode: 'contain',
         opacity: 0.4, // Added transparency
     },
+
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    loadingBackgroundImage: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        resizeMode: 'cover',
+    },
+    loadingContent: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    loadingTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 20,
+    },
+    progressBarContainer: {
+        width: '80%',
+        height: 20,
+        backgroundColor: '#ddd',
+        borderRadius: 10,
+        overflow: 'hidden',
+        marginBottom: 10,
+    },
+    progressBar: {
+        height: '100%',
+        backgroundColor: '#4CAF50',
+        borderRadius: 10,
+    },
+    loadingText: {
+        fontSize: 16,
+        color: '#333',
+    },
+    
     
 });

@@ -41,6 +41,66 @@ const ClassDashboard = () => {
     const [lessonPageData, setShowLessonPageData] = useState(null);
     const [databankLessonContentData, setdatabankLessonContentData] = useState(null);
     const [refreshTrigger, setRefreshTrigger] = useState(false);
+    const [filteredUserData, setFilteredUserData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [availableDates, setAvailableDates] = useState([]);
+    const [showDatesModal, setShowDatesModal] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
+    const fetchAvailableDates = async () => {
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/scores/getAvailableDates`);
+            if (response.ok) {
+                const dates = await response.json();
+                setAvailableDates(dates);
+                setShowDatesModal(true); // Show modal after fetching dates
+            } else {
+                console.error('Failed to fetch available dates');
+            }
+        } catch (error) {
+            console.error('Error fetching available dates:', error);
+        }
+    };
+
+    const handleDateClick = (date) => {
+        setSelectedDate(date);
+        setShowConfirmationModal(true);
+    };
+    
+    
+
+
+    const downloadCsv = (date) => {
+        fetch(`${expoconfig.API_URL}/api/scores/export?date=${date}`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.blob(); // Convert to blob
+                } else {
+                    throw new Error('Failed to download file');
+                }
+            })
+            .then((blob) => {
+                // Create a download link
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `scores_${date}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            })
+            .catch((error) => console.error('Error downloading file:', error));
+    };
+
+    useEffect(() => {
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        const filtered = userData.filter(user =>
+            `${user.fname} ${user.lname}`.toLowerCase().includes(lowerCaseQuery)
+        );
+        setFilteredUserData(filtered);
+    }, [searchQuery, userData]);
+    
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -539,14 +599,31 @@ const ClassDashboard = () => {
 
             <View>
                 {activeCategory === 'MEMBERS' && (
-                    <View style={stylesClass.buttonContainer}>
-                        <CustomButton title="Remove" onPress={handleRemoveStudents} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
-                    </View>
+                     <View style={stylesClass.searchContainer}>
+                     <TextInput
+                         style={stylesClass.searchInput}
+                         placeholder="Search by name..."
+                         value={searchQuery}
+                         onChangeText={setSearchQuery}
+                         placeholderTextColor="#BDBDBD" // Subtle placeholder color
+                     />
+                     <CustomButton 
+                         title="Remove" 
+                         onPress={handleRemoveStudents} 
+                         buttonStyle={stylesClass.button} 
+                         textStyle={stylesClass.buttonText} 
+                     />
+                 </View>
+                 
                 )}
                 {activeCategory === 'SCORES' && (
                     <View style={stylesClass.buttonContainer}>
-                        <CustomButton title="Remove" onPress={handleRemoveScores} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
-                        <CustomButton title="Filter" onPress={() => setShowFilterModal(true)} buttonStyle={stylesClass.button} textStyle={stylesClass.buttonText} />
+                        <CustomButton
+                         title="Generate"
+                         onPress={fetchAvailableDates}
+                         buttonStyle={stylesClass.button}
+                         textStyle={stylesClass.buttonText}
+                        />
                     </View>
                 )}
                 {activeCategory === 'LESSONS' && (
@@ -561,7 +638,7 @@ const ClassDashboard = () => {
                 <View style={stylesClass.contentContainer}>
                     {activeCategory === 'MEMBERS' && (
                         <View style={stylesClass.membersContentContainer}>
-                            {userData.map((user, index) => (
+                            {filteredUserData.map((user, index) => (
                                 <TouchableOpacity key={index} onPress={() => toggleSelectStudent(user.id)}>
                                     <View style={[stylesClass.content, selectedStudents.has(user.id) && stylesClass.selectedScore]}>
                                         <Text style={stylesClass.classContentText}>
@@ -575,22 +652,25 @@ const ClassDashboard = () => {
 
                     {activeCategory === 'SCORES' && (
                         <View style={stylesClass.membersContentContainer}>
-                            {filteredScoresData.map((score, index) => (
-                                <TouchableOpacity key={index} onPress={() => toggleSelectScore(score.id)}>
-                                    <View style={[stylesClass.scoreContent, selectedScores.has(score.id) && stylesClass.selectedScore]}>
-                                        <Text style={stylesClass.classContentText}>Name: {score.fname} {score.lname}</Text>
-                                        <Text style={stylesClass.classContentText}>Score: {score.score}</Text>
-                                        <Text style={stylesClass.classContentText}>Game: {getGameName(score.level)}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
+                         <View style={stylesClass.dateContainer}>
+    {availableDates.map((date, index) => (
+        <TouchableOpacity
+            key={index}
+            style={stylesClass.dateButton}
+            onPress={() => handleDateClick(date)}
+        >
+            <Text style={stylesClass.dateButtonText}>{date}</Text>
+        </TouchableOpacity>
+    ))}
+</View>   
+                            
                         </View>
                     )}
 
                     {activeCategory === 'GAMES' && (
                         <View style={stylesClass.membersContentContainer}>
                             <View style={stylesClass.gameContent}>
-                                <CustomButton title="Edit" onPress={() => router.push(`/QuackamoleLevels?classCode=${classCode}`)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
+                                <CustomButton title="Edit" onPress={() => router.push(`/QuackamoleEdit?classCode=${classCode}`)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
                                 <View style={stylesClass.gameTextContainer}>
                                     <Text style={stylesClass.gameContentText}>Quackamole</Text>
                                 </View>
@@ -604,7 +684,7 @@ const ClassDashboard = () => {
                                 <Icon2 style={stylesClass.floatingIcon} width={130} height={130} fill={'#fff'} />
                             </View>
                             <View style={stylesClass.gameContent}>
-                                <CustomButton title="Edit" onPress={() => router.push(`/QuackmanLevels?classCode=${classCode}`)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
+                                <CustomButton title="Edit" onPress={() => router.push(`/QuackmanContent?classCode=${classCode}`)} buttonStyle={stylesClass.gameButton} textStyle={stylesClass.buttonText} />
                                 <View style={stylesClass.gameTextContainer}>
                                     <Text style={stylesClass.gameContentText}>Quackman</Text>
                                 </View>
@@ -655,6 +735,39 @@ const ClassDashboard = () => {
                     </View>
                 </View>
             </Modal>
+            <Modal
+    animationType="slide"
+    transparent={true}
+    visible={showConfirmationModal}
+    onRequestClose={() => setShowConfirmationModal(false)}
+>
+    <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+                Are you sure you want to download the CSV for {selectedDate}?
+            </Text>
+            <View style={styles.buttonRow}>
+                <CustomButton
+                    title="Yes"
+                    onPress={() => {
+                        downloadCsv(selectedDate);
+                        setShowConfirmationModal(false);
+                    }}
+                    buttonStyle={styles.button}
+                    textStyle={styles.buttonText}
+                />
+                <CustomButton
+                    title="No"
+                    onPress={() => setShowConfirmationModal(false)}
+                    buttonStyle={styles.button}
+                    textStyle={styles.buttonText}
+                />
+            </View>
+        </View>
+    </View>
+</Modal>
+
+
             <Modal
                 animationType="slide"
                 transparent={true}

@@ -1,31 +1,37 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableWithoutFeedback, ImageBackground, Image, Dimensions, Pressable } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, TouchableWithoutFeedback, ImageBackground, Image, Dimensions, Pressable, Animated } from 'react-native';
 import { styles } from '../styles/content3Styles';
 import Game3 from './Game3'; // Import Game3 component
 import talk from '../assets/talk.png';
 import hello from '../assets/hello.png';
-import point from '../assets/point.png';
-import mascot from '../assets/adventure.png';
-import lost from '../assets/lost.png';
+import idle from '../assets/idle.png';
+import thinking from '../assets/thinking.png';
+import katana from '../assets/Idle_Katana.png';
+import surprised from '../assets/Surprised.png';
+import lost from '../assets/Crying.png';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg'; // Import the Back Icon
-import { useLessonProgress } from '../context/LessonProgressContext';
-
+import expoconfig from '../expoconfig'; // Assuming you have API URL configuration
+import { AuthContext } from '../context/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
 const dialogues = [
   { character: 'Ahiru-san', text: 'Welcome to Japanese grammar! Today we are going to learn about basic sentence structures.', image: hello },
-  { character: 'Ahiru-san', text: 'In Japanese, the basic sentence order is Subject-Object-Verb. For example, "I eat sushi" would be "Watashi wa sushi wo tabemasu."', image: talk },
-  { character: 'Ahiru-san', text: 'It\'s important to remember the particles "wa" and "wo". They help to indicate the subject and the object in the sentence.', image: talk },
-  { character: 'Ahiru-san', text: 'Let\'s learn about some other important particles.', image: point },
-  { character: 'Ahiru-san', text: 'The particle "de" is a place particle and is used to indicate where an action takes place. For example, "I sleep in the room" would be "Watashi wa heya de nemasu."', image: talk },
-  { character: 'Ahiru-san', text: 'The particle "ni" is a destination particle and is used to indicate where someone is going to or coming from. For example, "I go to Tokyo" would be "Watashi wa Tokyo ni ikimasu."', image: talk },
-  { character: 'Ahiru-san', text: 'The particle "no" is a possessive particle and is used to show possession. For example, "my book" would be "watashi no hon."', image: point },
-  { character: 'Ahiru-san', text: 'The particle "ka" is a question particle and is used to turn a sentence into a question. For example, "Is this a pen?" would be "Kore wa pen desu ka?"', image: talk },
-  { character: 'Ahiru-san', text: 'Great job! Now you know some of the basic particles and the sentence order in Japanese.', image: talk },
-  { character: 'Ahiru-san', text: 'Are you ready for our adventure?!', image: mascot },
-  { character: 'Ahiru-san', text: 'Great! Ikimashou!', image: mascot }
+  { character: 'Ahiru-san', text: 'In Japanese, the basic sentence order is Subject-Object-Verb. For example, "I eat sushi" would be "Watashi wa sushi wo tabemasu." (Subject: "Watashi", Object: "sushi", Verb: "tabemasu")', image: talk },
+  { character: 'Ahiru-san', text: 'It\'s important to remember the particle "wa". It helps indicate the subject in the sentence.', image: surprised },
+  { character: 'Ahiru-san', text: 'The particle "desu" makes the sentence polite and is equivalent to the be-verbs "is", "am", and "are".', image: talk },
+  { character: 'Ahiru-san', text: 'Here\'s an example: Watashi wa Yuki desu (I am Yuki)', image: thinking },
+  { character: 'Ahiru-san', text: 'Let\'s learn about some other important particles.', image: idle },
+  { character: 'Ahiru-san', text: 'The particle "ja arimasen" is the present negative form of desu and is equivalent to "is not", "am not" and "are not".', image: thinking },
+  { character: 'Ahiru-san', text: 'The particle "deshita" is the past affirmative form of desu and is equivalent to "was" and "were".', image: idle },
+  { character: 'Ahiru-san', text: 'The particle "mo" replaces particle "wa" and is used to mean "too" or "also" in English."', image: thinking },
+  { character: 'Ahiru-san', text: 'For example: Suzuki san mo enjinia desu (Mr. Suzuki is also an engineer)', image: talk },
+  { character: 'Ahiru-san', text: 'The particle "no" indicates possession. It is equivalent to "of" or "apostrophe s" in English.', image: talk },
+  { character: 'Ahiru-san', text: 'An example of this is: CIT no sensei (teacher of CIT)', image: idle },
+  { character: 'Ahiru-san', text: 'Great job! Now you know some of the basic particles and the sentence order in Japanese.', image: hello },
+  { character: 'Ahiru-san', text: 'Are you ready for our adventure?!', image: katana },
+  { character: 'Ahiru-san', text: 'Great! Ikimashou!', image: katana }
 ];
 
 const cinematicScenes = [
@@ -35,8 +41,8 @@ const cinematicScenes = [
 ];
 
 const postCinematicDialogues = [
-  { character: 'Ahiru-san', text: 'Oh no! I think I am lost.', image: lost },
-  { character: 'Ahiru-san', text: 'Can you help me?', image: lost } // Trigger Game3 after this dialogue
+  { character: 'Ahiru-san', text: 'Oh no! There\'s an enemy!', image: lost },
+  { character: 'Ahiru-san', text: 'Can you help me defeat it?', image: lost } // Trigger Game3 after this dialogue
 ];
 
 const finalDialogue = {
@@ -46,6 +52,7 @@ const finalDialogue = {
 };
 
 const Content3 = () => {
+  const { user } = useContext(AuthContext);
   const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
   const [cinematicIndex, setCinematicIndex] = useState(0);
   const [isCinematic, setIsCinematic] = useState(false);
@@ -55,7 +62,8 @@ const Content3 = () => {
   const [showGame3, setShowGame3] = useState(false); // State to conditionally render Game3
   const [showFinishOverlay, setShowFinishOverlay] = useState(false); // Show overlay after final dialogue
 
-  const { setCompletedLessons, completedLessons } = useLessonProgress();
+  const [shakeAnim] = useState(new Animated.Value(0)); // Animation value for shaking
+
   const router = useRouter();
 
   const handleBackPress = () => {
@@ -95,15 +103,59 @@ const Content3 = () => {
     setIsFinalDialogue(true);
   };
 
-  const handleFinalClick = () => {
+  const handleFinalClick = async () => {
     if (showFinishOverlay) {
-      setCompletedLessons({ sentence: true });
-      router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });    
+      try {
+        // Fetch current sentence progress from the backend
+        console.log('Checking current sentence progress...');
+        const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        // Handle error in fetching progress
+        if (!response.ok) {
+          console.log("Failed to fetch sentence progress", response.statusText);
+          return;
+        }
+  
+        const data = await response.json();
+        console.log('Current Sentence Progress Data:', data);
+  
+        // Check if the progress is already set to true
+        if (data && data.sentence === true) {
+          console.log('Sentence progress is already true, skipping update.');
+          router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });
+          return;
+        }
+  
+        // If not set to true, proceed with the update
+        console.log('Updating sentence progress...');
+        const updateResponse = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=sentence&value=true`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        const updateData = await updateResponse.json();
+        console.log('Update Response Data:', updateData);
+  
+        if (updateResponse.ok && updateData.success) {
+          router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });
+        } else {
+          console.log("Failed to update sentence progress", updateData);
+        }
+      } catch (error) {
+        console.log("Error while checking and updating sentence progress:", error);
+      }
     } else {
       setShowFinishOverlay(true); // Show the overlay with "Finish..." text
     }
   };
-
+  
   const { character, text, image } = dialogues[currentDialogueIndex];
   const postCinematic = postCinematicDialogues[postCinematicIndex];
 
@@ -114,6 +166,36 @@ const Content3 = () => {
     : isPostCinematic
     ? require('../assets/forest.jpg')
     : require('../assets/background.png');
+
+  // Shake animation logic
+  const shake = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(shakeAnim, {
+          toValue: -10,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: 10,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: 0,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.delay(800), // Add delay to make the interval 1.5 seconds (1500 ms total)
+      ])
+    ).start();
+  };
+
+  useEffect(() => {
+    if (isPostCinematic) {
+      shake(); // Trigger the shake animation when postCinematic is true
+    }
+  }, [isPostCinematic]);
 
   if (showGame3) {
     // Render Game3 when it's time and pass the handleGameOver callback
@@ -146,7 +228,7 @@ const Content3 = () => {
               <View style={styles.characterContainer}>
                 <Text style={styles.character}>{character}</Text>
               </View>
-              <View style={[styles.dialogueContainer, { width: width * 0.9 }]}>
+              <View style={[styles.dialogueContainer, { width: width * 0.9 }]} >
                 <Text style={styles.dialogue}>{text}</Text>
               </View>
             </>
@@ -156,7 +238,13 @@ const Content3 = () => {
             </View>
           ) : isPostCinematic ? (
             <>
-              <Image source={postCinematic.image} style={styles.characterImage} />
+              <Animated.Image
+                source={postCinematic.image}
+                style={[
+                  styles.characterImage,
+                  { transform: [{ translateX: shakeAnim }] }, // Apply shake animation here
+                ]}
+              />
               <View style={styles.characterContainer}>
                 <Text style={styles.character}>{postCinematic.character}</Text>
               </View>
@@ -170,7 +258,7 @@ const Content3 = () => {
               <View style={styles.characterContainer}>
                 <Text style={styles.character}>{finalDialogue.character}</Text>
               </View>
-              <View style={[styles.dialogueContainer, { width: width * 0.9 }]}>
+              <View style={[styles.dialogueContainer, { width: width * 0.9 }]} >
                 <Text style={styles.dialogue}>{finalDialogue.text}</Text>
               </View>
             </>

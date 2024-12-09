@@ -1,14 +1,17 @@
 import { View, Pressable, ImageBackground } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 import styles from '../styles/stylesExercises';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
 import { AuthContext } from '../context/AuthContext';
 
-const LearnMenu = () => {
+const Exercises = () => {
   const { user } = useContext(AuthContext);
   const router = useRouter();
+  
+  const [refreshKey, setRefreshKey] = useState(0); // State to force re-render on page focus
 
   const handleBackPress = () => {
     router.push('/Menu');
@@ -24,12 +27,20 @@ const LearnMenu = () => {
         router.push('/Quackman');
         break;
       case 'GRAMMAR':
-        console.log('GRAMMAR button pressed');
+        router.push('/QuackslateMenu');
         break;
       default:
         console.log('Unknown button pressed');
     }
   };
+
+  // Refresh the page when it gains focus
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Exercises page refreshed!');
+      setRefreshKey(prevKey => prevKey + 1); // Increment refreshKey to trigger re-render
+    }, [])
+  );
 
   return (
     <ImageBackground
@@ -45,7 +56,9 @@ const LearnMenu = () => {
           </Pressable>
         </View>
         <View style={styles.menuContainer}>
+          {/* Add refreshKey as the key to force re-render */}
           <ImageButton
+            key={`kana-button-${refreshKey}`} // Key changes to force re-render
             title="CHARACTERS"
             subtitle="KANA Exercise"
             onPress={() => handleButtonPress('KANA')}
@@ -53,6 +66,7 @@ const LearnMenu = () => {
             infoContent="This exercise tests your understanding of KANA characters."
           />
           <ImageButton
+            key={`words-button-${refreshKey}`} // Key changes to force re-render
             title="WORDS"
             subtitle="Japanese Words Exercise"
             onPress={() => handleButtonPress('WORDS')}
@@ -60,6 +74,7 @@ const LearnMenu = () => {
             infoContent="This exercise tests your understanding of basic Japanese words."
           />
           <ImageButton
+            key={`grammar-button-${refreshKey}`} // Key changes to force re-render
             title="GRAMMAR"
             subtitle="Grammar Exercise"
             onPress={() => handleButtonPress('GRAMMAR')}
@@ -72,4 +87,4 @@ const LearnMenu = () => {
   );
 };
 
-export default LearnMenu;
+export default Exercises;

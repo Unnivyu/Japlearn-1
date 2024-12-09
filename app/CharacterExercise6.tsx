@@ -109,7 +109,7 @@ const CharacterExercise6 = () => {
 
     const handleCompleteExercise = () => {
         router.push("/KatakanaMenu?fromExercise=true");
-    };
+      };
 
     
     // const handleCompleteExercise = () => {

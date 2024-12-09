@@ -1,14 +1,45 @@
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Pressable, ImageBackground } from 'react-native';
-import React from 'react';
 import { useRouter } from 'expo-router';
 import styles from '../styles/stylesWordMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
 import ImageButton from '../components/ImageButton';
-import { useLessonProgress } from '../context/LessonProgressContext'; // Import Lesson Progress Context
+import expoconfig from '../expoconfig'; // Import your backend API configuration
+import { AuthContext } from '../context/AuthContext';
+
 
 const KanaMenu = () => {
-  const { completedLessons } = useLessonProgress(); // Access global lesson progress
   const router = useRouter();
+  const { user } = useContext(AuthContext);
+  const [completedLessons, setCompletedLessons] = useState({
+    hiragana1: false,
+    hiragana2: false,
+    hiragana3: false,
+  });
+
+  // Fetch lesson progress from the backend (you can change the endpoint based on your API)
+  const fetchLessonProgress = async () => {
+    try {
+      const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`);
+      const data = await response.json();
+      if (response.ok) {
+        // Update the lesson completion status based on the backend data
+        setCompletedLessons({
+          hiragana1: data.hiragana1,
+          hiragana2: data.hiragana2,
+          hiragana3: data.hiragana3,
+        });
+      } else {
+        console.error('Failed to fetch lesson progress');
+      }
+    } catch (error) {
+      console.error('Error fetching lesson progress:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLessonProgress();
+  }, []);
 
   const handleBackPress = () => {
     router.push("/LearnMenu");
@@ -20,8 +51,10 @@ const KanaMenu = () => {
         router.push('/HiraganaMenu');
         break;
       case 'Katakana':
-        if (completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3) {
-          router.push('/KatakanaMenu'); // Only proceed if Hiragana Basics are complete
+        if (completedLessons.hiragana1 && completedLessons.hiragana2 && completedLessons.hiragana3) {
+          router.push('/KatakanaMenu'); // Only proceed if all Hiragana lessons are complete
+        } else {
+          console.log('Hiragana lessons are not completed yet.');
         }
         break;
       default:
@@ -52,7 +85,7 @@ const KanaMenu = () => {
             infoContent="This lesson introduces you to Hiragana characters."
           />
 
-          {/* Katakana Button - Disabled if Hiragana Basics are not completed */}
+          {/* Katakana Button - Disabled if any Hiragana lessons are not completed */}
           <ImageButton
             title="Katakana"
             subtitle="Learn Katakana characters"
@@ -60,16 +93,16 @@ const KanaMenu = () => {
             imageSource={require('../assets/img/kana_button.png')}
             infoContent="This lesson introduces you to Katakana characters."
             buttonStyle={
-              !(completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3)
+              !(completedLessons.hiragana1 && completedLessons.hiragana2 && completedLessons.hiragana3)
                 ? styles.disabledButton
                 : null
             }
             textStyle={
-              !(completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3)
+              !(completedLessons.hiragana1 && completedLessons.hiragana2 && completedLessons.hiragana3)
                 ? styles.disabledText
                 : null
             }
-            disabled={!(completedLessons.basics1 && completedLessons.basics2 && completedLessons.basics3)}
+            disabled={!(completedLessons.hiragana1 && completedLessons.hiragana2 && completedLessons.hiragana3)}
           />
         </View>
       </View>

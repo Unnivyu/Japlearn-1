@@ -1,14 +1,17 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
-import styles from '../styles/stylesHiraganaSet1';
+import styles from '../styles/stylesHiraganaSet1'; // Reusing styles from HiraganaSet1
 import CompletionModal from '../components/CompletionModal';
-import { useLessonProgress } from '../context/LessonProgressContext';
+import { AuthContext } from '../context/AuthContext';
+import expoconfig from '../expoconfig'; // Import the configuration for your backend API
 
 const KatakanaSet2 = () => {
+  const { user } = useContext(AuthContext); // Get the user object (which includes email)
   const router = useRouter();
-  const { setCompletedLessons, completedLessons } = useLessonProgress();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const katakanaSet = [
     { character: 'タ', romaji: 'ta' },
@@ -28,8 +31,33 @@ const KatakanaSet2 = () => {
     { character: 'ホ', romaji: 'ho' },
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isModalVisible, setModalVisible] = useState(false);
+  // Update backend to set 'katakana2' to true
+  const updateKatakanaProgress = async () => {
+    if (user && user.email) {
+      try {
+        const response = await fetch(
+          `${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=katakana2&value=true`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (response.ok) {
+          console.log("Katakana2 progress updated successfully!"); // Success message
+        } else {
+          const error = await response.json();
+          console.log(error.message || "An error occurred.");
+        }
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
+    } else {
+      console.error('No user email found.');
+    }
+  };
 
   const handleNextPress = () => {
     if (currentIndex < katakanaSet.length - 1) {
@@ -44,12 +72,11 @@ const KatakanaSet2 = () => {
   };
 
   const handleCompletePress = async () => {
-    console.log('Marking Katakana Basics 2 as complete...');
-    setCompletedLessons({ ...completedLessons, katakana2: true });
-    console.log('Current Progress State:', completedLessons);
+    // Update the backend to mark Katakana2 as completed
+    await updateKatakanaProgress();
 
     setModalVisible(false); // Close the modal
-    router.push('/CharacterExercise5');
+    router.push('/CharacterExercise5'); // Navigate to the next exercise
   };
 
   return (

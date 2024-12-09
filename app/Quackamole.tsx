@@ -36,8 +36,37 @@ const Quackamole = () => {
     const moleRefs = useRef([]); // Array of refs for moles
     const positionAnimations = useRef(holes.map(() => new Animated.Value(100))).current;
     const opacityAnimations = useRef(holes.map(() => new Animated.Value(0))).current;
+    const [skipModalOnBackPress, setSkipModalOnBackPress] = useState(false); // Control modal visibility on back press
+    const [skipStartModalOnBackPress, setSkipStartModalOnBackPress] = useState(false); // Skip start modal on back press
+
+    const [loading, setLoading] = useState(true);
+    const [progress, setProgress] = useState(0);
+    const fadeAnim = useRef(new Animated.Value(1)).current;
 
     const router = useRouter();
+
+    useEffect(() => {
+        const simulateLoading = () => {
+            if (progress >= 100) {
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true,
+                }).start(() => {
+                    setLoading(false);
+                });
+                return;
+            }
+
+            const randomIncrement = Math.min(100 - progress, Math.random() * 3 + 1);
+            setTimeout(() => {
+                setProgress((prev) => Math.min(100, prev + randomIncrement));
+                simulateLoading();
+            }, 500);
+        };
+
+        simulateLoading();
+    }, [progress]);
 
     // Fetch content on mount
     useEffect(() => {
@@ -79,21 +108,23 @@ const Quackamole = () => {
     };
 
     const updateMoles = () => {
+        if (secondCounter >= 30) {
+            // If timer runs out, move to the next character
+            setCurrentIndex((prev) => prev + 1); // Move to the next character
+            setSecondCounter(0); // Reset the timer
+            return;
+        }
+    
         if (currentIndex >= kanaCharacters.length) {
             // End the game if all characters are processed
             setGameOver(true);
             return;
         }
-
-        if (secondCounter >= 29 || gameOver) {
-            setGameOver(true);
-            return;
-        }
-
+    
         let newHoles = new Array(9).fill(null);
         const activeMolesCount = Math.floor(Math.random() * 4) + 1;
         const activeIndexes = [];
-
+    
         while (activeIndexes.length < activeMolesCount) {
             const randomIndex = Math.floor(Math.random() * 9);
             if (!activeIndexes.includes(randomIndex) && !holes[randomIndex]) {
@@ -113,7 +144,7 @@ const Quackamole = () => {
                 }, 1500);
             }
         }
-
+    
         setHoles((prev) => {
             const updatedHoles = [...prev];
             activeIndexes.forEach((index) => {
@@ -121,7 +152,7 @@ const Quackamole = () => {
             });
             return updatedHoles;
         });
-        setSecondCounter((prev) => prev + 2);
+        setSecondCounter((prev) => prev + 2); // Increase timer every second
     };
 
     const animateMole = (index, shouldPopUp) => {
@@ -239,6 +270,15 @@ const Quackamole = () => {
     };
 
     const handleBackPress = () => {
+        setSkipModalOnBackPress(true);
+        setSkipStartModalOnBackPress(true);  // Prevent the "Ready to start" modal
+        setGameOver(true);  // Immediately set the game over to stop further logic
+        setIsGameStarted(false);  // Stop game if it's active
+        setSecondCounter(0);  // Reset timer
+
+       
+
+        // Navigate back immediately
         router.push('/Exercises');
     };
 
@@ -246,7 +286,30 @@ const Quackamole = () => {
         setIsGameStarted(true);
     };
 
-    if (gameOver) {
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <Image
+                    source={require('../assets/kana.png')} // Use the attached background image
+                    style={styles.loadingBackgroundImage}
+                />
+                <View style={styles.loadingContent}>
+                    <Text style={styles.loadingTitle}>Loading...</Text>
+                    <View style={styles.progressBarContainer}>
+                        <Animated.View
+                            style={[
+                                styles.progressBar,
+                                { width: `${progress}%` }, // Dynamically set the progress bar width
+                            ]}
+                        />
+                    </View>
+                    <Text style={styles.loadingText}>{Math.round(progress)}%</Text>
+                </View>
+            </View>
+        );
+    }
+
+    if (gameOver && !skipModalOnBackPress) {
         return (
             <Modal visible={true} transparent animationType="slide">
                 <View style={styles.modalContainer}>
@@ -265,7 +328,7 @@ const Quackamole = () => {
 
     return (
         <View style={styles.mainContainer}>
-            {!isGameStarted && (
+            {!isGameStarted && !skipStartModalOnBackPress && ( // Skip modal if 'skipStartModalOnBackPress' is true
                 <Modal visible={true} transparent animationType="slide">
                     <View style={styles.modalContainer}>
                         <View style={styles.modalContent}>
@@ -281,7 +344,7 @@ const Quackamole = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.timerContainer}>
-                <Text style={styles.timerText}>Time: {29 - secondCounter}s</Text>
+                <Text style={styles.timerText}>Time: {30 - secondCounter}s</Text>
             </View>
             <View style={styles.displayContainer}>
                 <Text style={styles.charText}>{kanaCharacters[currentIndex]}</Text>
@@ -290,13 +353,10 @@ const Quackamole = () => {
                 {holes.map((char, index) => (
                     <View key={index} style={styles.hole}>
                         <Animated.View
-                            style={[
-                                styles.mole,
-                                {
-                                    transform: [{ translateY: positionAnimations[index] }],
-                                    opacity: opacityAnimations[index],
-                                },
-                            ]}
+                            style={[styles.mole, {
+                                transform: [{ translateY: positionAnimations[index] }],
+                                opacity: opacityAnimations[index],
+                            }]}
                             ref={(ref) => (moleRefs.current[index] = ref)}
                         >
                             {char && (
@@ -312,62 +372,42 @@ const Quackamole = () => {
             {isCheckVisible && (
                 <Animated.Image
                     source={CheckImage}
-                    style={[
-                        styles.checkImage,
-                        {
-                            opacity: checkAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0] }),
-                            transform: [
-                                {
-                                    translateY: checkAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, -50] }),
-                                },
-                            ],
-                        },
-                    ]}
+                    style={[styles.checkImage, {
+                        opacity: checkAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0] }),
+                        transform: [{ translateY: checkAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, -50] }) }],
+                    }]}
                 />
             )}
             {isWrongVisible && (
                 <Animated.Image
                     source={WrongImage}
-                    style={[
-                        styles.wrongImage,
-                        {
-                            opacity: wrongAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0] }),
-                            transform: [
-                                {
-                                    translateY: wrongAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, -50] }),
-                                },
-                            ],
-                        },
-                    ]}
+                    style={[styles.wrongImage, {
+                        opacity: wrongAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0] }),
+                        transform: [{ translateY: wrongAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, -50] }) }],
+                    }]}
                 />
             )}
             {isHammerVisible && (
                 <Animated.Image
                     source={Hammer}
-                    style={[
-                        styles.hammer,
-                        {
-                            top: hammerPosition.y,
-                            left: hammerPosition.x,
-                            transform: [
-                                { translateY: hammerAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
-                                { rotate: hammerAnimation.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-30deg'] }) },
-                            ],
-                        },
-                    ]}
+                    style={[styles.hammer, {
+                        top: hammerPosition.y,
+                        left: hammerPosition.x,
+                        transform: [
+                            { translateY: hammerAnimation.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
+                            { rotate: hammerAnimation.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-30deg'] }) },
+                        ],
+                    }]}
                 />
             )}
             {isWhackVisible && (
                 <Animated.Image
                     source={WhackImage}
-                    style={[
-                        styles.whack,
-                        {
-                            top: whackPosition.y,
-                            left: whackPosition.x,
-                            opacity: whackAnimation,
-                        },
-                    ]}
+                    style={[styles.whack, {
+                        top: whackPosition.y,
+                        left: whackPosition.x,
+                        opacity: whackAnimation,
+                    }]}
                 />
             )}
         </View>

@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesHiraganaSet1';
 import CompletionModal from '../components/CompletionModal';
-import { useLessonProgress } from '../context/LessonProgressContext';
+import { AuthContext } from '../context/AuthContext'; // Assuming you have an AuthContext
+import expoconfig from '../expoconfig'; // Configuration for your backend API
 
 const HiraganaSet2 = () => {
   const router = useRouter();
-  const { setCompletedLessons, completedLessons } = useLessonProgress(); // Access progress context
+  const { user } = useContext(AuthContext); // Get the user object (which includes email)
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const hiraganaSet = [
     { character: 'た', romaji: 'ta' },
@@ -28,8 +31,33 @@ const HiraganaSet2 = () => {
     { character: 'ほ', romaji: 'ho' },
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isModalVisible, setModalVisible] = useState(false);
+  // Update backend to set 'hiragana2' to true
+  const updateHiraganaProgress = async () => {
+    if (user && user.email) {
+      try {
+        const response = await fetch(
+          `${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=hiragana2&value=true`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (response.ok) {
+          console.log("Hiragana2 progress updated successfully!"); // Success message
+        } else {
+          const error = await response.json();
+          console.log(error.message || "An error occurred.");
+        }
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
+    } else {
+      console.error('No user email found.');
+    }
+  };
 
   const handleNextPress = () => {
     if (currentIndex < hiraganaSet.length - 1) {
@@ -44,9 +72,8 @@ const HiraganaSet2 = () => {
   };
 
   const handleCompletePress = async () => {
-    console.log('Marking Basics2 as complete...');
-    setCompletedLessons({ basics2: true });
-    console.log('Current Progress State:', completedLessons); // Debugging
+    // Update the backend to mark Hiragana2 as completed
+    await updateHiraganaProgress();
 
     setModalVisible(false); // Close the modal
     router.push('/CharacterExercise2');

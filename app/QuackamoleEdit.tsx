@@ -7,7 +7,7 @@ import expoconfig from '../expoconfig';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
 const QuackamoleEdit = () => {
-    const { classCode, levelId } = useLocalSearchParams();
+    const { classCode } = useLocalSearchParams();
     const router = useRouter();
 
     const screenWidth = Dimensions.get('window').width;
@@ -82,23 +82,31 @@ const QuackamoleEdit = () => {
     ];
 
     const [selectedSet, setSelectedSet] = useState('Hiragana');
-    const [kana, setKana] = useState([]);
-    const [romaji, setRomaji] = useState([]);
+    const [kana, setKana] = useState([]);  // Selected Kana
+    const [romaji, setRomaji] = useState([]);  // Selected Romaji
 
     useEffect(() => {
         fetchContent();
-    }, [levelId]);
+    }, []);
 
+    // Fetch content from the backend, including what is already selected
     const fetchContent = async () => {
-        const url = `${expoconfig.API_URL}/api/quackamolecontent/getContent/${levelId}`;
+        const url = `${expoconfig.API_URL}/api/quackamolecontent`;
         try {
             const response = await fetch(url);
             const data = await response.json();
-            if (response.ok && data.kana && data.kana.length > 0) {
-                setKana(data.kana);
-                setRomaji(data.romaji);
+            
+            console.log('Fetched Data:', data);  // Log the fetched data to understand its structure
+            
+            if (response.ok && data.length > 0) {
+                // If the data is an array of content, handle it correctly
+                const kanaArray = data.map(item => item.kana).flat();
+                const romajiArray = data.map(item => item.romaji).flat();
+                
+                setKana(kanaArray);  // Set the kana array
+                setRomaji(romajiArray);  // Set the romaji array
             } else {
-                console.log('No content found for this level');
+                console.log('No content found');
                 setKana([]);
                 setRomaji([]);
             }
@@ -107,16 +115,17 @@ const QuackamoleEdit = () => {
             setKana([]);
             setRomaji([]);
         }
-    }
+    };
+    
+    
 
     const addCharacter = async (character) => {
-        const url = `${expoconfig.API_URL}/api/quackamolecontent/addCharacter`;
+        const url = `${expoconfig.API_URL}/api/quackamolecontent/add`;
         const contentData = {
-            levelId,
             kana: character.kana,
             romaji: character.romaji
         };
-
+    
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -125,22 +134,23 @@ const QuackamoleEdit = () => {
                 },
                 body: JSON.stringify(contentData)
             });
-
+    
             const data = await response.json();
             if (response.ok) {
                 console.log('Character added successfully:', data);
+                fetchContent();  // Refresh the content after adding a new character
             } else {
-                throw new Error(`Failed to add character: ${data.message} (Status code: ${response.status})`);
+                throw new Error(`Failed to add character: ${data.message}`);
             }
         } catch (error) {
             console.error('Error adding character:', error);
         }
-    }
+    };
+    
 
     const removeCharacter = async (character) => {
-        const url = `${expoconfig.API_URL}/api/quackamolecontent/removeCharacter`;
+        const url = `${expoconfig.API_URL}/api/quackamolecontent/remove`;  // Adjusted to match backend API
         const contentData = {
-            levelId,
             kana: character.kana,
             romaji: character.romaji
         };
@@ -158,30 +168,30 @@ const QuackamoleEdit = () => {
             if (response.ok) {
                 console.log('Character removed successfully:', data);
             } else {
-                throw new Error(`Failed to remove character: ${data.message} (Status code: ${response.status})`);
+                throw new Error(`Failed to remove character: ${data.message}`);
             }
         } catch (error) {
             console.error('Error removing character:', error);
         }
-    }
+    };
 
     const handleSetChange = (value) => {
         setSelectedSet(value);
-        setKana([]);
-        setRomaji([]);
-    }
+        setKana([]);  // Reset kana for the new set
+        setRomaji([]);  // Reset romaji for the new set
+    };
 
     const handleCharacterPress = (character) => {
         if (kana.includes(character.kana)) {
             setKana(kana.filter(char => char !== character.kana));
             setRomaji(romaji.filter(rom => rom !== character.romaji));
-            removeCharacter(character);  // Remove the character from backend
+            removeCharacter(character);
         } else {
             setKana([...kana, character.kana]);
             setRomaji([...romaji, character.romaji]);
-            addCharacter(character);  // Add the character to backend
+            addCharacter(character);
         }
-    }
+    };
 
     const renderCharacters = () => {
         let characters = [];
@@ -207,24 +217,25 @@ const QuackamoleEdit = () => {
             default:
                 break;
         }
+
         return characters.map((character, index) => (
             <TouchableOpacity
                 key={index}
                 onPress={() => handleCharacterPress(character)}
                 style={[
                     stylesEdit.characterButton,
-                    kana && kana.includes(character.kana) && stylesEdit.selectedCharacter,
-                    { width: buttonWidth, height: buttonWidth, justifyContent: 'center', alignItems: 'center' } // Use the calculated width and height
+                    kana && kana.includes(character.kana) && stylesEdit.selectedCharacter,  // Highlight selected characters
+                    { width: buttonWidth, height: buttonWidth, justifyContent: 'center', alignItems: 'center' }
                 ]}
             >
                 <Text style={stylesEdit.characterText}>{character.kana}</Text>
             </TouchableOpacity>
         ));
-    }
+    };
 
     const handleBackPress = () => {
-        router.push(`/QuackamoleLevels?classCode=${classCode}`);
-    }
+        router.push(`/ClassDashboard?classCode=${classCode}`);  // Pass classCode as a query parameter
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -236,13 +247,13 @@ const QuackamoleEdit = () => {
                 </TouchableOpacity>
             </View>
             <View style={stylesEdit.titleTextContainer}>
-                <Text style={stylesEdit.titleText}>Quackamole: {classCode}</Text>
+                <Text style={stylesEdit.titleText}>Quackamole</Text>
             </View>
             <View style={stylesEdit.buttonContainer}>
                 <Picker
                     selectedValue={selectedSet}
                     style={[stylesEdit.picker, { backgroundColor: '#8ED94D' }]}
-                    onValueChange={(itemValue, itemIndex) => handleSetChange(itemValue)}
+                    onValueChange={(itemValue) => handleSetChange(itemValue)}
                 >
                     <Picker.Item label="Hiragana" value="Hiragana" />
                     <Picker.Item label="Hiragana Dakuten" value="Hiragana Dakuten" />
@@ -259,6 +270,6 @@ const QuackamoleEdit = () => {
             </ScrollView>
         </View>
     );
-}
+};
 
 export default QuackamoleEdit;

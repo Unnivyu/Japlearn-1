@@ -1,47 +1,50 @@
-import { SafeAreaView, Image, StyleSheet, TouchableOpacity, Text, View, Pressable, TextInput, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Modal } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { SafeAreaView, Image, StyleSheet, TouchableOpacity, Text, View, Pressable, TextInput, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Modal, Animated } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import Profile from '../assets/svg/user_pf.svg';
 import { useRouter } from 'expo-router';
-import Background from '../assets/img/MenuBackground.png';
+import Background from '../assets/img/MenuBackground.png'; // Original background image (if you want to keep it)
+import QuackmanBackground from '../assets/quackman.png'; // New background image
 import BackIcon from '../assets/svg/back-icon.svg';
-import styles from '../styles/stylesMenu';  
-import stylesSlate from '../styles/StylesSlate';  
+import styles from '../styles/stylesMenu';
+import stylesSlate from '../styles/StylesSlate';
 import { stylesEdit } from '../styles/stylesEdit';
-import expoconfig from '../expoconfig';  // Ensure your API URL config is here
+import expoconfig from '../expoconfig'; // Ensure your API URL config is here
 
 const QuackslateMenu = () => {
     const [gameCode, setGameCode] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
-    const [instructionModalVisible, setInstructionModalVisible] = useState(false); // New modal for instructions
+    const [instructionModalVisible, setInstructionModalVisible] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [imageSource, setImageSource] = useState(require('../assets/img/idle.png')); // Initial image
+    const [loading, setLoading] = useState(true);
+    const [progress, setProgress] = useState(0); // For loading progress
+    const fadeAnim = useRef(new Animated.Value(1)).current; // Fade animation for loading screen
     const router = useRouter();
 
-    // Debugging: Log authentication state at key points
-    console.log('QuackslateMenu loaded. Checking authentication status...');
-
     useEffect(() => {
-        let intervalId;
+        // Simulate the loading process
+        const simulateLoading = () => {
+            if (progress >= 100) {
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true,
+                }).start(() => {
+                    setLoading(false); // Hide the loading screen after reaching 100%
+                });
+                return;
+            }
 
-        if (instructionModalVisible) {
-            // Set interval to toggle the image every 0.5 seconds
-            intervalId = setInterval(() => {
-                setImageSource(prevSource => 
-                    prevSource === require('../assets/img/idle.png') 
-                    ? require('../assets/img/talk.png') 
-                    : require('../assets/img/idle.png')
-                );
-            }, 750); // 500ms or 0.5 seconds
-        } else {
-            // Clean up the interval when the modal is closed
-            clearInterval(intervalId);
-            setImageSource(require('../assets/img/idle.png')); // Reset to idle.png
-        }
+            const randomIncrement = Math.min(100 - progress, Math.random() * 3 + 1);
+            setTimeout(() => {
+                setProgress((prev) => Math.min(100, prev + randomIncrement));
+                simulateLoading();
+            }, 500);
+        };
 
-        // Clean up on component unmount or modal close
-        return () => clearInterval(intervalId);
-    }, [instructionModalVisible]);
+        simulateLoading();
+    }, [progress]);
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -56,7 +59,7 @@ const QuackslateMenu = () => {
     }, []);
 
     const getAuthenticationStatus = async () => {
-        const mockAuthCheck = true;  // Mock authentication for now
+        const mockAuthCheck = true; // Mock authentication for now
         return mockAuthCheck;
     };
 
@@ -70,13 +73,13 @@ const QuackslateMenu = () => {
             setModalVisible(true);
             return;
         }
-    
+
         try {
             const response = await fetch(`${expoconfig.API_URL}/api/quackslateLevels/getGameCode/${gameCode}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
-    
+
             if (response.ok) {
                 setInstructionModalVisible(true); // Show instructions modal
             } else {
@@ -97,7 +100,24 @@ const QuackslateMenu = () => {
         });
     };
 
-    if (!isAuthenticated) return null;
+    if (!isAuthenticated || loading) {
+        return (
+            <SafeAreaView style={{ flex: 1 }}>
+                {/* ImageBackground for the loading screen */}
+                <ImageBackground source={QuackmanBackground} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={stylesSlate.loadingContainer}>
+                        <Animated.View
+                            style={[
+                                stylesSlate.loadingBar,
+                                { width: `${progress}%`, opacity: fadeAnim }
+                            ]}
+                        />
+                        <Text style={stylesSlate.loadingText}>{Math.round(progress)}%</Text>
+                    </View>
+                </ImageBackground>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -107,6 +127,7 @@ const QuackslateMenu = () => {
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
             >
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    {/* Use QuackmanBackground for the new background */}
                     <ImageBackground source={Background} style={styles.backgroundImage}>
                         <View style={styles.container}>
                             <View style={[styles.header, { padding: 20 }]}>
@@ -153,7 +174,7 @@ const QuackslateMenu = () => {
                     <View style={styles.modalContainer}>
                         <View style={styles.modalView}>
                             <Text style={styles.modalTitle}>Invalid Code</Text>
-                            <Text style={styles.modalText}>{modalMessage}</Text>  
+                            <Text style={styles.modalText}>{modalMessage}</Text>
                             <TouchableOpacity
                                 style={styles.modalButton}
                                 onPress={() => setModalVisible(false)}
@@ -176,7 +197,7 @@ const QuackslateMenu = () => {
                             <View style={stylesSlate.modalTitleContainer}>
                                 <Image
                                     source={imageSource} // Dynamically switch between idle.png and talk.png
-                                    style={stylesSlate.modalImageMenu} 
+                                    style={stylesSlate.modalImageMenu}
                                 />
                                 <Text style={styles.modalTitle}>Instructions</Text>
                             </View>

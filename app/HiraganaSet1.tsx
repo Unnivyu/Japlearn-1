@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesHiraganaSet1';
 import CompletionModal from '../components/CompletionModal';
-import { useLessonProgress } from '../context/LessonProgressContext';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import expoconfig from '../expoconfig';
 
 const HiraganaSet1 = () => {
   const router = useRouter();
-  const { setCompletedLessons } = useLessonProgress(); // Access progress context
+  const { user } = useContext(AuthContext); // Get the user object (which includes email)
 
   const hiraganaSet = [
     { character: 'あ', romaji: 'a' },
@@ -31,6 +32,35 @@ const HiraganaSet1 = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  // Function to update progress on the backend using fetch
+  const saveProgressOnBackend = async () => {
+    if (user && user.email) {
+      try {
+        const response = await fetch(
+          `${expoconfig.API_URL}/api/progress/${user.email}`, // Save "hiragana1" field as true and others as false
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+  
+        if (response.ok) {
+          console.log("Progress saved successfully!"); // Success message
+        } else {
+          const error = await response.json();
+          console.log(error.message || "An error occurred.");
+        }
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
+    } else {
+      console.error('No user email found.');
+    }
+  };
+  
+
   const handleNextPress = () => {
     if (currentIndex < hiraganaSet.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -40,7 +70,7 @@ const HiraganaSet1 = () => {
   };
 
   const handleCompletePress = () => {
-    setCompletedLessons({ basics1: true }); // Save progress to AsyncStorage
+    saveProgressOnBackend(); // Update progress on the backend when the user completes the set
     setModalVisible(false);
     router.push('/CharacterExercise1');
   };
