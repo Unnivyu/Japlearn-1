@@ -105,7 +105,7 @@ const QuackslateWait = () => {
                     </View>
     
                     {/* Centered Hourglass Section */}
-                    <View style={stylesSlate.centeredContainer}>
+                    <View style={stylesSlate.centeredContainerWait}>
                         <Image
                             source={HourglassGIF} // Embed the hourglass GIF here
                             style={{ width: 50, height: 50 }}

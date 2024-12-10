@@ -59,7 +59,6 @@ const HiraganaSet1 = () => {
       console.error('No user email found.');
     }
   };
-  
 
   const handleNextPress = () => {
     if (currentIndex < hiraganaSet.length - 1) {
@@ -69,13 +68,19 @@ const HiraganaSet1 = () => {
     }
   };
 
+  const handleBackPress = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   const handleCompletePress = () => {
     saveProgressOnBackend(); // Update progress on the backend when the user completes the set
     setModalVisible(false);
     router.push('/CharacterExercise1');
   };
 
-  const handleBackPress = () => {
+  const handleBackToMenuPress = () => {
     router.push('/HiraganaMenu');
   };
 
@@ -86,7 +91,7 @@ const HiraganaSet1 = () => {
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable onPress={handleBackPress}>
+          <Pressable onPress={handleBackToMenuPress}>
             <View style={styles.backButtonContainer}>
               <BackIcon width={20} height={20} fill={'white'} />
             </View>
@@ -95,9 +100,16 @@ const HiraganaSet1 = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.character}>{hiraganaSet[currentIndex].character}</Text>
           <Text style={styles.romaji}>{hiraganaSet[currentIndex].romaji}</Text>
-          <Pressable style={styles.nextButton} onPress={handleNextPress}>
-            <Text style={styles.nextButtonText}>Next</Text>
-          </Pressable>
+          
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.backButton} onPress={handleBackPress}>
+              <Text style={styles.buttonText}>Back</Text>
+            </Pressable>
+
+            <Pressable style={styles.nextButton} onPress={handleNextPress}>
+              <Text style={styles.nextButtonText}>Next</Text>
+            </Pressable>
+          </View>
         </View>
 
         <CompletionModal

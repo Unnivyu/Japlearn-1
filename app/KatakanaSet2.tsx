@@ -70,6 +70,11 @@ const KatakanaSet2 = () => {
   const handleBackPress = () => {
     router.push("/KatakanaMenu");
   };
+  const handlePreviousPress = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
 
   const handleCompletePress = async () => {
     // Update the backend to mark Katakana2 as completed
@@ -95,9 +100,14 @@ const KatakanaSet2 = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.character}>{katakanaSet[currentIndex].character}</Text>
           <Text style={styles.romaji}>{katakanaSet[currentIndex].romaji}</Text>
-          <Pressable style={styles.nextButton} onPress={handleNextPress}>
-            <Text style={styles.nextButtonText}>Next</Text>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.backButton} onPress={handlePreviousPress}>
+              <Text style={styles.buttonText}>Back</Text>
+            </Pressable>
+            <Pressable style={styles.nextButton} onPress={handleNextPress}>
+              <Text style={styles.nextButtonText}>Next</Text>
+            </Pressable>
+          </View>
         </View>
 
         <CompletionModal

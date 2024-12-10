@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image, Modal } from "react-native";
+import { View, Text, TouchableOpacity, Image, Modal,Pressable } from "react-native";
 import BackIcon from "../assets/svg/back-icon.svg";
 import { AuthContext } from "../context/AuthContext";
 import ForgetPasswordModal from "../components/ForgetPasswordModalProps";
@@ -120,24 +120,28 @@ const Profile = () => {
         </TouchableOpacity>
       </View>
       <View>
-        <View style={styles.cover} />
-        <View style={styles.profileContainer}>
-          <Image source={studentProfile} style={styles.profilePicture} />
-        </View>
-        <View style={styles.whiteSpace}>
-          <TouchableOpacity onPress={handleLogout} style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setForgetPasswordVisible(true)}
-            style={styles.buttonContainer}
-          >
-            <Text style={styles.buttonText}>Forgot Password</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <View>
+  <View style={styles.coverStudent} />
+  <View style={styles.profileContainer}>
+    <Image source={studentProfile} style={styles.profilePicture} />
+  </View>
+  <View style={styles.actionContainer}>
+    <TouchableOpacity onPress={handleLogout} style={styles.buttonContainerStudent}>
+      <Text style={styles.buttonTextStudent}>Logout</Text>
+    </TouchableOpacity>
+    <Pressable onPress={() => setForgetPasswordVisible(true)}>
+      <Text style={styles.clickableTextStudent}>Forgot Password?</Text>
+    </Pressable>
+  </View>
+</View>
+
+  <View style={styles.profileContainer}>
+    <Image source={studentProfile} style={styles.profilePicture} />
+  </View>
+  <View style={styles.whiteSpaceStudent} />
+</View>
       <View style={styles.description}>
-        <View style={styles.descTextContainer}>
+        <View style={styles.descTextContainerStudent}>
           <Text style={styles.descText}>
             User: {user ? `${user.fname} ${user.lname}` : ""}
           </Text>

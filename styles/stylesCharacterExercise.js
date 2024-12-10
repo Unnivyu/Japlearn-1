@@ -63,15 +63,17 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
+        marginBottom:90
     },
     card: {
-        width: 80,
-        height: 100,
+        width: 110,
+        height: 130,
         backgroundColor: '#9C4DE2',
         justifyContent: 'center',
         alignItems: 'center',
         margin: 10,
         borderRadius: 5,
+        marginBottom:10
     },
     cardText: {
         fontSize: 32,

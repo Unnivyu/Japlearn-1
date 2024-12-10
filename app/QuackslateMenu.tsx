@@ -23,6 +23,18 @@ const QuackslateMenu = () => {
     const router = useRouter();
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            setImageSource((prevSource) =>
+                prevSource === require('../assets/idle.png')
+                    ? require('../assets/talk.png')
+                    : require('../assets/idle.png')
+            );
+        }, 1000); // Change image every 1 second
+
+        return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, []);
+
+    useEffect(() => {
         // Simulate the loading process
         const simulateLoading = () => {
             if (progress >= 100) {
@@ -144,7 +156,7 @@ const QuackslateMenu = () => {
                                 </View>
                             </View>
 
-                            <View style={stylesSlate.centeredContainer}>
+                            <View style={stylesSlate.centeredContainerWait}>
                                 <Text style={stylesSlate.title}>Quackslate</Text>
                                 <Text style={stylesSlate.smallText}>Master Japanese Sentence Construction</Text>
                                 <View style={stylesSlate.textBoxWrapper}>
@@ -154,7 +166,7 @@ const QuackslateMenu = () => {
                                         placeholderTextColor="#323332"
                                         value={gameCode}
                                         onChangeText={setGameCode}
-                                        keyboardType="numeric"
+                                        keyboardType="default"
                                     />
                                     <TouchableOpacity style={stylesSlate.button} onPress={handleEnterPress}>
                                         <Text style={stylesSlate.buttonText}>Enter</Text>

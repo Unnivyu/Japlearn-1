@@ -13,6 +13,18 @@ export const styles = StyleSheet.create({
     cover: {
         backgroundColor: '#8423D9',
         height: 180,
+        justifyContent: 'center',
+        alignItems: 'center',
+        
+    },
+    coverStudent: {
+        backgroundColor: '#8423D9',
+        height: 180,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignItems: 'flex-end', // Align content to the right 
+        paddingBottom:40,
+        paddingRight:10
     },
     profilePicture: {
         width: 100,
@@ -49,6 +61,15 @@ export const styles = StyleSheet.create({
     descTextContainer: {
         justifyContent: 'center',
     },
+    descTextContainerStudent: {
+        justifyContent: 'center',
+        marginTop:-40
+    },
+    actionContainer: {
+        alignItems: 'flex-end', // Center items horizontally
+        marginTop: 5, // Adjust spacing above
+        marginRight: 10
+      },
     whiteSpace: {
         height: 75,
         flexDirection: 'row',
@@ -56,12 +77,28 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         paddingRight: '5%',
     },
+    whiteSpaceStudent: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingRight: '10%',
+    },
     buttonContainer: {
         height: 50,
-        backgroundColor: '#D6D6D6',
+        backgroundColor: '#bababa',
         borderRadius: 40,
         overflow: 'hidden',
         justifyContent: 'center',
+    },
+    buttonContainerStudent: {
+        height: 50,
+        backgroundColor: '#bababa',
+        borderRadius: 20,
+        overflow: 'hidden',
+        justifyContent: 'center',
+        marginVertical: 5,
+        width: 100,
+        marginBottom: 20, // Increased space below Logout button
     },
     buttonText: {
         color: 'white',
@@ -69,8 +106,22 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
     },
+    buttonTextStudent: {
+        color: 'white',
+        fontFamily: 'jua',
+        fontSize: 16,
+        textAlign: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+    },
+    clickableTextStudent: {
+        color: '#6200EE',
+        fontSize: 16,
+        textDecorationLine: 'underline',
+        marginTop: 10, // Space between the Logout button and the clickable text
+      },
     button: {
         backgroundColor: '#6200EE', // Purple button
         borderRadius: 5,
@@ -165,7 +216,7 @@ export const styles = StyleSheet.create({
         lineHeight: 22, // Better readability
     },
     buttonContainer: {
-        backgroundColor: '#E1E1E1', // Light gray for buttons
+        backgroundColor: '#bababa', // Light gray for buttons
         borderRadius: 20,
         paddingVertical: 10,
         paddingHorizontal: 20,
@@ -207,16 +258,16 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center", // Closer alignment
         alignItems: "center",
-        marginTop: 20, // Slight margin for balance
+        marginTop: 10, // Slight margin for balance
         // paddingHorizontal: 400, // Reduced padding
     },
     badgeWrapper: {
         alignItems: "center",
-        marginHorizontal: 10,
+        marginHorizontal: 0,
     },
     badgeImage: {
-        width: 150,
-        height: 150,
+        width: 110,
+        height: 100,
         resizeMode: "contain",
     },
     badgeText: {

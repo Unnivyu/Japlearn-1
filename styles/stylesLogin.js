@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#8AC25A',
     borderBottomWidth: 6,
-    height: 80,
+    height: 70,
   },
 
   buttonText: {
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
   policyText: {
     fontSize: 16,
     textAlign: 'center',
+    marginLeft:10
   },
   linkText2: {
     fontSize: 16,

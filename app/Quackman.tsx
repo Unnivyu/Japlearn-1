@@ -367,10 +367,6 @@ const Quackman = ({ navigation }) => {
                         <Text style={stylesQuackman.closeButtonText}>X</Text>
                     </TouchableOpacity>
                     <View style={stylesQuackman.modalContentContainer}>
-                        <Image
-                            source={require('../assets/talk.png')} // Add your "talk" image here
-                            style={stylesQuackman.modalImage}
-                        />
                         <View style={stylesQuackman.modalTextContent}>
                             <Text style={stylesQuackman.introTitle}>Welcome to Quackman</Text>
                             <Text style={stylesQuackman.introText}>

@@ -243,7 +243,7 @@ export const styles = StyleSheet.create({
     loadingTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
+        color: 'white',
         marginBottom: 20,
     },
     progressBarContainer: {
@@ -261,7 +261,7 @@ export const styles = StyleSheet.create({
     },
     loadingText: {
         fontSize: 16,
-        color: '#333',
+        color: 'white',
     },
     
     
