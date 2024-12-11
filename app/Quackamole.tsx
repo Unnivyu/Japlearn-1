@@ -340,7 +340,9 @@ const Quackamole = () => {
             )}
             <View style={stylesClass.header}>
                 <TouchableOpacity onPress={handleBackPress}>
-                    <BackIcon width={20} height={20} fill={'white'} />
+                <View style={stylesClass.backButtonContainer}>
+                        <BackIcon width={20} height={20} fill={'white'} />
+                    </View>
                 </TouchableOpacity>
             </View>
             <View style={styles.timerContainer}>

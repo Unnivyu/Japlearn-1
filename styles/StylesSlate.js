@@ -27,13 +27,14 @@ const stylesSlate = StyleSheet.create({
         justifyContent: 'center', // Center items vertically
         alignItems: 'center',
         paddingHorizontal: 30, // Add horizontal padding if needed
-        marginTop: -100, // Move the content 50px higher
+        marginTop: 50, // Move the content 50px higher
     },
     centeredContainerWait: {
         flex: 1,
         justifyContent: 'center', // Center items vertically
         alignItems: 'center',
         paddingHorizontal: 30, // Add horizontal padding if needed
+        marginTop: -100
     },
     textBoxWrapper: {
         backgroundColor: '#8ED94D', // Grey background for the wrapper
@@ -65,7 +66,7 @@ const stylesSlate = StyleSheet.create({
     },
     buttonText: {
         color: 'white', // Original button text color
-        fontSize: 18, // Button text size
+        fontSize: 15, // Button text size
         fontWeight: 'bold', // Button text weight
     },
     buttonContainer: {
@@ -80,7 +81,7 @@ const stylesSlate = StyleSheet.create({
     gameButton: {
         backgroundColor: '#8ED94D', // Violet background for the game buttons
         borderRadius: 15, // Rounded corners for a modern look
-        width: '45%', // Slightly larger button width
+        width: '40%', // Slightly larger button width
         paddingVertical: 15, // More padding for a larger button
         alignItems: 'center', // Center the button text
         justifyContent: 'center', // Center the button text vertically
@@ -95,19 +96,19 @@ const stylesSlate = StyleSheet.create({
     },
     gameButtonText: {
         color: '#FFFFFF', // White text color for better contrast
-        fontSize: 20, // Larger font size for better readability
+        fontSize: 15, // Larger font size for better readability
         fontWeight: 'bold', // Bold text
         textTransform: 'capitalize', // Capitalize the button text
     },
     japaneseText: {
-        fontSize: 35,  // **Increased** font size for the Japanese text
+        fontSize: 30,  // **Increased** font size for the Japanese text
         fontWeight: 'bold',
         color: '#8423D9',  // Dodger blue color for the Japanese text
         textAlign: 'center',
         marginBottom: 10,  // Add more margin below the Japanese text
     },
     englishText: {
-        fontSize: 25, // Smaller font for the English translation
+        fontSize: 20, // Smaller font for the English translation
         color: '#888', // Light gray color for English translation
         fontStyle: 'italic', // Italic style for English translation
         marginTop: 5,
@@ -118,6 +119,7 @@ const stylesSlate = StyleSheet.create({
         flexWrap: 'wrap',  // Allow wrapping if the selected answers exceed the width
         marginVertical: 20,  // Add space above and below the selected answers
     },
+
     selectedTextBox: {
         backgroundColor: '#F0F0F0',  // Light grey background for each answer box
         borderRadius: 10,  // Rounded corners for each answer box
@@ -144,13 +146,13 @@ const stylesSlate = StyleSheet.create({
         backgroundColor: '#8423D9', // Violet background matching the theme
         borderRadius: 20, // Rounded corners
         paddingVertical: 15,
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         shadowColor: '#000', // Shadow for floating effect
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 5,
         elevation: 5, // For Android shadow
-        borderWidth: 2, // Add a border
+        borderWidth: 1, // Add a border
         borderColor: '#6D6D6D', // Border color
     },
     submitButtonText: {
@@ -162,13 +164,13 @@ const stylesSlate = StyleSheet.create({
         backgroundColor: '#FF6347', // Red background for the reset button
         borderRadius: 20, // Rounded corners
         paddingVertical: 15,
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         shadowColor: '#000', // Shadow for floating effect
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 5,
         elevation: 5, // For Android shadow
-        borderWidth: 2, // Add a border
+        borderWidth: 1, // Add a border
         borderColor: '#6D6D6D', // Border color
     },
     resetButtonText: {

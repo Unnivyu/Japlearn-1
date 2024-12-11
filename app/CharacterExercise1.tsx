@@ -3,7 +3,9 @@ import { styles } from "../styles/stylesCharacterExercise";
 import BackIcon from '../assets/svg/back-icon.svg';
 import cardBackImage from '../assets/img/card_back.png';
 import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import expoconfig from '../expoconfig';
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = (array) => {
@@ -16,6 +18,7 @@ const shuffleArray = (array) => {
 };
 
 const CharacterExercise1 = () => {
+    const { user } = useContext(AuthContext); // Get the user object (which includes email)
     const router = useRouter();
     const characters = [
         { romaji: "a", hiragana: "あ" },
@@ -104,9 +107,54 @@ const CharacterExercise1 = () => {
         router.back();
     };
 
-    const handleCompleteExercise = () => {
-        router.push("/HiraganaMenu")
-    }
+    const handleCompleteExercise = async () => {
+        if (user && user.email) {
+            try {
+                // Fetch the current progress for the user
+                const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`);
+                
+                if (response.ok) {
+                    const progress = await response.json();
+    
+                    // Check if hiragana1 is already true
+                    if (progress.hiragana1) {
+                        console.log("Progress already completed for hiragana1. Skipping update.");
+                        router.push("/HiraganaMenu");
+                        return; // Exit if already true
+                    }
+    
+                    // If not true, update progress
+                    const updateResponse = await fetch(
+                        `${expoconfig.API_URL}/api/progress/${user.email}`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ hiragana1: true }), // Update only hiragana1
+                        }
+                    );
+    
+                    if (updateResponse.ok) {
+                        console.log("Progress saved successfully!");
+                    } else {
+                        const error = await updateResponse.json();
+                        console.log(error.message || "An error occurred while updating progress.");
+                    }
+                } else {
+                    console.log("Failed to fetch user progress.");
+                }
+            } catch (error) {
+                console.log(`Error: ${error.message}`);
+            }
+        } else {
+            console.error('No user email found.');
+        }
+    
+        // Navigate to the Hiragana menu
+        router.push("/HiraganaMenu");
+    };
+    
 
     const handleRestart = () => {
         setCurrentSetIndex(0);

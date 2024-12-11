@@ -3,8 +3,10 @@ import { styles } from "../styles/stylesCharacterExercise";
 import BackIcon from '../assets/svg/back-icon.svg';
 import cardBackImage from '../assets/img/card_back.png';
 import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import expoconfig from '../expoconfig';
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = (array) => {
@@ -17,6 +19,8 @@ const shuffleArray = (array) => {
 };
 
 const CharacterExercise6 = () => {
+    const { user } = useContext(AuthContext); // Get the user object (which includes email)
+
     const router = useRouter();
     const characters = [
         { romaji: 'ma', katakana: 'マ' },
@@ -107,9 +111,39 @@ const CharacterExercise6 = () => {
         router.back();
     };
 
-    const handleCompleteExercise = () => {
+    // const handleCompleteExercise = () => {
+    //     router.push("/KatakanaMenu?fromExercise=true");
+    //   };
+
+      const handleCompleteExercise = async () => {
+        if (user && user.email) {
+            try {
+              const response = await fetch(
+                `${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=katakana3&value=true`,
+                {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
+      
+              if (response.ok) {
+                console.log("Katakana3 progress updated successfully!"); // Success message
+              } else {
+                const error = await response.json();
+                console.log(error.message || "An error occurred.");
+              }
+            } catch (error) {
+              console.log(`Error: ${error.message}`);
+            }
+          } else {
+            console.error('No user email found.');
+          }
+    
+        // Navigate to the Hiragana menu
         router.push("/KatakanaMenu?fromExercise=true");
-      };
+    };
 
     
     // const handleCompleteExercise = () => {

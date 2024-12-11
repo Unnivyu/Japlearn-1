@@ -33,32 +33,49 @@ const HiraganaSet1 = () => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   // Function to update progress on the backend using fetch
-  const saveProgressOnBackend = async () => {
-    if (user && user.email) {
-      try {
-        const response = await fetch(
-          `${expoconfig.API_URL}/api/progress/${user.email}`, // Save "hiragana1" field as true and others as false
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+  // const saveProgressOnBackend = async () => {
+  //   if (user && user.email) {
+  //     try {
+  //       // Fetch the current progress for the user
+  //       const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`);
+        
+  //       if (response.ok) {
+  //         const progress = await response.json();
   
-        if (response.ok) {
-          console.log("Progress saved successfully!"); // Success message
-        } else {
-          const error = await response.json();
-          console.log(error.message || "An error occurred.");
-        }
-      } catch (error) {
-        console.log(`Error: ${error.message}`);
-      }
-    } else {
-      console.error('No user email found.');
-    }
-  };
+  //         // Check if hiragana1 is already true
+  //         if (progress.hiragana1) {
+  //           console.log("Progress already completed for hiragana1. Skipping update.");
+  //           return; // Exit if already true
+  //         }
+  
+  //         // If not true, update progress
+  //         const updateResponse = await fetch(
+  //           `${expoconfig.API_URL}/api/progress/${user.email}`,
+  //           {
+  //             method: 'POST',
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //             },
+  //             body: JSON.stringify({ hiragana1: true }), // Update only hiragana1
+  //           }
+  //         );
+  
+  //         if (updateResponse.ok) {
+  //           console.log("Progress saved successfully!");
+  //         } else {
+  //           const error = await updateResponse.json();
+  //           console.log(error.message || "An error occurred while updating progress.");
+  //         }
+  //       } else {
+  //         console.log("Failed to fetch user progress.");
+  //       }
+  //     } catch (error) {
+  //       console.log(`Error: ${error.message}`);
+  //     }
+  //   } else {
+  //     console.error('No user email found.');
+  //   }
+  // };
   
 
   const handleNextPress = () => {
@@ -69,13 +86,18 @@ const HiraganaSet1 = () => {
     }
   };
 
+  const handleBackPress = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   const handleCompletePress = () => {
-    saveProgressOnBackend(); // Update progress on the backend when the user completes the set
     setModalVisible(false);
     router.push('/CharacterExercise1');
   };
 
-  const handleBackPress = () => {
+  const handleBackToMenuPress = () => {
     router.push('/HiraganaMenu');
   };
 
@@ -86,7 +108,7 @@ const HiraganaSet1 = () => {
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable onPress={handleBackPress}>
+          <Pressable onPress={handleBackToMenuPress}>
             <View style={styles.backButtonContainer}>
               <BackIcon width={20} height={20} fill={'white'} />
             </View>
@@ -95,9 +117,16 @@ const HiraganaSet1 = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.character}>{hiraganaSet[currentIndex].character}</Text>
           <Text style={styles.romaji}>{hiraganaSet[currentIndex].romaji}</Text>
-          <Pressable style={styles.nextButton} onPress={handleNextPress}>
-            <Text style={styles.nextButtonText}>Next</Text>
-          </Pressable>
+          
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.backButton} onPress={handleBackPress}>
+              <Text style={styles.buttonText}>Back</Text>
+            </Pressable>
+
+            <Pressable style={styles.nextButton} onPress={handleNextPress}>
+              <Text style={styles.nextButtonText}>Next</Text>
+            </Pressable>
+          </View>
         </View>
 
         <CompletionModal

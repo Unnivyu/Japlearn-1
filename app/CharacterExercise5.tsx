@@ -3,7 +3,9 @@ import { styles } from "../styles/stylesCharacterExercise";
 import BackIcon from '../assets/svg/back-icon.svg';
 import cardBackImage from '../assets/img/card_back.png';
 import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import expoconfig from '../expoconfig';
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = (array) => {
@@ -16,6 +18,8 @@ const shuffleArray = (array) => {
 };
 
 const CharacterExercise5 = () => {
+    const { user } = useContext(AuthContext); // Get the user object (which includes email)
+
     const router = useRouter();
     const characters = [
         { romaji: 'ta', katakana: 'タ' },
@@ -106,9 +110,35 @@ const CharacterExercise5 = () => {
     };
 
     
-    const handleCompleteExercise = () => {
-        router.push("/KatakanaMenu")
-    }
+    const handleCompleteExercise = async () => {
+        if (user && user.email) {
+            try {
+              const response = await fetch(
+                `${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=katakana2&value=true`,
+                {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
+      
+              if (response.ok) {
+                console.log("Katakana2 progress updated successfully!"); // Success message
+              } else {
+                const error = await response.json();
+                console.log(error.message || "An error occurred.");
+              }
+            } catch (error) {
+              console.log(`Error: ${error.message}`);
+            }
+          } else {
+            console.error('No user email found.');
+          }
+    
+        // Navigate to the Hiragana menu
+        router.push("/KatakanaMenu");
+    };
     
 
     const handleRestart = () => {

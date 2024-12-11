@@ -87,19 +87,19 @@ const KatakanaMenu = () => {
     Animated.parallel([
       Animated.timing(badgeScale, {
         toValue: 0, // Shrink to zero
-        duration: 1000,
+        duration: 400,
         easing: Easing.out(Easing.exp),
         useNativeDriver: true,
       }),
       Animated.timing(badgeSpin, {
         toValue: 0, // Reverse spin
-        duration: 4000,
+        duration: 400,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(messageOpacity, {
         toValue: 0, // Fade-out
-        duration: 600,
+        duration: 400,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),

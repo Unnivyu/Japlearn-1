@@ -205,13 +205,14 @@ const Login = () => {
             </KeyboardAvoidingView>
 
             <View style={styles.policyTextContainer}>
-                <Text style={styles.policyText}>By continuing, you agree with</Text>
-                <Pressable onPress={handleLinkPress}>
-                    <Text style={styles.linkText2}>
-                    Japlearn's Terms of Service and Privacy Policy
-                    </Text>
-                </Pressable>
-                </View>
+    <Text style={styles.policyText}>
+        By continuing, you agree with{' '}
+        <Text onPress={handleLinkPress} style={styles.linkText2}>
+            Japlearn's Terms of Service and Privacy Policy
+        </Text>
+    </Text>
+</View>
+
 
 
             <View style={styles.linkContainer}>

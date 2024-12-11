@@ -48,7 +48,7 @@ const Signup = () => {
         }
         if (!email.trim()) {
             validationErrors.email = 'Please enter your email';
-        } else if (!email.endsWith('@gmail.com')) {
+        } else if (!email.endsWith('@cit.edu')) {
             validationErrors.email = 'Invalid email format';
         }
         if (!password) {

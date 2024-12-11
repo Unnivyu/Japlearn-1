@@ -100,11 +100,7 @@ const QuackslateHost = () => {
                             </View>
                         </TouchableOpacity>
                         <View style={styles.leftContainer}></View>
-                        <View style={styles.rightContainer}>
-                            <Pressable onPress={() => router.push('/Profile')}>
-                                <Profile width={65} height={65} />
-                            </Pressable>
-                        </View>
+                        
                     </View>
 
                     <View style={stylesSlate.centeredContainer}>

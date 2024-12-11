@@ -45,7 +45,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFF',
   },
-  
+  backButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#4CAF50', // Keep original color
+    borderRadius: 10,  // Match the Next button's border radius
+    marginRight: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 16,
+  },
 });
 
 export default styles;

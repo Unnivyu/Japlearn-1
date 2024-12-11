@@ -32,32 +32,32 @@ const KatakanaSet1 = () => {
   ];
 
   // Update backend to set 'katakana1' to true
-  const updateKatakanaProgress = async () => {
-    if (user && user.email) {
-      try {
-        const response = await fetch(
-          `${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=katakana1&value=true`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+  // const updateKatakanaProgress = async () => {
+  //   if (user && user.email) {
+  //     try {
+  //       const response = await fetch(
+  //         `${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=katakana1&value=true`,
+  //         {
+  //           method: 'PUT',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //         }
+  //       );
 
-        if (response.ok) {
-          console.log("Katakana1 progress updated successfully!"); // Success message
-        } else {
-          const error = await response.json();
-          console.log(error.message || "An error occurred.");
-        }
-      } catch (error) {
-        console.log(`Error: ${error.message}`);
-      }
-    } else {
-      console.error('No user email found.');
-    }
-  };
+  //       if (response.ok) {
+  //         console.log("Katakana1 progress updated successfully!"); // Success message
+  //       } else {
+  //         const error = await response.json();
+  //         console.log(error.message || "An error occurred.");
+  //       }
+  //     } catch (error) {
+  //       console.log(`Error: ${error.message}`);
+  //     }
+  //   } else {
+  //     console.error('No user email found.');
+  //   }
+  // };
 
   const handleNextPress = () => {
     if (currentIndex < katakanaSet.length - 1) {
@@ -67,13 +67,19 @@ const KatakanaSet1 = () => {
     }
   };
 
+  const handlePreviousPress = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   const handleBackPress = () => {
     router.push("/KatakanaMenu");
   };
 
   const handleCompletePress = async () => {
     // Update the backend to mark Katakana1 as completed
-    await updateKatakanaProgress();
+    // await updateKatakanaProgress();
 
     setModalVisible(false); // Close the modal
     router.push('/CharacterExercise4'); // Navigate to the next exercise
@@ -95,9 +101,14 @@ const KatakanaSet1 = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.character}>{katakanaSet[currentIndex].character}</Text>
           <Text style={styles.romaji}>{katakanaSet[currentIndex].romaji}</Text>
-          <Pressable style={styles.nextButton} onPress={handleNextPress}>
-            <Text style={styles.nextButtonText}>Next</Text>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.backButton} onPress={handlePreviousPress}>
+              <Text style={styles.buttonText}>Back</Text>
+            </Pressable>
+            <Pressable style={styles.nextButton} onPress={handleNextPress}>
+              <Text style={styles.nextButtonText}>Next</Text>
+            </Pressable>
+          </View>
         </View>
 
         {/* Completion Modal */}
