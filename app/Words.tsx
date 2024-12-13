@@ -15,7 +15,6 @@ const Words = () => {
   const [processedWords, setProcessedWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0); // Current word index
   const id = lessonId?.lessonId;
-  const email = 'student@example.com'; // Replace with actual student email (use context or global state)
 
   const handleFetchLessonContent = async () => {
     try {
@@ -93,9 +92,9 @@ const Words = () => {
     try {
       // Determine the field to update based on the lessonId (either vocab1 or vocab2)
       let fieldToUpdate = '';
-      if (id === '674798f5843fb66cf08dcf7b') { // Example ID for vocab1
+      if (id === '675a351808cf7502c9b6e878') { // Example ID for vocab1
         fieldToUpdate = 'vocab1';
-      } else if (id === '6747c323aafbac40423da288') { // Example ID for vocab2
+      } else if (id === '675a351f08cf7502c9b6e87a') { // Example ID for vocab2
         fieldToUpdate = 'vocab2';
       } else {
         console.error('Unexpected lesson ID:', id);

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   backButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#4CAF50', // Keep original color
+    backgroundColor: '#6200EE', // Keep original color
     borderRadius: 10,  // Match the Next button's border radius
     marginRight: 10,
   },
@@ -63,6 +63,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
+
+  audioButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  audioButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  
 });
 
 export default styles;

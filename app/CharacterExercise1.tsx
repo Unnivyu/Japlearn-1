@@ -131,7 +131,7 @@ const CharacterExercise1 = () => {
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ hiragana1: true }), // Update only hiragana1
+                    
                         }
                     );
     

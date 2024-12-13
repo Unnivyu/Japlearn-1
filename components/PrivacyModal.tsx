@@ -4,7 +4,10 @@ import { router } from 'expo-router';
 const PrivacyModal = ({ visible, onAgree, onDecline, onClose }) => {
     const handleLinkPress = () => {
         onClose(); // Close the modal
-        router.push('/PrivacyPolicyPage'); // Navigate to the Privacy Policy page
+        router.push({
+            pathname: '/PrivacyPolicyPage',
+            params: { fromSignup: 'true' }, // Pass state to track navigation origin
+        }); // Navigate to the Privacy Policy page
     };
 
     return (
@@ -58,6 +61,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         marginBottom: 20,
+        fontFamily: 'Jua',
     },
     modalButtonContainer: {
         flexDirection: 'row',

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
-import { View, Pressable, ImageBackground, Modal, Animated, Text, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect, useState, useRef, useContext, } from 'react';
+import { View, Pressable, ImageBackground, Modal, Animated, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams, usePathname } from 'expo-router';
 import styles from '../styles/stylesLearnMenu';
 import BackIcon from '../assets/svg/back-icon.svg';
@@ -7,6 +7,8 @@ import ImageButton from '../components/ImageButton';
 import { AuthContext } from '../context/AuthContext'; // Assuming AuthContext holds user data
 import expoconfig from '../expoconfig'; // Configuration for your backend API
 import { Easing } from 'react-native-reanimated'; // Ensure you import Easing for animations
+import CustomButton from '../components/CustomButton';
+
 
 const KatakanaMenu = () => {
   const { user } = useContext(AuthContext); // Get the user object (which includes email)
@@ -15,9 +17,14 @@ const KatakanaMenu = () => {
   const router = useRouter();
   const { fromExercise } = useLocalSearchParams(); // Get the query parameter
   const currentPath = usePathname();
+  const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
 
   const [isBadgeVisible, setBadgeVisible] = useState(false);
   const badgeCheckCompleted = useRef(false);
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   // Badge animation values
   const badgeScale = useRef(new Animated.Value(0)).current;
@@ -122,6 +129,10 @@ const KatakanaMenu = () => {
             katakana3: data.katakana3,
           });
 
+          if (!data.katakana1) {
+            setIsModalVisible(true);
+          }
+
           setBadge1(data.badge1); // Update the badge1 state from the backend data
         } else {
           console.error('Failed to fetch student progress');
@@ -222,6 +233,37 @@ const KatakanaMenu = () => {
           />
         </View>
 
+        {/* Modal for Introduction */}
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          animationType="slide"
+        >
+          <View style={modalStyles.modalBackground}>
+            <View style={modalStyles.modalContainer}>
+              <Text style={modalStyles.modalTitle}>Welcome to Katakana</Text>
+              <Text style={modalStyles.modalText}>
+                Katakana is one of the three main writing systems in Japanese. It is a phonetic script, just like Hiragana. Katakana is primarily used for foreign loanwords, names, and onomatopoeia.
+                {"\n\n"}
+                Why learn Katakana?
+                {"\n"}• It is essential for reading and writing foreign loanwords.
+                {"\n"}• It helps you understand how Japanese incorporates words from other languages.
+                {"\n"}• It is widely used in menus, advertisements, and modern media.
+                {"\n\n"}
+                Katakana has 46 basic characters, such as ア (a), イ (i), ウ (u), エ (e), and オ (o). Mastering Katakana is a key step toward understanding written Japanese in contemporary contexts.
+                {"\n\n"}
+                Let’s begin your journey with Katakana!
+              </Text>
+              <CustomButton
+                title="Got it!"
+                onPress={closeModal}
+                buttonStyle={modalStyles.buttonStyle}
+                textStyle={modalStyles.buttonTextStyle}
+              />
+            </View>
+          </View>
+        </Modal>
+
         {/* Badge Awarding Animation */}
         {isBadgeVisible && (
           <Modal transparent={true} animationType="none" visible={isBadgeVisible}>
@@ -251,5 +293,47 @@ const KatakanaMenu = () => {
     </ImageBackground>
   );
 };
+
+const modalStyles = StyleSheet.create({
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 28, // Increased size for emphasis
+    fontWeight: 'bold',
+    marginBottom: 20, // Added space below the title
+    fontFamily: 'Jua', // Consistent font
+    textAlign: 'center', // Center the title
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+    fontFamily: 'Jua',
+  },
+  buttonStyle: {
+    backgroundColor: '#4CAF50', // Green color matching your app
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  buttonTextStyle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Jua',
+  },
+});
 
 export default KatakanaMenu;

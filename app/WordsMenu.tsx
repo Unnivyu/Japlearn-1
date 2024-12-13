@@ -50,6 +50,8 @@ const WordsMenu = () => {
 
       const responseData = await response.json();
       setWordLessons(responseData);
+      console.log(responseData);
+      
     } catch (error) {
       console.log("Error fetching word lessons: ", error);
     }

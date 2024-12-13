@@ -72,7 +72,7 @@ const Profile = () => {
   }, [user]);
 
   const handleBackPress = () => {
-    router.push('/Menu');
+    router.back();
   };
 
   const handleLogout = () => {

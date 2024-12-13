@@ -1,100 +1,157 @@
-import React from 'react';
-import { ScrollView, Text, View, StyleSheet } from 'react-native';
+    import React from 'react';
+    import { ScrollView, Text, View, StyleSheet } from 'react-native';
+    import CustomButton from '../components/CustomButton';
+    import { useLocalSearchParams, useRouter } from 'expo-router';
 
-const PrivacyPolicyPage = () => {
-    return (
-        <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.contentContainer}>
-                <Text style={styles.title}>Privacy Policy</Text>
-                <Text style={styles.paragraph}>
-                    At [YourAppName], we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application.
-                </Text>
+    const PrivacyPolicyPage = () => {
+        const router = useRouter();
+        const { fromSignup } = useLocalSearchParams();
 
-                <Text style={styles.subtitle}>1. Information We Collect</Text>
-                <Text style={styles.paragraph}>
-                    We collect the following types of information:
-                </Text>
-                <Text style={styles.paragraph}>
-                    - <Text style={styles.bold}>Names:</Text> To personalize your experience within the app.
-                </Text>
-                <Text style={styles.paragraph}>
-                    - <Text style={styles.bold}>Emails:</Text> For account management and communication purposes.
-                </Text>
-                <Text style={styles.paragraph}>
-                    - <Text style={styles.bold}>Scores:</Text> To track your progress and performance within the app.
-                </Text>
+        const handleAgree = () => {
+            if (fromSignup === 'true') {
+                router.push({
+                    pathname: '/Signup',
+                    params: { showPrivacyModal: 'true' }, // Pass state to re-open modal
+                });
+            } else {
+                router.back();
+            }
+        };
 
-                <Text style={styles.subtitle}>2. How We Use Your Information</Text>
-                <Text style={styles.paragraph}>
-                    The information we collect is used for the following purposes:
-                </Text>
-                <Text style={styles.paragraph}>
-                    - To improve and personalize your experience within the app.
-                </Text>
-                <Text style={styles.paragraph}>
-                    - To communicate with you regarding your account and updates.
-                </Text>
-                <Text style={styles.paragraph}>
-                    - To analyze your performance and progress to enhance our services.
-                </Text>
 
-                <Text style={styles.subtitle}>3. Data Security</Text>
-                <Text style={styles.paragraph}>
-                    We implement appropriate technical and organizational measures to safeguard your information from unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
-                </Text>
+        return (
+            <View style={styles.container}>
+                <ScrollView contentContainerStyle={styles.contentContainer}>
+                    <Text style={styles.header}>JapLearn Privacy Policy</Text>
+                    <Text style={styles.intro}>
+                    </Text>
+                    <Text style={styles.paragraph}>
+                        Welcome to JapLearn. Your privacy is our priority, and we are committed to safeguarding your personal data. This Privacy Policy outlines the information we collect, how we use it, and the measures we take to protect it. By using our application, you consent to the practices described in this policy. If you have any concerns about how we handle your information, please contact us directly using the details provided below.
+                    </Text>
 
-                <Text style={styles.subtitle}>4. Third-Party Services</Text>
-                <Text style={styles.paragraph}>
-                    We do not share your personal information with third parties except as required by law or with service providers who assist us in operating the app and providing services to you.
-                </Text>
+                    <Text style={styles.subtitle}>1. Information We Collect</Text>
+                    <Text style={styles.paragraph}>
+                        To enhance your experience and provide our services effectively, we collect and process the following types of information:
+                    </Text>
+                    <Text style={styles.listItem}>
+                        - <Text style={styles.bold}>Personal Information:</Text> This includes your name, email address, and other contact details provided during account registration. This data is essential for creating and managing your account, providing personalized features, and ensuring effective communication.
+                    </Text>
+                    <Text style={styles.listItem}>
+                        - <Text style={styles.bold}>Usage Data:</Text> This includes information such as your app activity, learning scores, and progress logs. We use this data to analyze your learning journey, track your performance, and provide tailored recommendations for improvement.
+                    </Text>
+                    <Text style={styles.listItem}>
+                        - <Text style={styles.bold}>Device Information:</Text> Details about your device, such as type, operating system, app version, and unique identifiers. This information helps us ensure compatibility, optimize app performance, and address technical issues promptly.
+                    </Text>
 
-                <Text style={styles.subtitle}>5. Changes to This Privacy Policy</Text>
-                <Text style={styles.paragraph}>
-                    We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date. We encourage you to review this Privacy Policy periodically to stay informed about how we are protecting your information.
-                </Text>
+                    <Text style={styles.subtitle}>2. How We Use Your Information</Text>
+                    <Text style={styles.paragraph}>
+                        The information we collect is used to enhance your experience, improve our services, and ensure the proper functioning of the app. Specifically, we use your information for the following purposes:
+                    </Text>
+                    <Text style={styles.listItem}>
+                        - <Text style={styles.bold}>Account Management:</Text> Creating and maintaining your account to enable access to personalized features and learning tools.
+                    </Text>
+                    <Text style={styles.listItem}>
+                        - <Text style={styles.bold}>Service Improvement:</Text> Analyzing your app usage, feedback, and performance data to identify areas for improvement and to develop new features.
+                    </Text>
+                    <Text style={styles.listItem}>
+                        - <Text style={styles.bold}>Communication:</Text> Sending updates, notifications, and important announcements regarding the app, including changes to our policies or new features available.
+                    </Text>
+                    <Text style={styles.listItem}>
+                        - <Text style={styles.bold}>Security and Functionality:</Text> Identifying and addressing technical issues to ensure the app operates smoothly and securely.
+                    </Text>
 
-                <Text style={styles.subtitle}>6. Contact Us</Text>
-                <Text style={styles.paragraph}>
-                    If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:
-                </Text>
-                <Text style={styles.paragraph}>
-                    Email: [YourEmail@example.com]
-                </Text>
+                    <Text style={styles.subtitle}>3. Data Security</Text>
+                    <Text style={styles.paragraph}>
+                        We implement strict security measures to protect your data from unauthorized access, loss, or misuse. Our security practices include encryption, secure storage systems, and regular monitoring of our infrastructure. We also adhere to industry standards to ensure your information is handled responsibly.
+                    </Text>
+                    <Text style={styles.paragraph}>
+                        While we strive to protect your data, it is important to note that no system can guarantee absolute security. To help secure your account, we recommend using a strong password, avoiding sharing your login credentials, and keeping your app updated to the latest version.
+                    </Text>
+                    <Text style={styles.paragraph}>
+                        In the unlikely event of a data breach, we will promptly notify affected users and take immediate steps to minimize risks and secure the system.
+                    </Text>
 
-                <Text style={styles.paragraph}>
-                    Address: [Your Company Address]
-                </Text>
-            </ScrollView>
-        </View>
-    );
-};
+                    
+                </ScrollView>
+                <CustomButton 
+                    title="I Agree" 
+                    onPress={handleAgree} 
+                    buttonStyle={styles.agreeButton} 
+                    textStyle={styles.agreeButtonText} 
+                />
+            </View>
+        );
+    };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: 'white',
-    },
-    contentContainer: {
-        paddingBottom: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    subtitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginVertical: 10,
-    },
-    paragraph: {
-        fontSize: 16,
-        marginBottom: 10,
-    },
-    bold: {
-        fontWeight: 'bold',
-    },
-});
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: '#ffffff',
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+        },
+        contentContainer: {
+            paddingBottom: 20,
+        },
+        header: {
+            fontSize: 32,
+            fontWeight: 'bold',
+            fontFamily: 'Jua',
+            color: '#4CAF50',
+            marginBottom: 10,
+            textAlign: 'center',
+        },
+        intro: {
+            fontSize: 16,
+            color: '#333333',
+            textAlign: 'center',
+            marginBottom: 20,
+            fontFamily: 'Jua',
+        },
+        subtitle: {
+            fontSize: 22,
+            fontWeight: 'bold',
+            color: '#3B3B3B',
+            marginVertical: 15,
+            fontFamily: 'Jua',
+        },
+        paragraph: {
+            fontSize: 16,
+            lineHeight: 24,
+            color: '#4F4F4F',
+            marginBottom: 10,
+            fontFamily: 'Jua',
+        },
+        listItem: {
+            fontSize: 16,
+            lineHeight: 24,
+            color: '#4F4F4F',
+            marginLeft: 20,
+            marginBottom: 5,
+            fontFamily: 'Jua',
+        },
+        bold: {
+            fontWeight: 'bold',
+        },
+        contactInfo: {
+            fontSize: 16,
+            color: '#4CAF50',
+            marginBottom: 5,
+            fontFamily: 'Jua',
+        },
+        agreeButton: {
+            backgroundColor: '#4CAF50',
+            paddingVertical: 12,
+            borderRadius: 8,
+            marginHorizontal: 20,
+            marginTop: 20,
+        },
+        agreeButtonText: {
+            color: '#ffffff',
+            fontSize: 18,
+            fontWeight: 'bold',
+            fontFamily: 'Jua',
+        },
+    });
 
-export default PrivacyPolicyPage;
+    export default PrivacyPolicyPage;

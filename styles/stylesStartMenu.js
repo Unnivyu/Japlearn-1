@@ -81,5 +81,17 @@ export const styles = StyleSheet.create({
         fontSize: 25,
         color: "#fff",
     },
+
+    profileIcon: {
+        borderRadius: 100,
+        overflow: 'hidden',
+        alignSelf: 'flex-end', // Adjust as per your layout needs
+    },
+    rightContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+    },
+    
     
 });

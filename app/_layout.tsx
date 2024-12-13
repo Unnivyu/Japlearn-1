@@ -8,6 +8,7 @@ import { ClassCodeProvider } from '../context/ClassCodeContext';
 import { LessonProgressProvider, useLessonProgress } from '../context/LessonProgressContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+import IdleTimeout from '../context/IdleTimeoutProps';
 
 const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
 
@@ -46,7 +47,6 @@ const RootLayout = () => {
   const [fontLoaded, setFontsLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { user, setUser } = useContext(AuthContext);
-  const { completedLessons } = useLessonProgress(); // Access lesson progress
   const router = useRouter();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const segments = useSegments();
@@ -100,6 +100,7 @@ const RootLayout = () => {
 
   return (
     <GestureHandlerRootView>
+      <IdleTimeout timeout={5 * 60 * 1000} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" />
         <Stack.Screen name="Signup" />
