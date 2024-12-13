@@ -82,14 +82,96 @@ public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @Req
     }
 
     @GetMapping("/confirm")
-    public String confirmEmail(@RequestParam("token") String token) {
-        String result = japlearnService.confirmUser(token);
-        if ("confirmed".equals(result)) {
-            return "Email confirmed successfully!";
-        } else {
-            return "Invalid or expired confirmation link.";
-        }
+public ResponseEntity<String> confirmEmail(@RequestParam("token") String token) {
+    String result = japlearnService.confirmUser(token);
+    if ("confirmed".equals(result)) {
+        return ResponseEntity.ok("<!DOCTYPE html>"
+            + "<html>"
+            + "<head>"
+            + "    <title>Email Confirmation</title>"
+            + "    <style>"
+            + "        body {"
+            + "            font-family: Arial, sans-serif;"
+            + "            text-align: center;"
+            + "            background-color: #f4f4f9;"
+            + "            color: #333;"
+            + "            margin: 0;"
+            + "            padding: 0;"
+            + "            display: flex;"
+            + "            justify-content: center;"
+            + "            align-items: center;"
+            + "            height: 100vh;"
+            + "        }"
+            + "        .container {"
+            + "            padding: 20px;"
+            + "            border: 1px solid #ddd;"
+            + "            border-radius: 10px;"
+            + "            background-color: #fff;"
+            + "            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);"
+            + "            max-width: 400px;"
+            + "            margin: 0 auto;"
+            + "        }"
+            + "        h1 {"
+            + "            color: #4CAF50;"
+            + "        }"
+            + "        .mascot {"
+            + "            max-width: 100px;"
+            + "            margin: 20px auto;"
+            + "        }"
+            + "    </style>"
+            + "</head>"
+            + "<body>"
+            + "    <div class='container'>"
+            + "        <h1>Confirmation Successful!</h1>"
+            + "        <img src='https://unnivyu.github.io/Japlearn-1/assets/svg/jpLogo.svg' alt='JapLearn Mascot' class='mascot' />"
+            + "        <p>Thank you for confirming your email address.</p>"
+            + "        <p>You can now access all the features of JapLearn. Enjoy!</p>"
+            + "    </div>"
+            + "</body>"
+            + "</html>");
+    } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("<!DOCTYPE html>"
+            + "<html>"
+            + "<head>"
+            + "    <title>Email Confirmation</title>"
+            + "    <style>"
+            + "        body {"
+            + "            font-family: Arial, sans-serif;"
+            + "            text-align: center;"
+            + "            background-color: #f4f4f9;"
+            + "            color: #333;"
+            + "            margin: 0;"
+            + "            padding: 0;"
+            + "            display: flex;"
+            + "            justify-content: center;"
+            + "            align-items: center;"
+            + "            height: 100vh;"
+            + "        }"
+            + "        .container {"
+            + "            padding: 20px;"
+            + "            border: 1px solid #ddd;"
+            + "            border-radius: 10px;"
+            + "            background-color: #fff;"
+            + "            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);"
+            + "            max-width: 400px;"
+            + "            margin: 0 auto;"
+            + "        }"
+            + "        h1 {"
+            + "            color: #FF5722;"
+            + "        }"
+            + "    </style>"
+            + "</head>"
+            + "<body>"
+            + "    <div class='container'>"
+            + "        <h1>Link Invalid</h1>"
+            + "        <p>The link you clicked is either invalid or has expired.</p>"
+            + "        <p>Please try registering again or contact support for help.</p>"
+            + "    </div>"
+            + "</body>"
+            + "</html>");
     }
+}
+
 
     @PostMapping("/register")
 public ResponseEntity<?> registerUser(@RequestBody User user) {

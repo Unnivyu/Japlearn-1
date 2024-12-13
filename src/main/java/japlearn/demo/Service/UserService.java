@@ -122,61 +122,74 @@ private void sendPasswordResetEmail(String email, String token) {
             // Transfer user data to Student if the user has a "student" role
         }
 
-    public String registerUser(User user) {
-        try {
-            if (userRepository.findByEmail(user.getEmail()) != null) {
-                return "duplicate"; 
+        public String registerUser(User user) {
+            try {
+                if (userRepository.findByEmail(user.getEmail()) != null) {
+                    return "duplicate"; 
+                }
+                
+                String encryptedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(encryptedPassword);
+                
+                // Generate confirmation token
+                String confirmationToken = UUID.randomUUID().toString();
+                user.setConfirmationToken(confirmationToken);
+                
+                // Set default email confirmation to false
+                user.setEmailConfirmed(false);
+                
+                userRepository.save(user);
+                
+                // Send confirmation email
+                sendConfirmationEmail(user.getEmail(), confirmationToken);
+                
+                return "success";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
             }
-        
-            String encryptedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encryptedPassword);
-        
-            // Generate confirmation token
-            String confirmationToken = UUID.randomUUID().toString();
-            user.setConfirmationToken(confirmationToken);
-        
-            userRepository.save(user);
-        
-            // Send confirmation email
-            sendConfirmationEmail(user.getEmail(), confirmationToken);
-        
-            return "success";
-        } catch (Exception e) {
-            e.printStackTrace();  // Log the exception
-            return "error";
         }
-    }
+        
 
-    private void sendConfirmationEmail(String email, String token) {
-        String confirmationUrl = "http://localhost:8080/api/users/confirm?token=" + token;
-
-    
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setTo(email);
-            helper.setFrom("JapLearn <mizuchwaan@gmail.com>");
-            helper.setSubject("Email Confirmation - JapLearn");
-    
-            // HTML email content
-            String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>"
-                               + "<h2 style='text-align: center; color: #333;'>Welcome to JapLearn!</h2>"
-                               + "<p style='text-align: center; color: #555;'>Please confirm your email address by clicking the button below:</p>"
-                               + "<div style='text-align: center; margin: 30px;'>"
-                               + "  <a href='" + confirmationUrl + "' style='background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; font-size: 16px; border-radius: 5px;'>Confirm Email</a>"
-                               + "</div>"
-                               + "<p style='text-align: center; color: #777;'>If you did not request this, please ignore this email.</p>"
-                               + "<p style='text-align: center; color: #777;'>Thank you, <br> The JapLearn Team</p>"
-                               + "</div>";
-    
-            helper.setText(htmlContent, true); // Set 'true' to send HTML content
-    
-            mailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-            e.printStackTrace();  // Log the exception
-            throw new RuntimeException("Failed to send email", e);
+        private void sendConfirmationEmail(String email, String token) {
+            String confirmationUrl = "http://localhost:8080/api/users/confirm?token=" + token;
+        
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            try {
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+                helper.setTo(email);
+                helper.setFrom("JapLearn <mizuchwaan@gmail.com>");
+                helper.setSubject("Email Confirmation - JapLearn");
+        
+                // Hosted image URL
+                String hostedImageUrl = "https://Unnivyu.github.io/Japlearn-1/assets/svg/jpLogo.svg";
+        
+                // HTML email content
+                String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>"
+                                   + "  <h2 style='text-align: center; color: #333;'>Welcome to JapLearn!</h2>"
+                                   + "  <div style='text-align: center; margin: 20px auto;'>"
+                                   + "    <img src='" + hostedImageUrl + "' alt='JapLearn Mascot' style='max-width: 150px; height: auto;' />"
+                                   + "  </div>"
+                                   + "  <p style='text-align: center; color: #555;'>Please confirm your email address by clicking the button below:</p>"
+                                   + "  <div style='text-align: center; margin: 30px;'>"
+                                   + "    <a href='" + confirmationUrl + "' style='background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; font-size: 16px; border-radius: 5px;'>Confirm Email</a>"
+                                   + "  </div>"
+                                   + "  <p style='text-align: center; color: #777;'>If you did not request this, please ignore this email.</p>"
+                                   + "  <p style='text-align: center; color: #777;'>Thank you, <br> The JapLearn Team</p>"
+                                   + "</div>";
+        
+                helper.setText(htmlContent, true); // Set 'true' to send HTML content
+        
+                mailSender.send(mimeMessage);
+            } catch (MessagingException e) {
+                e.printStackTrace();  // Log the exception
+                throw new RuntimeException("Failed to send email", e);
+            }
         }
-    }
+        
+        
+        
+        
     
 
     public User authenticate(String email, String rawPassword) {
