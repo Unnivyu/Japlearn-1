@@ -5,6 +5,16 @@ import { styles } from '../styles/game3Styles';
 
 const { width, height } = Dimensions.get('window');
 
+// Function to shuffle an array
+const shuffleArray = (array) => {
+  const shuffledArray = [...array];
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+  }
+  return shuffledArray;
+};
+
 // Define custom animations for curtains
 const slideOutLeft = {
   from: { translateX: 0 },
@@ -84,6 +94,7 @@ const Game3 = ({ onGameOver }) => {
     },
   ];
 
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [enemyHealth, setEnemyHealth] = useState(100); // Enemy health now just visual feedback
   const [playerHealth, setPlayerHealth] = useState(100);
@@ -92,27 +103,28 @@ const Game3 = ({ onGameOver }) => {
   const [choicePositions, setChoicePositions] = useState(Array(questions[0].choices.length).fill('original'));
   const [gameOver, setGameOver] = useState(false);
   const [gameOverText, setGameOverText] = useState('');
+  const [isAttacking, setIsAttacking] = useState(false);
 
   const enemyRef = useRef(null);
   const playerRef = useRef(null);
   const attackEffectRef = useRef(null);
 
   useEffect(() => {
-    setTimeout(() => setShowCurtain(false), 3500);
-  }, []);
+      // Shuffle questions when the component mounts
+      const randomizedQuestions = shuffleArray(questions);
+      setShuffledQuestions(randomizedQuestions);
+      setTimeout(() => setShowCurtain(false), 3500);
+    }, []);
 
-  const handleAnswer = (answer, index) => {
-    setSelectedAnswer(answer);
-    setChoicePositions((prevPositions) => {
-      const newPositions = prevPositions.map((pos, i) =>
-        i === index ? (pos === 'centered' ? 'original' : 'centered') : 'original'
-      );
-      return newPositions;
-    });
+  const handleAnswer = (choice) => {
+    setSelectedAnswer(choice); // Store the selected choice
   };
 
   const handleAttack = () => {
-    const currentQuestion = questions[currentQuestionIndex];
+    if (isAttacking) return; // Prevent spamming attack button
+    setIsAttacking(true);
+
+    const currentQuestion = shuffledQuestions[currentQuestionIndex];
     if (selectedAnswer === currentQuestion.correctAnswer) {
       // Trigger player attack animation
       playerRef.current?.animate(jumpAttackAnimation, 700);
@@ -126,11 +138,13 @@ const Game3 = ({ onGameOver }) => {
       setTimeout(() => {
         if (newEnemyHealth === 0) {
           endGame("Enemy defeated! You win!");
-        } else if (currentQuestionIndex < questions.length - 1) {
+          setSelectedAnswer(null);
+        } else if (currentQuestionIndex < shuffledQuestions.length - 1) {
           setCurrentQuestionIndex(currentQuestionIndex + 1);
           setSelectedAnswer(null); // Clear the selected answer
           setChoicePositions(Array(questions[currentQuestionIndex + 1].choices.length).fill('original'));
         }
+        setIsAttacking(false);
       }, 800); // Adjust delay to match animation duration
     } else {
       // If the answer is incorrect, handle damage and check for game over
@@ -141,13 +155,31 @@ const Game3 = ({ onGameOver }) => {
 
       setTimeout(() => {
         if (newPlayerHealth === 0) {
-          endGame("You were defeated! Game over!");
+          endGame("You were defeated!");
+          setSelectedAnswer(null);
+        } else if (currentQuestionIndex < shuffledQuestions.length - 1) {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+          setSelectedAnswer(null); // Clear the selected answer
+          setChoicePositions(Array(questions[currentQuestionIndex + 1].choices.length).fill('original'));
         }
+        setIsAttacking(false);
       }, 800); // Adjust delay to match animation duration
     }
   };
 
+  const handleRetry = () => {
+    // Reset game state for retry
+    setShuffledQuestions(shuffleArray(questions));
+    setCurrentQuestionIndex(0);
+    setEnemyHealth(100);
+    setPlayerHealth(100);
+    setSelectedAnswer(null);
+    setGameOver(false);
+    setGameOverText('');
+  };
+
   const endGame = (message) => {
+    setSelectedAnswer(null);
     setGameOver(true);
     setGameOverText(message);
   };
@@ -167,37 +199,38 @@ const Game3 = ({ onGameOver }) => {
     },
   };
 
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentQuestion = shuffledQuestions[currentQuestionIndex];
+
+  if (shuffledQuestions.length === 0) {
+    return null; // Prevent rendering until questions are shuffled
+  }
 
   return (
     <ImageBackground source={require('../assets/fightbg.png')} style={styles.background}>
       <View style={styles.container}>
         {!gameOver && <Text style={styles.question}>{currentQuestion.question}</Text>}
 
-        <View style={styles.choiceContainer}>
+         {/* Selected Choice Display */}
+         {selectedAnswer && (
+          <View style={styles.selectedAnswerContainer}>
+            <Text style={styles.selectedAnswerText}>{selectedAnswer}</Text>
+          </View>
+        )}
+
+         {/* Choices */}
+         <View style={styles.choiceContainer}>
           {currentQuestion.choices.map((choice, index) => (
-            <Animatable.View
+            <TouchableOpacity
               key={index}
-              style={[
-                styles.choice,
-                choicePositions[index] === 'centered' ? { position: 'absolute', top: height / 2 - 600, left: width / 2 - 550, zIndex: 1 } : {},
-                choicePositions[index] === 'original' ? { opacity: 1 } : { opacity: 0 },
-              ]}
-              animation={choicePositions[index] === 'centered' ? customMoveAnimation : undefined}
-              duration={1000}
+              style={styles.choice}
+              onPress={() => handleAnswer(choice)}
             >
-              <TouchableOpacity
-                style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}
-                onPress={() => handleAnswer(choice, index)}
-                disabled={gameOver}
-              >
-                <Text style={styles.choiceText}>{choice}</Text>
-              </TouchableOpacity>
-            </Animatable.View>
+              <Text style={styles.choiceText}>{choice}</Text>
+            </TouchableOpacity>
           ))}
         </View>
 
-        <TouchableOpacity style={styles.bottomButton} onPress={handleAttack} disabled={gameOver}>
+        <TouchableOpacity style={styles.bottomButton} onPress={handleAttack} disabled={gameOver || isAttacking || !selectedAnswer}>
           <Text style={styles.bottomButtonText}>Attack!</Text>
         </TouchableOpacity>
 
@@ -274,12 +307,18 @@ const Game3 = ({ onGameOver }) => {
           </View>
         )}
 
-        {gameOver && (
+{gameOver && (
           <View style={styles.overlay}>
             <Text style={styles.gameOverText}>{gameOverText}</Text>
-            <TouchableOpacity style={styles.bottomButton} onPress={handleProceed}>
-              <Text style={styles.bottomButtonText}>Proceed</Text>
-            </TouchableOpacity>
+            {gameOverText === "You were defeated!" ? (
+              <TouchableOpacity style={styles.proceedButton} onPress={handleRetry}>
+                <Text style={styles.proceedButtonText}>Retry</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.proceedButton} onPress={onGameOver}>
+                <Text style={styles.proceedButtonText}>Proceed</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>

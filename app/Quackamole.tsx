@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, Animated, Easing, Alert, Modal, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, Easing, Alert, Modal, Image, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { styles } from '../styles/stylesMole';
 import { stylesClass } from '../styles/stylesClass';
@@ -288,24 +288,24 @@ const Quackamole = () => {
 
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <Image
-                    source={require('../assets/kana.png')} // Use the attached background image
-                    style={styles.loadingBackgroundImage}
-                />
-                <View style={styles.loadingContent}>
-                    <Text style={styles.loadingTitle}>Loading...</Text>
-                    <View style={styles.progressBarContainer}>
-                        <Animated.View
-                            style={[
-                                styles.progressBar,
-                                { width: `${progress}%` }, // Dynamically set the progress bar width
-                            ]}
-                        />
-                    </View>
-                    <Text style={styles.loadingText}>{Math.round(progress)}%</Text>
-                </View>
-            </View>
+            <ImageBackground
+        source={require('../assets/kana.png')}
+        style={styles.loadingContainer}
+        imageStyle={{ resizeMode: 'cover' }} // Ensure the image covers the full screen without being zoomed
+      >
+        <View style={styles.loadingContent}>
+          <Text style={styles.loadingTitle}>Loading...</Text>
+          <View style={styles.progressBarContainer}>
+            <Animated.View
+              style={[
+                styles.progressBar,
+                { width: `${progress}%` }, // Dynamically set the progress bar width
+              ]}
+            />
+          </View>
+          <Text style={styles.loadingText}>{Math.round(progress)}%</Text>
+        </View>
+      </ImageBackground>
         );
     }
 

@@ -129,9 +129,9 @@ const Profile = () => {
     <TouchableOpacity onPress={handleLogout} style={styles.buttonContainerStudent}>
       <Text style={styles.buttonTextStudent}>Logout</Text>
     </TouchableOpacity>
-    <Pressable onPress={() => setForgetPasswordVisible(true)}>
-      <Text style={styles.clickableTextStudent}>Forgot Password?</Text>
-    </Pressable>
+    <TouchableOpacity onPress={() => setForgetPasswordVisible(true)} style={styles.buttonContainerStudent}>
+    <Text style={styles.buttonTextStudent}>Reset Password</Text>
+    </TouchableOpacity>
   </View>
 </View>
 

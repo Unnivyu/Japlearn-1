@@ -154,7 +154,8 @@ const Signup = () => {
 
     return (
         <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView 
+            showsVerticalScrollIndicator={false}>
                 <View>
                     <View style={styles.imageContainer}>
                         <Text style={styles.titleText}>Please fill out the necessary fields.</Text>

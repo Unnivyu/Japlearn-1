@@ -171,7 +171,7 @@ const Login = () => {
                     value={email}
                     placeholder='Email'
                     autoCapitalize="none"
-                    onChangeText={setEmail}
+                    onChangeText={(text) => setEmail(text.trimEnd())}
                 />
                 <View style={styles.passwordContainer}>
                     <TextInput

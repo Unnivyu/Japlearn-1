@@ -26,10 +26,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     menuContainer: {
-        marginTop: 20,
-        paddingHorizontal: 20,
-        alignItems: 'center',
-        
+        flex: 1,
+        alignItems: 'center', // Horizontally center the buttons
+        justifyContent: 'center', // Vertically center the buttons
+        paddingHorizontal: 20, // Add horizontal padding for responsiveness
+        paddingVertical: 20,
+        width: '100%', // Ensure full width for consistent alignment
     },
 });
 

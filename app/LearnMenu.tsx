@@ -31,6 +31,7 @@ const LearnMenu = () => {
   const [hiraganaComplete, setHiraganaComplete] = useState(false);
   const [katakanaComplete, setKatakanaComplete] = useState(false);
   const [isGrammarUnlocked, setIsGrammarUnlocked] = useState(false);
+  
 
   // Check progress on component mount
   useEffect(() => {
@@ -39,13 +40,13 @@ const LearnMenu = () => {
 
   // Check progress only when the `fromContent3` param is true to trigger the badge
   useEffect(() => {
-    if (fromContent3 === 'true' && !sentenceCompleted && !isBadgeVisible) {
+    if (fromContent3 === 'true' && sentenceCompleted && !isBadgeVisible) {
       // Only trigger badge modal if coming from Content3 and sentence is complete
       if (sentenceCompleted && !isBadgeVisible) {
         triggerBadgeModal(); // Trigger the modal only if sentence is complete
       }
     }
-  }, [fromContent3, sentenceCompleted, isBadgeVisible]);  // Check changes in `fromContent3` or `sentenceCompleted`
+  }, [fromContent3, sentenceCompleted]);  // Check changes in `fromContent3` or `sentenceCompleted`
   
   const checkProgress = async () => {
     try {

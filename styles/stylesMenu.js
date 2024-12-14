@@ -15,11 +15,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 20,
-        paddingTop: 40,
+        paddingTop: 60,
         marginBottom: 20,
         borderBottomWidth: 10,
         borderBottomColor: '#6C3A99',
-        height: 130,
+        height: 150,
     },
     hText: {
         fontFamily: 'Jua',
@@ -43,18 +43,17 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     flatListContainer: {
-        justifyContent: 'space-between',
+        flexGrow: 1, // Ensure it grows to take available space
+        justifyContent: 'center', // Center vertically
+        alignItems: 'center', // Center horizontally
     },
     columnWrapper: {
         justifyContent: 'space-between',
         paddingHorizontal: 10,
     },
     levelContainer: {
-        flex: 1,
-        margin: 5,
-        alignItems: 'center',
-        maxWidth: '50%', 
-        marginBottom: 40, 
+        marginVertical: 10, // Add some vertical spacing between buttons
+        alignItems: 'center', // Ensure the buttons are aligned centrally
     },
     menuText: {
         fontFamily: 'Jua',

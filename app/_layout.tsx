@@ -8,9 +8,17 @@ import { ClassCodeProvider } from '../context/ClassCodeContext';
 import { LessonProgressProvider, useLessonProgress } from '../context/LessonProgressContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import IdleTimeout from '../context/IdleTimeoutProps';
 
-const getFonts = () => Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
+
+const getFonts = async () => {
+  try {
+    await Font.loadAsync({ 'Jua': require('../assets/fonts/Jua.ttf') });
+    console.log('Jua font loaded successfully');
+  } catch (error) {
+    console.error('Error loading Jua font:', error);
+  }
+};
+
 
 const routeAccessConfig = {
   student: [
@@ -100,7 +108,7 @@ const RootLayout = () => {
 
   return (
     <GestureHandlerRootView>
-      <IdleTimeout timeout={20 * 60 * 1000} />
+      
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" />
         <Stack.Screen name="Signup" />

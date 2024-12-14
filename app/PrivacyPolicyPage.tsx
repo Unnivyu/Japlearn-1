@@ -92,11 +92,12 @@
         },
         contentContainer: {
             paddingBottom: 20,
+            paddingTop: 50,
         },
         header: {
             fontSize: 32,
-            fontWeight: 'bold',
             fontFamily: 'Jua',
+            fontWeight: 'bold',
             color: '#4CAF50',
             marginBottom: 10,
             textAlign: 'center',

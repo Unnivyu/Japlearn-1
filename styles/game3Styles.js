@@ -8,7 +8,8 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
-    aspectRatio: 1080 / 1920,
+    aspectRatio: 1080 / 2300,
+    
   },
   container: {
     flex: 1,
@@ -16,6 +17,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   question: {
+    paddingTop: 40,
     fontSize: 30,
     marginVertical: 20,
     textAlign: 'center',
@@ -24,23 +26,25 @@ export const styles = StyleSheet.create({
   },
   choiceContainer: {
     position: 'absolute',
-    top: height * 0.560,
-    left: width * 0.4,
-    width: width * 0.2,
-    height: height * 0.1,
+    bottom: '13%', // Place the choices inside the white box
+    width: '80%',
+    height: '25%', // Ensure this fits the white bamboo box
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
+    backgroundColor: 'transparent', // Keeps the background transparent
+    padding: 10,
   },
   choice: {
-    width: '40%',
-    height: '70%',
+    width: 100, // Set fixed width
+    height: 50, // Set fixed height
     backgroundColor: '#3b6b3b',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-    marginVertical: 30,
+    margin: 10,
+    position: 'relative', // Allows absolute positioning during animation
   },
   choiceText: {
     color: 'white',
@@ -53,20 +57,21 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 30,
+    paddingHorizontal: 5,
     marginTop: 120,
   },
   characterContainer: {
     alignItems: 'center',
+
   },
   playerImage: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     resizeMode: 'contain',
   },
   enemyImage: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     resizeMode: 'contain',
   },
   playerHPContainer: { // New style for player HP container
@@ -123,31 +128,36 @@ export const styles = StyleSheet.create({
     fontFamily: 'Jua',
   },
   curtainContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
+    ...StyleSheet.absoluteFillObject, // Ensure it covers the full screen
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2, // Ensure it's on top
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional semi-transparent background
+    zIndex: 9999, // Place it above all elements
+    backgroundColor: 'transparent', // Maintain transparency for underlying elements
   },
   curtainLeft: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '50%',
-    height: '100%',
+    width: '50%', // Covers half the screen width
+    height: '100%', // Covers full screen height
     backgroundColor: '#000',
   },
   curtainRight: {
     position: 'absolute',
     top: 0,
     right: 0,
-    width: '50%',
-    height: '100%',
+    width: '50%', // Covers half the screen width
+    height: '100%', // Covers full screen height
     backgroundColor: '#000',
+  },
+  curtainText: {
+    position: 'absolute', // Ensure the text is centered
+    color: '#FFFFFF',
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Jua',
+    zIndex: 10000, // Ensure it is above the curtains
   },
   curtainText: {
     color: '#FFFFFF',
@@ -155,6 +165,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: 'Jua',
+    zIndex: 11,
   },
   characterName: {
     fontSize: 18,
@@ -164,16 +175,14 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark background with opacity
+    ...StyleSheet.absoluteFillObject, // Covers the entire screen
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent black background
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 3,
+    zIndex: 9999, // Ensures it's above all other UI elements
   },
+  
+  
   gameOverText: {
     color: '#FFFFFF',
     fontSize: 40,
@@ -194,6 +203,21 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  
+  selectedAnswerContainer: {
+    marginTop: 10,
+    marginBottom: -51,
+    backgroundColor: '#3b6b3b',
+    borderRadius: 10,
+    padding: 10,
+    width: '20%',
+    alignItems: 'center',
+  },
+  selectedAnswerText: {
+    fontSize: 18,
+    color: 'white',
+    fontFamily: 'Jua',
   },
   
 });

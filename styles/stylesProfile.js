@@ -27,8 +27,8 @@ export const styles = StyleSheet.create({
         paddingRight:10
     },
     profilePicture: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 120,
         borderRadius: 50,
         borderWidth: 3,
         borderColor: 'white',
@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
         borderRightWidth: 0,
     },
     descText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 20,
         marginTop: 10,
     },
@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 16,
         textAlign: 'center',
         paddingVertical: 10,
@@ -110,7 +110,7 @@ export const styles = StyleSheet.create({
     },
     buttonTextStudent: {
         color: 'white',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 16,
         textAlign: 'center',
         paddingVertical: 10,
@@ -146,7 +146,7 @@ export const styles = StyleSheet.create({
     },
     categoryButtonText: {
         color: 'white',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 14,
     },
     contentScrollContainer: {
@@ -160,7 +160,7 @@ export const styles = StyleSheet.create({
     },
     gameTitle: {
         fontSize: 22,
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         textAlign: 'center',
         marginBottom: 20,
     },
@@ -172,12 +172,12 @@ export const styles = StyleSheet.create({
     },
     scoreText: {
         fontSize: 16,
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         marginBottom: 5,
     },
     noScoresText: {
         fontSize: 18,
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         textAlign: 'center',
         marginTop: 20,
         color: 'grey',
@@ -204,7 +204,7 @@ export const styles = StyleSheet.create({
     },
     modalTitle: {
         fontSize: 18, // Slightly smaller title font
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         marginBottom: 10,
         fontWeight: 'bold',
     },
@@ -239,7 +239,7 @@ export const styles = StyleSheet.create({
         color: 'red',
         fontSize: 14,
         marginBottom: 10,
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
     },
     modalButton: {
         backgroundColor: '#8ED94D',
@@ -252,7 +252,7 @@ export const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         textAlign: 'center',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
     },
     badgeContainer: {
         flexDirection: "row",
@@ -282,7 +282,7 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginVertical: 20,
-        fontFamily: "jua", // Keep consistent with your app's font style
+        fontFamily: "Jua", // Keep consistent with your app's font style
       },
       
       lockedBadgeWrapper: {

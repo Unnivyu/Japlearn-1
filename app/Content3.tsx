@@ -104,57 +104,60 @@ const Content3 = () => {
   };
 
   const handleFinalClick = async () => {
-    if (showFinishOverlay) {
-      try {
-        // Fetch current sentence progress from the backend
-        console.log('Checking current sentence progress...');
-        const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+
+    setShowFinishOverlay(true);
+
+    try {
+      // Fetch current sentence progress from the backend
+      console.log('Checking current sentence progress...');
+      const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
   
-        // Handle error in fetching progress
-        if (!response.ok) {
-          console.log("Failed to fetch sentence progress", response.statusText);
-          return;
-        }
+      // Handle error in fetching progress
+      if (!response.ok) {
+        console.log('Failed to fetch sentence progress', response.statusText);
+        return;
+      }
   
-        const data = await response.json();
-        console.log('Current Sentence Progress Data:', data);
+      const data = await response.json();
+      console.log('Current Sentence Progress Data:', data);
   
-        // Check if the progress is already set to true
-        if (data && data.sentence === true) {
-          console.log('Sentence progress is already true, skipping update.');
-          router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });
-          return;
-        }
+      // Check if the progress is already set to true
+      if (data && data.sentence === true) {
+        console.log('Sentence progress is already true, skipping update.');
+        router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });
+        return;
+      }
   
-        // If not set to true, proceed with the update
-        console.log('Updating sentence progress...');
-        const updateResponse = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=sentence&value=true`, {
+      // If not set to true, proceed with the update
+      console.log('Updating sentence progress...');
+      const updateResponse = await fetch(
+        `${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=sentence&value=true`,
+        {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-        });
-  
-        const updateData = await updateResponse.json();
-        console.log('Update Response Data:', updateData);
-  
-        if (updateResponse.ok && updateData.success) {
-          router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });
-        } else {
-          console.log("Failed to update sentence progress", updateData);
         }
-      } catch (error) {
-        console.log("Error while checking and updating sentence progress:", error);
+      );
+  
+      const updateData = await updateResponse.json();
+      console.log('Update Response Data:', updateData);
+  
+      if (updateResponse.ok && updateData.success) {
+        router.push({ pathname: '/LearnMenu', params: { fromContent3: 'true' } });
+      } else {
+        console.log('Failed to update sentence progress', updateData);
       }
-    } else {
-      setShowFinishOverlay(true); // Show the overlay with "Finish..." text
+    } catch (error) {
+      console.log('Error while checking and updating sentence progress:', error);
     }
   };
+  
   
   const { character, text, image } = dialogues[currentDialogueIndex];
   const postCinematic = postCinematicDialogues[postCinematicIndex];

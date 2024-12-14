@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     timerText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 15,
         textAlign: 'center',
     },
@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
         marginBottom: 50,
     },
     charText: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 50,
     },
     moleContainer: {
@@ -139,7 +139,7 @@ export const styles = StyleSheet.create({
     modalButtonText: {
         fontSize: 18,
         color: '#fff',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
 
     },
     gameOverContainer: {

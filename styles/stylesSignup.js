@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: '#8ED94D',
         padding: 10,
-        width:  '100%',
+        width: '100%',
         borderRadius: 5,
         borderColor: '#8AC25A',
         borderBottomWidth: 6,
@@ -13,19 +13,22 @@ const styles = StyleSheet.create({
 
     buttonText: {
         color: '#fff',
-        fontSize: 40
+        fontSize: 40,
     },
 
     buttonContainer: {
-        alignItems:'center',
+        alignItems: 'center',
         marginTop: 20,
+        paddingTop: 20,
     },
 
     container: {
-        marginTop: 50,
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'center', // Center vertically
+        alignItems: 'center', // Center horizontally
         paddingHorizontal: 30,
+        paddingVertical: 20, // Add some vertical padding
+        backgroundColor: '#ffffff',
     },
 
     input: {
@@ -36,13 +39,15 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         height: 60,
         borderColor: 'red',
+        width: '100%', // Ensure inputs stretch the full container width
     },
 
     imageContainer: {
+        paddingTop: '20%',
         alignItems: 'center',
-        marginBottom: 30
+        marginBottom: 45,
     },
-    
+
     linkContainer: {
         marginTop: 40,
         alignItems: 'center',
@@ -56,7 +61,7 @@ const styles = StyleSheet.create({
 
     errorInput: {
         borderWidth: 1,
-        borderColor: 'red',   
+        borderColor: 'red',
     },
 
     errorText: {
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'red',
         backgroundColor: 'red',
-        padding: 5, 
+        padding: 5,
         borderRadius: 5,
         shadowColor: '#000',
         shadowOffset: {
@@ -81,10 +86,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         position: 'relative',
+        width: '100%',
     },
     passwordInput: {
         flex: 1,
-        paddingRight: 40, 
+        paddingRight: 40,
     },
     insideInputButton: {
         position: 'absolute',
@@ -96,7 +102,10 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 24,
         fontFamily: 'Jua',
-    }
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+
 });
 
 export default styles;
