@@ -46,4 +46,9 @@ public class ScoreService {
                           .collect(Collectors.toList());
 }
 
+public void deleteScoresByDate(String date) {
+    List<Score> scoresToDelete = scoreRepository.findByDate(date);
+    scoreRepository.deleteAll(scoresToDelete);
+}
+
 }

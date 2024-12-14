@@ -2,6 +2,7 @@ package japlearn.demo.Controller;
 
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,38 +51,39 @@ public class ScoreController {
         }
     }
 
-    @GetMapping("/all")
-    public List<Score> getAllScores() {
-        return scoreService.getAllScores();
-    }
-
     @GetMapping("/export")
-    public void exportScoresAsCsv(@RequestParam String date, HttpServletResponse response) {
+public void exportScoresAsCsv(@RequestParam String date, HttpServletResponse response) {
     try {
-        // Fetch the scores for the given date
         List<Score> scores = scoreService.getScoresByDate(date);
 
-        // Set the response headers
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"scores_" + date + ".csv\"");
 
-        // Write CSV data to the response output stream
         PrintWriter writer = response.getWriter();
 
-        // Write CSV header
-        writer.println("Name,Email,Date,Score");
+        writer.println("Name,Score"); // CSV Header
 
-        // Write data rows
         for (Score score : scores) {
-            writer.println(score.getName() + "," + score.getEmail() + "," + score.getDate() + "," + score.getScore());
+            String formattedName = formatName(score.getName()); // Format names properly
+            writer.println("\"" + formattedName + "\"," + score.getScore()); // Add quotes around Name
         }
 
         writer.flush();
     } catch (Exception e) {
-        // Handle exceptions
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         e.printStackTrace();
     }
+}
+
+// Helper method to format names as "Lastname, Firstname"
+private String formatName(String fullName) {
+    String[] parts = fullName.trim().split("\\s+"); // Split the name into parts based on spaces
+    if (parts.length >= 2) {
+        String lastname = parts[parts.length - 1]; // The last word is the lastname
+        String firstname = String.join(" ", Arrays.copyOfRange(parts, 0, parts.length - 1)); // Join everything else as firstname
+        return lastname + ", " + firstname; // Return in "Lastname, Firstname" format
+    }
+    return fullName; // If only one word, return as is
 }
 
     
@@ -91,5 +93,14 @@ public ResponseEntity<List<String>> getAvailableDates() {
     return ResponseEntity.ok(availableDates);
 }
 
+@DeleteMapping("/deleteByDate")
+public ResponseEntity<String> deleteScoresByDate(@RequestParam String date) {
+    try {
+        scoreService.deleteScoresByDate(date);
+        return ResponseEntity.ok("{\"message\": \"Scores deleted successfully for the date: " + date + "\"}");
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+    }
+}
 
 }
