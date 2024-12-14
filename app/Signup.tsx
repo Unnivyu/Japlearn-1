@@ -161,94 +161,118 @@ const Signup = () => {
                     </View>
                         
                     <TextInput
-                        style={[styles.input, errors.fname ? styles.errorInput : null]}
-                        value={fname}
-                        placeholder='Firstname'
-                        autoCapitalize="none"
-                        onChangeText={(text) => setFname(text.charAt(0).toUpperCase() + text.slice(1))}
-                    />
+    style={[styles.input, errors.fname ? styles.errorInput : null]}
+    value={fname}
+    placeholder="Firstname"
+    autoCapitalize="none"
+    maxLength={30}
+    onChangeText={(text) => {
+        const trimmedText = text.trimStart().charAt(0).toUpperCase() + text.trimStart().slice(1);
+        setFname(trimmedText);
 
-                    {errors.fname && (
-                        <Text style={styles.errorText}>{errors.fname}</Text>
-                    )}
+        // Clear error when valid input is entered
+        if (trimmedText) {
+            setErrors((prevErrors) => ({ ...prevErrors, fname: '' }));
+        }
+    }}
+/>
 
-                    <TextInput
-                        style={[styles.input, errors.lname ? styles.errorInput : null]}
-                        value={lname}
-                        placeholder='Lastname'
-                        autoCapitalize="none"
-                        onChangeText={(text) => setLname(text.charAt(0).toUpperCase() + text.slice(1))}
-                    />
+<TextInput
+    style={[styles.input, errors.lname ? styles.errorInput : null]}
+    value={lname}
+    placeholder="Lastname"
+    autoCapitalize="none"
+    maxLength={30}
+    onChangeText={(text) => {
+        const trimmedText = text.trimStart().charAt(0).toUpperCase() + text.trimStart().slice(1);
+        setLname(trimmedText);
 
-                    {errors.lname && (
-                        <Text style={styles.errorText}>{errors.lname}</Text>
-                    )}
-    
-                    <TextInput
-                        style={[styles.input, errors.email ? styles.errorInput : null]}
-                        value={email}
-                        placeholder='Email'
-                        autoCapitalize="none"
-                        onChangeText={(text) => setEmail(text)}
-                    />
+        // Clear error when valid input is entered
+        if (trimmedText) {
+            setErrors((prevErrors) => ({ ...prevErrors, lname: '' }));
+        }
+    }}
+/>
 
-                    {errors.email && (
-                        <Text style={styles.errorText}>{errors.email}</Text>
-                    )}
+<TextInput
+    style={[styles.input, errors.email ? styles.errorInput : null]}
+    value={email}
+    placeholder="Email"
+    autoCapitalize="none"
+    maxLength={50}
+    onChangeText={(text) => {
+        const trimmedText = text.trimStart();
+        setEmail(trimmedText);
+
+        // Clear error when valid email is entered
+        if (trimmedText.endsWith('@cit.edu')) {
+            setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
+        }
+    }}
+/>
+
+<View style={styles.passwordContainer}>
+    <TextInput
+        style={[styles.input, styles.passwordInput, errors.password ? styles.errorInput : null]}
+        secureTextEntry={!showPassword}
+        value={password}
+        placeholder="Password"
+        autoCapitalize="none"
+        onChangeText={(text) => {
+            setPassword(text);
+
+            // Clear error when valid password is entered
+            if (text.length >= 8 && /[A-Z]/.test(text) && /[0-9]/.test(text) && /[!@#$%^&*(),.?":{}|<>]/.test(text)) {
+                setErrors((prevErrors) => ({ ...prevErrors, password: '' }));
+            }
+        }}
+    />
+    {password.length > 0 && (
+        <Pressable
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.insideInputButton}
+        >
+            <Ionicons
+                name={showPassword ? 'eye-off' : 'eye'}
+                size={24}
+                color="#4F4F4F"
+            />
+        </Pressable>
+    )}
+</View>
+
+<View style={styles.passwordContainer}>
+    <TextInput
+        style={[styles.input, styles.passwordInput, errors.cpassword ? styles.errorInput : null]}
+        secureTextEntry={!showCPassword}
+        value={cpassword}
+        placeholder="Confirm Password"
+        autoCapitalize="none"
+        onChangeText={(text) => {
+            setCPassword(text);
+
+            // Clear error when passwords match
+            if (text === password) {
+                setErrors((prevErrors) => ({ ...prevErrors, cpassword: '' }));
+            }
+        }}
+    />
+    {cpassword.length > 0 && (
+        <Pressable
+            onPress={() => setShowCPassword(!showCPassword)}
+            style={styles.insideInputButton}
+        >
+            <Ionicons
+                name={showCPassword ? 'eye-off' : 'eye'}
+                size={24}
+                color="#4F4F4F"
+            />
+        </Pressable>
+    )}
+</View>
+
+
                     
-                    <View style={styles.passwordContainer}>
-                        <TextInput
-                            style={[styles.input, styles.passwordInput, errors.password ? styles.errorInput : null]}
-                            secureTextEntry={!showPassword}
-                            value={password}
-                            placeholder='Password'
-                            autoCapitalize="none"
-                            onChangeText={(text) => setPassword(text)}
-                        />
-                        {password.length > 0 && (
-                            <Pressable
-                                onPress={() => setShowPassword(!showPassword)}
-                                style={styles.insideInputButton}
-                            >
-                                <Ionicons
-                                    name={showPassword ? 'eye-off' : 'eye'}
-                                    size={24}
-                                    color="#4F4F4F"
-                                />
-                            </Pressable>
-                        )}
-                    </View>
-
-                    {errors.password && (
-                        <Text style={styles.errorText}>{errors.password}</Text>
-                    )}
-
-                    <View style={styles.passwordContainer}>
-                        <TextInput
-                            style={[styles.input, styles.passwordInput, errors.cpassword ? styles.errorInput : null]}
-                            secureTextEntry={!showCPassword}
-                            value={cpassword}
-                            placeholder='Confirm Password'
-                            autoCapitalize="none"
-                            onChangeText={(text) => setCPassword(text)}
-                        />
-                        {cpassword.length > 0 && (
-                            <Pressable
-                                onPress={() => setShowCPassword(!showCPassword)}
-                                style={styles.insideInputButton}
-                            >
-                                <Ionicons
-                                    name={showCPassword ? 'eye-off' : 'eye'}
-                                    size={24}
-                                    color="#4F4F4F"
-                                />
-                            </Pressable>
-                        )}
-                    </View>
-
-                    {errors.cpassword && (
-                        <Text style={styles.errorText}>{errors.cpassword}</Text>
-                    )}
 
                     <View style={styles.buttonContainer}>
                         {loading ? (

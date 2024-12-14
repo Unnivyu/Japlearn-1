@@ -100,7 +100,7 @@ const RootLayout = () => {
 
   return (
     <GestureHandlerRootView>
-      <IdleTimeout timeout={5 * 60 * 1000} />
+      <IdleTimeout timeout={20 * 60 * 1000} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" />
         <Stack.Screen name="Signup" />

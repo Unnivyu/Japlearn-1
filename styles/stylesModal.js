@@ -144,4 +144,52 @@ export const styles = StyleSheet.create({
     scrollContainer: {
         maxHeight: 200,
     },
+
+    centeredView2: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    },
+    modalView2: {
+        width: '50%', // Adjust width for better responsiveness
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 20,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalText2: {
+        marginBottom: 15,
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    buttonRow2: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap:10,
+    },
+    button2: {
+        flex: 1,
+        margin: 5, // Add spacing between buttons
+        padding: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#8BC34A', // Green button color
+    },
+    buttonText2: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });

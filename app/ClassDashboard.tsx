@@ -48,6 +48,29 @@ const ClassDashboard = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
+    const deleteScoresByDate = async (date) => {
+        try {
+            const response = await fetch(`${expoconfig.API_URL}/api/scores/deleteByDate?date=${date}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                alert(`Scores deleted successfully for the date: ${date}`);
+                fetchAvailableDates(); // Refresh scores data
+            } else {
+                const errorData = await response.json();
+                alert(`Failed to delete scores: ${errorData.error}`);
+            }
+        } catch (error) {
+            console.error('Error deleting scores:', error);
+            alert('Error deleting scores. Please try again.');
+        }
+    };
+    
+
     const fetchAvailableDates = async () => {
         try {
             const response = await fetch(`${expoconfig.API_URL}/api/scores/getAvailableDates`);
@@ -591,7 +614,7 @@ const ClassDashboard = () => {
                 <Text style={stylesClass.titleText}>Class: {classCode}</Text>
                 <View style={stylesClass.categoryContainer}>
                     <CustomButton title="MEMBERS" onPress={() => handleCategoryPress('MEMBERS')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
-                    <CustomButton title="SCORES" onPress={() => handleCategoryPress('SCORES')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
+                    <CustomButton title="QUACKSLATE SCORES" onPress={() => handleCategoryPress('SCORES')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                     <CustomButton title="GAMES" onPress={() => handleCategoryPress('GAMES')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                     <CustomButton title="LESSONS" onPress={() => handleCategoryPress('LESSONS')} buttonStyle={stylesClass.categoryButton} textStyle={stylesClass.categoryButtonText} />
                 </View>
@@ -735,38 +758,6 @@ const ClassDashboard = () => {
                     </View>
                 </View>
             </Modal>
-            <Modal
-    animationType="slide"
-    transparent={true}
-    visible={showConfirmationModal}
-    onRequestClose={() => setShowConfirmationModal(false)}
->
-    <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-                Are you sure you want to download the CSV for {selectedDate}?
-            </Text>
-            <View style={styles.buttonRow}>
-                <CustomButton
-                    title="Yes"
-                    onPress={() => {
-                        downloadCsv(selectedDate);
-                        setShowConfirmationModal(false);
-                    }}
-                    buttonStyle={styles.button}
-                    textStyle={styles.buttonText}
-                />
-                <CustomButton
-                    title="No"
-                    onPress={() => setShowConfirmationModal(false)}
-                    buttonStyle={styles.button}
-                    textStyle={styles.buttonText}
-                />
-            </View>
-        </View>
-    </View>
-</Modal>
-
 
             <Modal
                 animationType="slide"
@@ -790,21 +781,46 @@ const ClassDashboard = () => {
                 </View>
             </Modal>
             <Modal
-                animationType="slide"
-                transparent={true}
-                visible={showConfirmRemoveModal}
-                onRequestClose={() => setShowConfirmRemoveModal(false)}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Are you sure you want to remove these scores?</Text>
-                        <View style={styles.buttonRow}>
-                            <CustomButton title="Yes" onPress={confirmRemoveScores} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                            <CustomButton title="No" onPress={() => setShowConfirmRemoveModal(false)} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+    animationType="slide"
+    transparent={true}
+    visible={showConfirmationModal}
+    onRequestClose={() => setShowConfirmationModal(false)}
+>
+    <View style={styles.centeredView}>
+        <View style={styles.modalView2}>
+            <Text style={styles.modalText}>
+                What action would you like to perform for {selectedDate}?
+            </Text>
+            <View style={styles.buttonRow2}>
+                <CustomButton
+                    title="Download CSV"
+                    onPress={() => {
+                        downloadCsv(selectedDate);
+                        setShowConfirmationModal(false);
+                    }}
+                    buttonStyle={styles.button}
+                    textStyle={styles.buttonText}
+                />
+                <CustomButton
+                    title="Delete Scores"
+                    onPress={() => {
+                        deleteScoresByDate(selectedDate);
+                        setShowConfirmationModal(false);
+                    }}
+                    buttonStyle={styles.button}
+                    textStyle={styles.buttonText}
+                />
+                <CustomButton
+                    title="Cancel"
+                    onPress={() => setShowConfirmationModal(false)}
+                    buttonStyle={styles.button}
+                    textStyle={styles.buttonText}
+                />
+            </View>
+        </View>
+    </View>
+</Modal>
+
 
             {/*Modal for Adding Lessons*/}
             <Modal
