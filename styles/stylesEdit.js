@@ -30,7 +30,8 @@ export const stylesEdit = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 5,
         paddingHorizontal: 10,
-        marginTop:20
+        marginTop:30
+       
     },
     button: {
         backgroundColor: '#8ED94D',
@@ -39,6 +40,7 @@ export const stylesEdit = StyleSheet.create({
         width: 100,
         borderRadius: 5,
         justifyContent: 'center',
+        marginBottom:0  
     },
     buttonText: {
         color: 'white',
@@ -48,7 +50,7 @@ export const stylesEdit = StyleSheet.create({
         padding: 20,
     },
     quackmaneditContent: {
-        width: '50%',
+        width: '80%',
         backgroundColor: '#8ED94D',
         borderRadius: 10,
         justifyContent: 'center',

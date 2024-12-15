@@ -104,7 +104,7 @@ const QuackslateHost = () => {
                     </View>
 
                     <View style={stylesSlate.centeredContainer}>
-                        <Text style={stylesSlate.gameCodeText}>Game Code: {gameCode}</Text>
+                        <Text style={stylesSlate.gameCodeTextHost}>Game Code: {gameCode}</Text>
                         <Text style={stylesSlate.titleText}>{title}</Text>
                     </View>
 

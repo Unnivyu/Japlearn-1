@@ -228,9 +228,16 @@ const stylesSlate = StyleSheet.create({
         color: '#FFFFFF',
     },
     gameCodeText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
+        marginLeft:70
+    },
+    gameCodeTextHost: {
         fontSize: 30,
         fontWeight: 'bold',
         color: 'black',
+        
     },
     modalContainer: {
         flex: 1,

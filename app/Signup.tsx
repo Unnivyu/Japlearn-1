@@ -211,6 +211,7 @@ const Signup = () => {
         }
     }}
 />
+{errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
 
 <View style={styles.passwordContainer}>
     <TextInput
@@ -241,6 +242,7 @@ const Signup = () => {
         </Pressable>
     )}
 </View>
+{errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
 
 <View style={styles.passwordContainer}>
     <TextInput
@@ -271,6 +273,8 @@ const Signup = () => {
         </Pressable>
     )}
 </View>
+{errors.cpassword ? <Text style={styles.errorText}>{errors.cpassword}</Text> : null}
+
 
 
                     
