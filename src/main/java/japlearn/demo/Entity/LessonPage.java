@@ -3,9 +3,6 @@ package japlearn.demo.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-
 @Document(collection = "lessonPages")
 public class LessonPage {
 	
