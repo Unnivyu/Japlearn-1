@@ -23,6 +23,25 @@ const WordsMenu = () => {
   const [wordLessons, setWordLessons] = useState([]);
   const [classCode, setClassCode] = useState('');
 
+  const [completedLessons, setCompletedLessons] = useState({
+    vocab1: false,
+    vocab2: false,
+  });
+
+  const fetchProgress = async () => {
+    if (!user?.email) return;
+    try {
+      const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}`);
+      const data = await response.json();
+      setCompletedLessons({
+        vocab1: data.vocab1,
+        vocab2: data.vocab2,
+      });
+    } catch (error) {
+      console.log('Error fetching progress:', error);
+    }
+  };
+
   const handleBackPress = () => {
     router.push("/LearnMenu");
   };
@@ -121,6 +140,7 @@ const WordsMenu = () => {
   useEffect(() => {
     if (user?.email) {
       fetchUserClassCode();
+      fetchProgress();
     }
   }, [user]);
 
@@ -185,19 +205,25 @@ const WordsMenu = () => {
               imageSource={require('../assets/img/kana_button.png')}
             />
             <ImageButton
-              title={'Vocabulary II'}
-              infoContent='This lesson introduces the next set of japanese words.'
-              subtitle={'2nd set of vocabulary'}
-              onPress={() => router.push(`/Words2`)}
-              imageSource={require('../assets/img/kana_button.png')}
-            />
+          title={'Vocabulary II'}
+          infoContent="This lesson introduces the next set of Japanese words."
+          subtitle={'2nd set of vocabulary'}
+          onPress={() => completedLessons.vocab1 && router.push(`/Words2`)}
+          imageSource={require('../assets/img/kana_button.png')}
+          buttonStyle={!completedLessons.vocab1 ? [styles.disabledButton] : null}
+          textStyle={!completedLessons.vocab1 ? [styles.disabledText] : null}
+          disabled={!completedLessons.vocab1}
+        />
             <ImageButton
-              title={'Vocabulary Practice'}
-              infoContent=''
-              subtitle={'vocabulary'}
-              onPress={() => router.push(`/WordsPractice`)}
-              imageSource={require('../assets/img/kana_button.png')}
-            />
+          title={'Vocabulary Practice'}
+          infoContent="Practice what you've learned."
+          subtitle={'Practice your vocabulary'}
+          onPress={() => completedLessons.vocab1 && completedLessons.vocab2 && router.push(`/WordsPractice`)}
+          imageSource={require('../assets/img/kana_button.png')}
+          buttonStyle={!(completedLessons.vocab1 && completedLessons.vocab2) ? [styles.disabledButton] : null}
+          textStyle={!(completedLessons.vocab1 && completedLessons.vocab2) ? [styles.disabledText] : null}
+          disabled={!(completedLessons.vocab1 && completedLessons.vocab2)}
+        />
         </View>
 
         {isBadgeVisible && (
