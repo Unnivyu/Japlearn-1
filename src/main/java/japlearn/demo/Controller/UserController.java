@@ -40,6 +40,12 @@ public class UserController {
         this.japlearnService = japlearnService;
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "Welcome to JapLearn Backend!";
+    }
+
+
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
         try {
