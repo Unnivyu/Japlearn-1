@@ -143,33 +143,6 @@ const ClassDashboard = () => {
         fetchUserData();
     }, [classCode]);
 
-    const fetchScoresData = async () => {
-        try {
-            const quackslateResponse = await fetch(`${expoconfig.API_URL}/api/quackslateScores/getScoresByClasscode/${classCode}`);
-            const quackamoleResponse = await fetch(`${expoconfig.API_URL}/api/quackamoleScores/getquackamoleScoresByClasscode/${classCode}`);
-            const quackmanResponse = await fetch(`${expoconfig.API_URL}/api/quackmanScores/getquackmanScoresByClasscode/${classCode}`);
-
-            if (quackslateResponse.ok && quackamoleResponse.ok && quackmanResponse.ok) {
-                const quackslateData = await quackslateResponse.json();
-                const quackamoleData = await quackamoleResponse.json();
-                const quackmanData = await quackmanResponse.json();
-
-                const combinedScoresData = [...quackslateData, ...quackamoleData, ...quackmanData];
-                setScoresData(combinedScoresData);
-                setFilteredScoresData(combinedScoresData);
-            } else {
-                console.error('Failed to fetch scores data');
-            }
-        } catch (error) {
-            console.error('Error fetching scores data:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (activeCategory === 'SCORES' || activeCategory === 'GAMES') {
-            fetchScoresData();
-        }
-    }, [activeCategory]);
 
     const handleDeleteModalConfirm = async () => {
         setShowDeleteModal(false);
@@ -218,16 +191,6 @@ const ClassDashboard = () => {
         }
     };
 
-    const handleFilterPress = (game) => {
-        setSelectedGame(game);
-        if (game) {
-            const filteredData = scoresData.filter(score => getGameName(score.level).includes(game));
-            setFilteredScoresData(filteredData);
-        } else {
-            setFilteredScoresData(scoresData);
-        }
-        setShowFilterModal(false);
-    };
 
     const toggleSelectScore = (id) => {
         const newSelectedScores = new Set(selectedScores);
@@ -266,31 +229,6 @@ const ClassDashboard = () => {
         setShowDeleteModal(true);
     };
 
-    const confirmRemoveScores = async () => {
-        try {
-            for (let id of selectedScores) {
-                let gameType = getGameTypeFromId(id);
-                await fetch(`${expoconfig.API_URL}/api/${gameType}/deleteScore/${id}`, {
-                    method: 'DELETE'
-                });
-            }
-            alert('Scores removed successfully');
-            fetchScoresData();
-            setSelectedScores(new Set());
-            setShowConfirmRemoveModal(false);
-        } catch (error) {
-            console.error('Error removing scores:', error);
-            alert('Error removing scores');
-        }
-    };
-
-    const getGameTypeFromId = (id) => {
-        const score = scoresData.find(score => score.id === id);
-        if (!score) return 'unknown';
-        if (score.level.startsWith('Intro') || score.level.startsWith('Basics')) return 'quackslateScores';
-        if (score.level.startsWith('Hiragana') || score.level.startsWith('Katakana')) return 'quackamoleScores';
-        return 'quackmanScores';
-    };
 
     // Lessons Code 
     useEffect(() => {
@@ -742,22 +680,7 @@ const ClassDashboard = () => {
                 </View>
 
             </ScrollView>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={showFilterModal}
-                onRequestClose={() => setShowFilterModal(false)}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Filter by Game</Text>
-                        <CustomButton title="All" onPress={() => handleFilterPress(null)} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                        <CustomButton title="Quackslate" onPress={() => handleFilterPress('Quackslate')} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                        <CustomButton title="Quackamole" onPress={() => handleFilterPress('Quackamole')} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                        <CustomButton title="Quackman" onPress={() => handleFilterPress('Quackman')} buttonStyle={styles.button} textStyle={styles.buttonText} />
-                    </View>
-                </View>
-            </Modal>
+
 
             <Modal
                 animationType="slide"
