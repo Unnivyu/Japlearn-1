@@ -101,9 +101,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
     alignItems: 'center',
+    
   },
   resetButtonText: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#FFF',
     fontWeight: 'bold',
   },
@@ -111,13 +112,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#CCC',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 10,
     alignItems: 'center',
   },
   closeButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#333',
     fontWeight: 'bold',
+  
   },
 });

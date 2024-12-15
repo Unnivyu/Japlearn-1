@@ -110,6 +110,16 @@ export const styles = StyleSheet.create({
         marginTop: 10,
         alignItems: 'center',
     },
+    button2: {
+        backgroundColor: '#8ED94D',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        height: 50,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginTop: 10,
+        alignItems: 'center',
+    },
     buttonText: {
         color: 'white',
         fontFamily: 'jua',
@@ -152,7 +162,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
     },
     modalView2: {
-        width: '50%', // Adjust width for better responsiveness
+        width: '100%', // Adjust width for better responsiveness
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,

@@ -185,10 +185,11 @@ export const styles = StyleSheet.create({
   
   gameOverText: {
     color: '#FFFFFF',
-    fontSize: 40,
+    fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: 'Jua',
+    marginRight:10
   },
   proceedButton: {
     position: 'absolute',

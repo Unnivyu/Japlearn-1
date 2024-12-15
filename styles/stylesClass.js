@@ -251,7 +251,7 @@ export const stylesClass = StyleSheet.create({
     dateButton: {
         backgroundColor: '#8ED94D', // Set the background color to gray
         paddingVertical: 12,       // Increase vertical padding for better height
-        paddingHorizontal: 200,     // Add horizontal padding to make it wider
+        paddingHorizontal: 100,     // Add horizontal padding to make it wider
         margin: 8,                 // Adjust margin for spacing
         borderRadius: 8,           // Round the corners
         alignItems: 'center',      // Center the text horizontally
