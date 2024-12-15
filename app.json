@@ -8,7 +8,7 @@
     "icon": "./assets/APPLOGO.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/APPLOGO.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,13 +17,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/APPLOGO.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.japlearn.cit"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/APPLOGO.png",
       "bundler": "metro"
     },
     "plugins": [
