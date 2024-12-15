@@ -74,7 +74,7 @@ const KatakanaSet1 = () => {
   };
 
   const handleBackPress = () => {
-    router.push("/KatakanaMenu");
+    router.push("/KatakanaIntro");
   };
 
   const handleCompletePress = async () => {

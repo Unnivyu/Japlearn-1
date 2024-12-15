@@ -46,6 +46,7 @@ const CharacterExercise3 = () => {
     const [message, setMessage] = useState('');
     const [cards, setCards] = useState([]);
     const [gameState, setGameState] = useState('preview'); // 'preview' or 'active'
+    const [cardOpacities, setCardOpacities] = useState([]); // Store opacity for each card
 
     // Split characters into sets of 8
     const sets = [];
@@ -60,6 +61,7 @@ const CharacterExercise3 = () => {
         setCards(shuffledSet);
         setFlippedCard(null);
         setMatchedPairs([]);
+        setCardOpacities(shuffledSet.map(() => 1)); // Set opacity of all cards to 1 initially
         setGameState('preview'); // Start in preview state
 
         // Set a timeout to flip cards back after 5 seconds and start the game
@@ -81,28 +83,38 @@ const CharacterExercise3 = () => {
 
         setFlippedCard(index);
 
-        if (card.romaji === currentRomaji) {
-            setMatchedPairs(prev => [...prev, index]);
+        // Delay the card flip to show the card briefly before checking for a match
+        setTimeout(() => {
+            if (card.romaji === currentRomaji) {
+                setMatchedPairs(prev => [...prev, index]);
 
-            setTimeout(() => {
-                setFlippedCard(null);
+                setTimeout(() => {
+                    setFlippedCard(null);
 
-                if (matchedPairs.length + 1 === cards.length) {
-                    setTimeout(() => {
-                        const nextSetIndex = currentSetIndex + 1;
-                        if (nextSetIndex < sets.length) {
-                            setCurrentSetIndex(nextSetIndex);
-                        } else {
-                            setMessage('Exercise completed!');
-                        }
-                    }, 1000);
-                }
-            }, 500);
-        } else {
-            setTimeout(() => {
-                setFlippedCard(null);
-            }, 500);
-        }
+                    // Gradually reduce opacity of matched cards
+                    setCardOpacities((prevOpacities) =>
+                        prevOpacities.map((opacity, i) =>
+                            i === index ? 0 : opacity // Set matched card's opacity to 0
+                        )
+                    );
+
+                    if (matchedPairs.length + 1 === cards.length) {
+                        setTimeout(() => {
+                            const nextSetIndex = currentSetIndex + 1;
+                            if (nextSetIndex < sets.length) {
+                                setCurrentSetIndex(nextSetIndex);
+                            } else {
+                                setMessage('Exercise completed!');
+                            }
+                        }, 1000);
+                    }
+                }, 0);
+            } else {
+                setTimeout(() => {
+                    setFlippedCard(null); // Flip the card back after 1 second if not a match
+                }, 250);
+            }
+        }, 500); // Delay the flip by 1 second to slow down the card reveal
     };
 
     const handleBackPress = () => {
@@ -175,10 +187,11 @@ const CharacterExercise3 = () => {
                             flippedCard === index ||
                             matchedPairs.includes(index);
                         const isCardMatched = matchedPairs.includes(index);
+                        const cardOpacity = cardOpacities[index]; // Get the opacity of each card
 
                         const cardStyle = {
                             ...styles.card,
-                            opacity: isCardMatched ? 0 : 1,
+                            opacity: cardOpacity,
                         };
 
                         return (

@@ -22,10 +22,11 @@ const getFonts = async () => {
 
 const routeAccessConfig = {
   student: [
-    'Menu', 'ResetButton','ResetPassword', 'Quackamole', 'Quackslate', 'QuackslateWait', 'QuackslateMenu', 'NewMenu', 'Words', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1',
+    'Menu', 'ResetButton','ResetPassword', 'Quackamole', 'Quackslate', 'QuackslateWait', 'QuackslateMenu', 'NewMenu', 'Words1', 'KanaMenu', 'HiraganaMenu', 'KatakanaMenu', 'HiraganaSet1',
     'HiraganaSet2', 'HiraganaSet3', 'KatakanaSet1', 'KatakanaSet2', 'KatakanaSet3', 'Quackman', 'StartMenu',
     'Profile', 'Lessons', 'LessonKanaGame', 'LearnMenu', 'Exercises', 'Content3', 'Game3', 'CharacterExercise1',
-    'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6', 'WordsMenu'
+    'CharacterExercise2', 'CharacterExercise3', 'CharacterExercise4', 'CharacterExercise5', 'CharacterExercise6', 'WordsMenu', 
+    'Words2', 'WordsPractice', 'HiraganaIntro', 'KatakanaIntro'
   ],
   teacher: [
     'TeacherDashboard', 'QuackmanContent', 'ProfileTeacher', 'ClassDashboard', 'QuackmanLevels', 'QuackmanEdit', 'QuackslateHost', 'QuackslateLevels',
@@ -142,6 +143,11 @@ const RootLayout = () => {
         <Stack.Screen name="HiraganaSet2" />
         <Stack.Screen name="HiraganaSet3" />
         <Stack.Screen name="WordsMenu" />
+        <Stack.Screen name="Words1" />
+        <Stack.Screen name="Words2" />
+        <Stack.Screen name="WordsPractice" />
+        <Stack.Screen name="HiraganaIntro" />
+        <Stack.Screen name="KatakanaIntro" />
       </Stack>
     </GestureHandlerRootView>
   );

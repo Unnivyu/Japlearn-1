@@ -117,8 +117,8 @@ const HiraganaSet1 = () => {
     router.push('/CharacterExercise1');
   };
 
-  const handleBackToMenuPress = () => {
-    router.push('/HiraganaMenu');
+  const handleBackToIntroPress = () => {
+    router.push('/HiraganaIntro');
   };
 
   return (
@@ -128,7 +128,7 @@ const HiraganaSet1 = () => {
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable onPress={handleBackToMenuPress}>
+          <Pressable onPress={handleBackToIntroPress}>
             <View style={styles.backButtonContainer}>
               <BackIcon width={20} height={20} fill={'white'} />
             </View>

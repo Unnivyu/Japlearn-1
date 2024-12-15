@@ -177,15 +177,27 @@ const WordsMenu = () => {
           </Pressable>
         </View>
         <View style={styles.menuContainer}>
-          {wordLessons.map((lesson, index) => (
             <ImageButton
-              key={lesson.id}
-              title={lesson.lesson_title}
-              subtitle={lesson.lesson_type}
-              onPress={() => router.push(`/Words?lessonId=${lesson.id}`)}
+              title={'Vocabulary I'}
+              infoContent='This lesson introduces the first set of japanese words.'
+              subtitle={'1st set of vocabulary'}
+              onPress={() => router.push(`/Words1`)}
               imageSource={require('../assets/img/kana_button.png')}
             />
-          ))}
+            <ImageButton
+              title={'Vocabulary II'}
+              infoContent='This lesson introduces the next set of japanese words.'
+              subtitle={'2nd set of vocabulary'}
+              onPress={() => router.push(`/Words2`)}
+              imageSource={require('../assets/img/kana_button.png')}
+            />
+            <ImageButton
+              title={'Vocabulary Practice'}
+              infoContent=''
+              subtitle={'vocabulary'}
+              onPress={() => router.push(`/WordsPractice`)}
+              imageSource={require('../assets/img/kana_button.png')}
+            />
         </View>
 
         {isBadgeVisible && (

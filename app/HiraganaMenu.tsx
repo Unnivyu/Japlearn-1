@@ -52,7 +52,7 @@ const HiraganaMenu = () => {
 
   const handleButtonPress = (buttonTitle) => {
     if (buttonTitle === 'Hiragana Basics 1') {
-      router.push('/HiraganaSet1');
+      router.push('/HiraganaIntro');
     } else if (buttonTitle === 'Hiragana Basics 2' && completedLessons.basics1) {
       router.push('/HiraganaSet2');
     } else if (buttonTitle === 'Hiragana Basics 3' && completedLessons.basics2) {

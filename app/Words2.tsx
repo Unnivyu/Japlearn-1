@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, Pressable, ImageBackground } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import BackIcon from '../assets/svg/back-icon.svg';
 import styles from '../styles/stylesWords';
 import expoconfig from '../expoconfig';
@@ -10,70 +10,30 @@ import { AuthContext } from '../context/AuthContext';
 const Words = () => {
   const { user } = useContext(AuthContext);
   const router = useRouter();
-  const lessonId = useLocalSearchParams();
-  const [lessonContent, setLessonContent] = useState([]);
   const [processedWords, setProcessedWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0); // Current word index
-  const id = lessonId?.lessonId;
-
-  const handleFetchLessonContent = async () => {
-    try {
-      const response = await fetch(`${expoconfig.API_URL}/api/lessonPage/getAllLessonPage/${id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      const lessonPageData = await response.json();
-
-      const allLessonContent = [];
-
-      for (const lessonPage of lessonPageData) {
-        const content = await fetch(`${expoconfig.API_URL}/api/lessonContent/getAllLessonContentWithFiles/${lessonPage.id}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        const lessonContentData = await content.json();
-        allLessonContent.push(...lessonContentData);
-      }
-
-      setLessonContent(allLessonContent);
-    } catch (error) {
-      console.error('Error in fetching lesson content: ', error);
-    }
-  };
-
-  useEffect(() => {
-    if (id) {
-      handleFetchLessonContent();
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (lessonContent.length > 0) {
-      const contentWithText = lessonContent.find(item => item.text_content);
-      if (contentWithText) {
-        const parsedWords = contentWithText.text_content
-          .match(/\(word: [^)]*\)/g) // Extract individual word groups
-          .map(entry => {
-            const [word, romaji, translation] = entry
-              .replace(/[()]/g, '') // Remove parentheses
-              .split(', ') // Split by commas
-              .map(str => str.split(': ')[1]); // Extract value after `: `
-            return { word, romaji, translation, image: require('../assets/hello.png') }; // Replace with actual image if available
-          });
-
-        setProcessedWords(parsedWords);
-      }
-    }
-  }, [lessonContent]);
+  const vocabulary = [
+    { word: "きょうし", romaji: "kyoushi", translation: "teacher, instructor" },
+    { word: "せんせい", romaji: "sensei", translation: "teacher, instructor (as an address)" },
+    { word: "がくせい", romaji: "gakusei", translation: "student" },
+    { word: "りゅうがくせい", romaji: "ryuugakusei", translation: "foreign student" },
+    { word: "けんきゅうしゃ", romaji: "kenkyuusha", translation: "researcher, scholar" },
+    { word: "ぎんこういん", romaji: "ginkouin", translation: "bank employee" },
+    { word: "エンジニア", romaji: "enjinia", translation: "engineer" },
+    { word: "いしゃ", romaji: "isha", translation: "medical doctor" },
+    { word: "はいしゃ", romaji: "haisha", translation: "dentist" },
+    { word: "べんごし", romaji: "bengoshi", translation: "lawyer" },
+    { word: "とこや", romaji: "tokoya", translation: "barber" },
+    { word: "かいしゃいん", romaji: "kaishain", translation: "company employee" },
+    { word: "~しゃいん", romaji: "~shain", translation: "employee of ~" }
+  ];
 
   const handleBackPress = () => {
     router.back(); // Navigate to the previous screen
   };
 
   const handleNextPress = () => {
-    if (currentWordIndex < processedWords.length - 1) {
+    if (currentWordIndex < vocabulary.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1); // Move to the next word
     } else {
       console.log('End of word list!');
@@ -90,16 +50,8 @@ const Words = () => {
     console.log('Finishing lesson');
 
     try {
-      // Determine the field to update based on the lessonId (either vocab1 or vocab2)
-      let fieldToUpdate = '';
-      if (id === '675a351808cf7502c9b6e878') { // Example ID for vocab1
-        fieldToUpdate = 'vocab1';
-      } else if (id === '675a351f08cf7502c9b6e87a') { // Example ID for vocab2
-        fieldToUpdate = 'vocab2';
-      } else {
-        console.error('Unexpected lesson ID:', id);
-        return;
-      }
+      // Determine the field to update based on the lessonId (vocab1)
+      let fieldToUpdate = 'vocab2';
 
       // Update the field using the API
       const response = await fetch(`${expoconfig.API_URL}/api/progress/${user.email}/updateField?field=${fieldToUpdate}&value=true`, {
@@ -124,7 +76,7 @@ const Words = () => {
     }
   };
 
-  const currentWord = processedWords[currentWordIndex];
+  const currentWord = vocabulary[currentWordIndex];
 
   return (
     <ImageBackground
@@ -134,7 +86,7 @@ const Words = () => {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Pressable onPress={handleBackPress}>
+          <Pressable onPress={() => router.back()}>
             <View style={styles.backButtonContainer}>
               <BackIcon width={30} height={30} fill={'white'} />
             </View>
@@ -144,7 +96,8 @@ const Words = () => {
         {/* Word Content */}
         {currentWord ? (
           <View style={styles.contentContainer}>
-            <Image source={currentWord.image} style={styles.image} />
+            {/* Word Image */}
+            <Image source={require('../assets/hello.png')} style={styles.image} />
             <Text style={styles.japanese}>{currentWord.word}</Text>
             <Text style={styles.romaji}>{currentWord.romaji}</Text>
             <Text style={styles.english}>{currentWord.translation}</Text>
@@ -152,22 +105,19 @@ const Words = () => {
             {/* Navigation Buttons */}
             <View style={styles.navigationContainer}>
               <Pressable
-                style={[
-                  styles.nextButton,
-                  currentWordIndex === 0 && styles.disabledButton, // Disable styling for first word
-                ]}
+                style={[styles.nextButton, currentWordIndex === 0 && styles.disabledButton]}
                 onPress={handlePreviousPress}
-                disabled={currentWordIndex === 0} // Disable button if at the first word
+                disabled={currentWordIndex === 0}
               >
                 <Text style={styles.nextButtonText}>Previous</Text>
               </Pressable>
 
               <Pressable
                 style={styles.nextButton}
-                onPress={currentWordIndex < processedWords.length - 1 ? handleNextPress : handleFinishLesson}
+                onPress={currentWordIndex < vocabulary.length - 1 ? handleNextPress : handleFinishLesson}
               >
                 <Text style={styles.nextButtonText}>
-                  {currentWordIndex < processedWords.length - 1 ? 'Next' : 'Finish'}
+                  {currentWordIndex < vocabulary.length - 1 ? 'Next' : 'Finish'}
                 </Text>
               </Pressable>
             </View>
