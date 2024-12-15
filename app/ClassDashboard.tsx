@@ -798,7 +798,7 @@ const ClassDashboard = () => {
                         downloadCsv(selectedDate);
                         setShowConfirmationModal(false);
                     }}
-                    buttonStyle={styles.button}
+                    buttonStyle={styles.button2}
                     textStyle={styles.buttonText}
                 />
                 <CustomButton
@@ -807,13 +807,13 @@ const ClassDashboard = () => {
                         deleteScoresByDate(selectedDate);
                         setShowConfirmationModal(false);
                     }}
-                    buttonStyle={styles.button}
+                    buttonStyle={styles.button2}
                     textStyle={styles.buttonText}
                 />
                 <CustomButton
                     title="Cancel"
                     onPress={() => setShowConfirmationModal(false)}
-                    buttonStyle={styles.button}
+                    buttonStyle={styles.button2}
                     textStyle={styles.buttonText}
                 />
             </View>

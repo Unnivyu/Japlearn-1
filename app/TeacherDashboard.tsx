@@ -128,7 +128,7 @@ const TeacherDashboard = () => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <KeyboardAvoidingView style={{ flex: 1 }}>
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
                 <View style={{ flex: 1 }}>
                     <View style={stylesDashboard.header}>
                         <View style={stylesDashboard.leftContainer}>
@@ -150,16 +150,22 @@ const TeacherDashboard = () => {
                         </View>
                     </View>
 
-                    <ScrollView contentContainerStyle={stylesDashboard.classContainer}>
-                    <Text style={stylesDashboard.titleText}>Classes</Text>
-                        {classCodes.map((code, index) => (
-                            <Pressable key={index} onPress={() => handleClassPress(code)}>
-                                <View style={stylesDashboard.classContent}>
-                                    <Text style={stylesDashboard.classContentText}>{code}</Text>
-                                </View>
-                            </Pressable>
-                        ))}
-                    </ScrollView>
+                    <ScrollView 
+            contentContainerStyle={{
+                flexGrow: 1, // Ensures content grows to fill the ScrollView
+            }}
+        >
+            <View style={stylesDashboard.classContainer}>
+                <Text style={stylesDashboard.titleText}>Classes</Text>
+                {classCodes.map((code, index) => (
+                    <Pressable key={index} onPress={() => handleClassPress(code)}>
+                        <View style={stylesDashboard.classContent}>
+                            <Text style={stylesDashboard.classContentText}>{code}</Text>
+                        </View>
+                    </Pressable>
+                ))}
+            </View>
+        </ScrollView>
 
                     {/* Add Class Modal */}
                     <Modal

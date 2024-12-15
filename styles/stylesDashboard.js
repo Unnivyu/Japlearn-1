@@ -88,6 +88,7 @@ export const stylesDashboard = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         padding: 20,
+        justifyContent: 'flex-start',
     },
     classContent: {
         flexDirection: 'row',
