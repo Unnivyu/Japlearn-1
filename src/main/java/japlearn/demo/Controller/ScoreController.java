@@ -52,9 +52,16 @@ public class ScoreController {
     }
 
     @GetMapping("/export")
-public void exportScoresAsCsv(@RequestParam String date, HttpServletResponse response) {
+    public void exportScoresAsCsv(@RequestParam String date, HttpServletResponse response) {
     try {
         List<Score> scores = scoreService.getScoresByDate(date);
+
+        // Sort scores by last name alphabetically
+        scores.sort((score1, score2) -> {
+            String lastName1 = getLastName(score1.getName());
+            String lastName2 = getLastName(score2.getName());
+            return lastName1.compareToIgnoreCase(lastName2);
+        });
 
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"scores_" + date + ".csv\"");
@@ -85,6 +92,13 @@ private String formatName(String fullName) {
     }
     return fullName; // If only one word, return as is
 }
+
+// Helper method to extract the last name from a full name
+private String getLastName(String fullName) {
+    String[] parts = fullName.trim().split("\\s+");
+    return (parts.length >= 2) ? parts[parts.length - 1] : fullName; // Return last word as last name
+}
+
 
     
 @GetMapping("/getAvailableDates")
