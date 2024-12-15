@@ -122,7 +122,7 @@ export const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 15,
         textAlign: 'center',
     },
