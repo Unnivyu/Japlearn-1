@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-const cellSize = Math.min(width, height - 400) / 5 - 10;
+const cellSize = Math.min(width, height - 100) / 5 - 25;
 
 export const stylesQuackman = StyleSheet.create({
     progressContainer: {
@@ -22,7 +22,7 @@ export const stylesQuackman = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 10,
+        marginBottom: -30,
     },
     centeredContainer: {
         alignItems: 'center',
@@ -44,7 +44,7 @@ export const stylesQuackman = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         gap: 10,
-        marginBottom: 20,
+        marginBottom: 10, // Increased margin to add space below the circles
     },
     attempt: {
         height: 40,
@@ -63,24 +63,24 @@ export const stylesQuackman = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 20, // Ensure some padding at the bottom
+        paddingBottom: 20,
+        marginTop: 10, // Added margin above the grid for spacing
     },
     charGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 10, // Add some space above the grid items
     },
     charCell: {
         width: cellSize,
-        height: cellSize, 
+        height: cellSize,
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 5,
+        margin: 8, // Increased margin between individual cells
         backgroundColor: '#8423D9',
         borderRadius: 10,
-        flexDirection: 'column', // Stack the text and character vertically
-        padding: 5, // Add padding to give some space between the text and character
     },
     charCellSelected: {
         backgroundColor: '#6C3A99', // Change color when selected
