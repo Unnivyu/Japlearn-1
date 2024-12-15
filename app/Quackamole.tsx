@@ -295,8 +295,8 @@ const Quackamole = () => {
         imageStyle={{ resizeMode: 'cover' }} // Ensure the image covers the full screen without being zoomed
       >
         <View style={styles.loadingContent}>
-          </View>
           <Text style={styles.loadingText}>{Math.round(progress)}%</Text>
+          </View>
       </ImageBackground>
         );
     }

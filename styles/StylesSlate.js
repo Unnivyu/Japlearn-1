@@ -353,7 +353,7 @@ const stylesSlate = StyleSheet.create({
     },
     loadingText: {
         marginTop: 20,
-        fontSize: 18,
+        fontSize: 30,
         fontWeight: 'bold',
     },
     scrollViewContent: {
