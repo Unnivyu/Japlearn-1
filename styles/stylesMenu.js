@@ -118,14 +118,48 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent', // Make sure the background is transparent to show the image
     },
     titleContainer: {
-    alignItems: 'center',
-    marginBottom: 10, // Adjust spacing if needed
+        alignItems: 'center',
+        marginBottom: 20, // Increased margin for better spacing
+        marginTop: 20, // Add top margin to separate from the header
+    },
+    titleText: {
+        fontFamily: 'Jua', 
+        fontSize: 18,
+        color: 'black', 
+        textAlign: 'center',
+    },
+
+menuButton: {
+    backgroundColor: '#8ED94D',
+    height: 160,
+    borderRadius: 5,
+    padding: 5,
+    marginBottom: 30,
+    
+
 },
-titleText: {
-    fontFamily: 'Jua', // Match font style with the rest
-    fontSize: 18,
-    color: 'black', // White to contrast with the purple header
-    textAlign: 'center',
+menuButtonText: {
+    fontSize: 40,
+    color: "#fff",
+},
+
+classContainer: {
+    backgroundColor: '#8ED94D',
+    padding: 15,
+    marginBottom: 40,
+    marginTop: 20, // Add margin at the top for spacing
+    borderRadius: 10,
+    borderBottomWidth: 5,
+    borderBottomColor: '#81AF59',
+    borderBottomEndRadius: 5,
+    borderBottomStartRadius: 5,
+},
+classText: {
+    fontSize: 20,
+    textAlign: 'left',
+    fontFamily: 'Jua',
+    color: 'white',
+    lineHeight: 28, // Add line height for better readability
 },
 
 });

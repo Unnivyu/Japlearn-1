@@ -35,7 +35,7 @@ export const stylesQuackman = StyleSheet.create({
         marginBottom: 50,
     },
     textStyle: {
-        fontFamily: 'jua',
+        fontFamily: 'Jua',
         fontSize: 30,
         marginTop: 10, // Add some margin for spacing between the image and the text
     },
@@ -246,7 +246,9 @@ export const stylesQuackman = StyleSheet.create({
         marginVertical: 20,
     },
     loadingText: {
+        marginTop: 20,
         fontSize: 18,
+        fontWeight: 'bold',
         color: 'white',
     },
     introModalBackground: {

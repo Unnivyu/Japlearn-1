@@ -351,10 +351,6 @@ const stylesSlate = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
     },
-    loadingBar: {
-        height: 10,
-        backgroundColor: '#4caf50',
-    },
     loadingText: {
         marginTop: 20,
         fontSize: 18,
