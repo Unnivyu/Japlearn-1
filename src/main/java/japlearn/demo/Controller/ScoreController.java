@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import japlearn.demo.Entity.Score;
 import japlearn.demo.Service.ScoreService;
 
-@CrossOrigin(origins = {"http://localhost:8081", "*"})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/scores")
 public class ScoreController {

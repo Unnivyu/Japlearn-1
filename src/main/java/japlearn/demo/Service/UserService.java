@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +21,9 @@ import japlearn.demo.Repository.UserRepository;
 
 @Service
 public class UserService {
+    @Value("${app.base-url}")
+    private String appBaseUrl;
+    
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -54,7 +58,7 @@ public class UserService {
     // Send reset password email
 private void sendPasswordResetEmail(String email, String token) {
     // Change the reset URL to use localhost
-    String resetUrl = "http://localhost:8081/ResetPassword?token=" + token;
+    String resetUrl = appBaseUrl + "/ResetPassword?token=" + token;
 
     MimeMessage mimeMessage = mailSender.createMimeMessage();
     try {
@@ -152,7 +156,7 @@ private void sendPasswordResetEmail(String email, String token) {
         
 
         private void sendConfirmationEmail(String email, String token) {
-            String confirmationUrl = "http://localhost:8080/api/users/confirm?token=" + token;
+            String confirmationUrl = appBaseUrl+ "/api/users/confirm?token=" + token;
         
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             try {

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import japlearn.demo.Entity.StudentProgress;
 import japlearn.demo.Service.StudentProgressService;
 
-@CrossOrigin(origins = {"http://localhost:8081", "*"})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/progress")
 public class StudentProgressController {
