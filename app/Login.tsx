@@ -230,23 +230,25 @@ const Login = () => {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Reset Password</Text>
                         <TextInput
-                            style={styles.input}
+                            style={styles.inputReset}
                             placeholder="Enter your email"
                             value={forgotPasswordEmail}
                             onChangeText={setForgotPasswordEmail}
                         />
+                        
                         <CustomButton
-                            title="Reset Password"
+                            title="Reset"
                             onPress={handleForgotPassword}
-                            buttonStyle={styles.button}
-                            textStyle={styles.buttonText}
+                            buttonStyle={styles.buttonReset}
+                            textStyle={styles.buttonTextReset}
                         />
                         <CustomButton
                             title="Close"
                             onPress={() => setForgotPasswordVisible(false)}
-                            buttonStyle={styles.button}
-                            textStyle={styles.buttonText}
+                            buttonStyle={styles.buttonReset}
+                            textStyle={styles.buttonTextReset}
                         />
+                    
                     </View>
                 </View>
             </Modal>

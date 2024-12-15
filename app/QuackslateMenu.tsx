@@ -116,20 +116,17 @@ const QuackslateMenu = () => {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 {/* ImageBackground for the loading screen */}
-                <ImageBackground source={QuackmanBackground} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={stylesSlate.loadingContainer}>
-                        <Animated.View
-                            style={[
-                                stylesSlate.loadingBar,
-                                { width: `${progress}%`, opacity: fadeAnim }
-                            ]}
-                        />
-                        <Text style={stylesSlate.loadingText}>{Math.round(progress)}%</Text>
-                    </View>
+                <ImageBackground
+                    source={QuackmanBackground}
+                    style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                >
+                    {/* Only display the loading percentage text */}
+                    <Text style={stylesSlate.loadingText}>{Math.round(progress)}%</Text>
                 </ImageBackground>
             </SafeAreaView>
         );
     }
+    
 
     return (
         <SafeAreaView style={{ flex: 1 }}>

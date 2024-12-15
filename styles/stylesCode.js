@@ -63,13 +63,13 @@ export const stylesCode = StyleSheet.create({
         alignItems: 'center',
     },
     gameCodeLabel: {
-        fontSize: 40,
+        fontSize: 30,
         fontWeight: 'bold',
         color: '#000',
         marginBottom: 10,
     },
     bigGameCodeText: {
-        fontSize: 100,
+        fontSize:70,
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#000',

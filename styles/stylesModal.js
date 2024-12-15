@@ -73,7 +73,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 17.5, // Perfect circle
         elevation: 2,
-        marginLeft: 300
+        marginLeft: 250
     },
     closeButtonText: {
         fontSize: 18,

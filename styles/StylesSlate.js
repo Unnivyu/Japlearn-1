@@ -228,9 +228,16 @@ const stylesSlate = StyleSheet.create({
         color: '#FFFFFF',
     },
     gameCodeText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
+        marginLeft:70
+    },
+    gameCodeTextHost: {
         fontSize: 30,
         fontWeight: 'bold',
         color: 'black',
+        
     },
     modalContainer: {
         flex: 1,
@@ -351,13 +358,9 @@ const stylesSlate = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
     },
-    loadingBar: {
-        height: 10,
-        backgroundColor: '#4caf50',
-    },
     loadingText: {
         marginTop: 20,
-        fontSize: 18,
+        fontSize: 30,
         fontWeight: 'bold',
     },
     scrollViewContent: {

@@ -402,7 +402,7 @@ const Quackman = ({ navigation }) => {
                     </View>
                     {progress < 100 ? (
                         <Text style={stylesQuackman.loadingText}>
-                            Loading... {Math.round(progress)}%
+                            {Math.round(progress)}%
                         </Text>
                     ) : (
                         <Text style={stylesQuackman.loadingText}>Tap to Start</Text>

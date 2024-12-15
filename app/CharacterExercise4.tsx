@@ -210,12 +210,12 @@ const CharacterExercise4 = () => {
                     })}
                 </View>
                 {message && (
-                    <View>
-                        <Text style={styles.message}>{message}</Text>
-                        <Pressable style={styles.nextButton} onPress={handleCompleteExercise}>
-                            <Text style={styles.nextButtonText}>Done</Text>
-                        </Pressable>
-                    </View>
+                    <View style={styles.messageContainer}>
+                                        <Text style={styles.message}>{message}</Text>
+                                        <Pressable style={styles.nextButton} onPress={handleCompleteExercise}>
+                                            <Text style={styles.nextButtonText}>Done</Text>
+                                        </Pressable>
+                                    </View>
                 )}
             </View>
         </View>

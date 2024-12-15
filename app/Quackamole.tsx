@@ -12,6 +12,7 @@ import WrongImage from '../assets/wrong.png'; // Import the wrong image
 import CustomButton from '../components/CustomButton';
 import expoconfig from '../expoconfig';
 
+
 const Quackamole = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [secondCounter, setSecondCounter] = useState(0);
@@ -294,17 +295,8 @@ const Quackamole = () => {
         imageStyle={{ resizeMode: 'cover' }} // Ensure the image covers the full screen without being zoomed
       >
         <View style={styles.loadingContent}>
-          <Text style={styles.loadingTitle}>Loading...</Text>
-          <View style={styles.progressBarContainer}>
-            <Animated.View
-              style={[
-                styles.progressBar,
-                { width: `${progress}%` }, // Dynamically set the progress bar width
-              ]}
-            />
-          </View>
           <Text style={styles.loadingText}>{Math.round(progress)}%</Text>
-        </View>
+          </View>
       </ImageBackground>
         );
     }

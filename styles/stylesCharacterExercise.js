@@ -79,31 +79,41 @@ export const styles = StyleSheet.create({
         fontSize: 32,
         color: '#FFFFFF',
     },
-    message: {
-        fontSize: 20,
-        color: 'red',
-        marginTop: 20,
-    },
     cardImage: {
         width: '100%',
         height: '100%',
         resizeMode: 'contain',
+    },
+    messageContainer: {
+        position: 'absolute', // Makes the container float above other content
+        top: '35%', // Vertically centers the container
+        left: '35%', // Horizontally centers the container
+        transform: [{ translateX: -50 }, { translateY: -50 }], // Ensures perfect centering
+        justifyContent: 'center', // Ensures children are centered vertically
+        alignItems: 'center', // Ensures children are centered horizontally
+        padding: 20, // Adds some padding inside the container
+        borderRadius: 10, // Optional: Rounds the corners of the container
+    },
+    message: {
+        fontSize: 20,
+        color: 'red',
+        marginBottom: 20, // Adds space between the message and the button
+        textAlign: 'center', // Centers the text inside the message
     },
     nextButton: {
         paddingVertical: 10,
         paddingHorizontal: 20,
         backgroundColor: '#6200EE',
         borderRadius: 10,
-        justifyContent: 'center',  // Centers text horizontally
-        alignItems: 'center',  // Centers text vertically
-        width: 'auto',  // Makes sure the width adjusts to the content
-        minWidth: 150,  // Set a minimum width if necessary
+        justifyContent: 'center', // Centers text horizontally
+        alignItems: 'center', // Centers text vertically
+        minWidth: 150, // Ensures the button has a minimum width
     },
     nextButtonText: {
         fontSize: 18,
         color: '#FFF',
-        textAlign: 'center',  // Ensures the text is centered horizontally
-    } 
+        textAlign: 'center', // Ensures the text is centered horizontally
+    },
 });
 
 export default styles;

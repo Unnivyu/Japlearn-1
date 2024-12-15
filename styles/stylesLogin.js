@@ -38,6 +38,16 @@ const styles = StyleSheet.create({
     height: 60,
     borderColor: 'red',
   },
+  inputReset: {
+    backgroundColor: '#ececec',
+    color: '#777676',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    height: 60,
+    borderColor: 'red',
+    width:'100%'
+  },
 
   imageContainer: {
     alignItems: 'center',
@@ -97,6 +107,46 @@ const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
     marginLeft: 5,  // Space between the two texts (optional)
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 10, // Add padding for better alignment
+  },
+  
+  modalContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 20, // Add vertical spacing between elements
+    padding: 40, // Add padding inside the modal content
+    backgroundColor: 'white', // Ensure clear modal content background
+    borderRadius: 10, // Add rounded corners for a cleaner UI
+    width: '100%', // Widen the modal box
+  },
+  
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15, // Add spacing below the title
+    textAlign: 'center',
+  },
+  buttonReset: {
+    backgroundColor: '#8ED94D',
+    padding: 10,
+    width:  '100%',
+    borderRadius: 5,
+    borderColor: '#8AC25A',
+    borderBottomWidth: 6,
+    height: 70,
+    marginBottom:10
+    
+  },
+
+  buttonTextReset: {
+    color: '#fff',
+    fontSize: 25
   },
 });
 

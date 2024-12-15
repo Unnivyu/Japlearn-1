@@ -6,7 +6,7 @@ export const stylesDashboard = StyleSheet.create({
         color: '#A4A4A4',
         borderRadius: 10,
         padding: 10,
-        width: 340,
+        width: 200,
         marginBottom: 10,
         height: 70,
     },

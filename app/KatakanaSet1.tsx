@@ -6,6 +6,8 @@ import styles from '../styles/stylesHiraganaSet1'; // Reusing styles from Hiraga
 import CompletionModal from '../components/CompletionModal';
 import { AuthContext } from '../context/AuthContext';
 import expoconfig from '../expoconfig'; // Import the configuration for your backend API
+import { Audio } from 'expo-av';
+import VoiceIcon from '../assets/svg/voice.svg';
 
 const KatakanaSet1 = () => {
   const { user } = useContext(AuthContext); // Get the user object (which includes email)
@@ -14,22 +16,40 @@ const KatakanaSet1 = () => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const katakanaSet = [
-    { character: 'ア', romaji: 'a' },
-    { character: 'イ', romaji: 'i' },
-    { character: 'ウ', romaji: 'u' },
-    { character: 'エ', romaji: 'e' },
-    { character: 'オ', romaji: 'o' },
-    { character: 'カ', romaji: 'ka' },
-    { character: 'キ', romaji: 'ki' },
-    { character: 'ク', romaji: 'ku' },
-    { character: 'ケ', romaji: 'ke' },
-    { character: 'コ', romaji: 'ko' },
-    { character: 'サ', romaji: 'sa' },
-    { character: 'シ', romaji: 'shi' },
-    { character: 'ス', romaji: 'su' },
-    { character: 'セ', romaji: 'se' },
-    { character: 'ソ', romaji: 'so' },
+    { character: 'ア', romaji: 'a', audio: require('../assets/charactersaudio/a.mp3') },
+    { character: 'イ', romaji: 'i', audio: require('../assets/charactersaudio/i.mp3') },
+    { character: 'ウ', romaji: 'u', audio: require('../assets/charactersaudio/u.mp3') },
+    { character: 'エ', romaji: 'e', audio: require('../assets/charactersaudio/e.mp3') },
+    { character: 'オ', romaji: 'o', audio: require('../assets/charactersaudio/o.mp3') },
+    { character: 'カ', romaji: 'ka', audio: require('../assets/charactersaudio/ka.mp3') },
+    { character: 'キ', romaji: 'ki', audio: require('../assets/charactersaudio/ki.mp3') },
+    { character: 'ク', romaji: 'ku', audio: require('../assets/charactersaudio/ku.mp3') },
+    { character: 'ケ', romaji: 'ke', audio: require('../assets/charactersaudio/ke.mp3') },
+    { character: 'コ', romaji: 'ko', audio: require('../assets/charactersaudio/ko.mp3') },
+    { character: 'サ', romaji: 'sa', audio: require('../assets/charactersaudio/sa.mp3') },
+    { character: 'シ', romaji: 'shi', audio: require('../assets/charactersaudio/shi.mp3') },
+    { character: 'ス', romaji: 'su', audio: require('../assets/charactersaudio/su.mp3') },
+    { character: 'セ', romaji: 'se', audio: require('../assets/charactersaudio/se.mp3') },
+    { character: 'ソ', romaji: 'so', audio: require('../assets/charactersaudio/so.mp3') },
   ];
+
+  const playAudio = async () => {
+    const { audio } = katakanaSet[currentIndex];
+    const sound = new Audio.Sound();
+
+    try {
+      await sound.loadAsync(audio);
+      await sound.setVolumeAsync(0.4); // Set volume to 50%
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+    } catch (error) {
+      console.error('Error playing audio:', error);
+    }
+  };
 
   // Update backend to set 'katakana1' to true
   // const updateKatakanaProgress = async () => {
@@ -99,6 +119,9 @@ const KatakanaSet1 = () => {
           </Pressable>
         </View>
         <View style={styles.contentContainer}>
+        <Pressable style={styles.audioButton} onPress={playAudio}>
+            <VoiceIcon width={70} height={70} />
+          </Pressable>
           <Text style={styles.character}>{katakanaSet[currentIndex].character}</Text>
           <Text style={styles.romaji}>{katakanaSet[currentIndex].romaji}</Text>
           <View style={styles.buttonContainer}>

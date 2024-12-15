@@ -46,12 +46,12 @@ export const stylesClass = StyleSheet.create({
     },
     categoryButton: {
         backgroundColor: '#8ED94D',
-        width: 100,
+        width: 85,
         padding: 5,
         paddingLeft: 20,
         paddingRight: 20,
         borderRadius: 30,
-        height: 55,
+        height: 50,
     },
     button: {
         backgroundColor: '#8ED94D',
@@ -78,7 +78,7 @@ export const stylesClass = StyleSheet.create({
     categoryButtonText: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 12,
+        fontSize: 10,
     },
     content: {
         justifyContent: 'center',
