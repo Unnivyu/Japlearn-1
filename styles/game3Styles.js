@@ -26,18 +26,18 @@ export const styles = StyleSheet.create({
   },
   choiceContainer: {
     position: 'absolute',
-    bottom: '13%', // Place the choices inside the white box
-    width: '80%',
-    height: '25%', // Ensure this fits the white bamboo box
+    bottom: '14%',
+    width: '90%',
+    height: '25%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'transparent', // Keeps the background transparent
-    padding: 10,
+    padding: 20,
   },
+  
   choice: {
-    width: 100, // Set fixed width
+    width: 70, // Set fixed width
     height: 50, // Set fixed height
     backgroundColor: '#3b6b3b',
     justifyContent: 'center',

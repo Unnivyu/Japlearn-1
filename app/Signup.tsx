@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, View, Pressable } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, TextInput, View, Pressable, Modal } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import CustomModal from '../components/CustomModal';
 import PrivacyModal from '../components/PrivacyModal';
@@ -95,20 +95,16 @@ const Signup = () => {
     
 
     const signup = async (agreed = false) => {
-        // Validate the form first
         if (!validateForm()) {
             setModalMessage('Please correct the highlighted fields.');
-            setModalVisible(true); // Show error modal if validation fails
-            return; // Exit if validation fails
+            setModalVisible(true);
+            return;
         }
-    
-        // Show the privacy modal if the user hasn't agreed yet
         if (!agreed && !hasAgreedToPrivacy) {
-            setPrivacyModalVisible(true); // Show the Privacy Policy modal
-            return; // Exit until the user agrees
+            setPrivacyModalVisible(true);
+            return;
         }
-    
-        // The actual signup operation (only proceeds if agreed and form is valid)
+
         try {
             setLoading(true);
             const response = await fetch(`${expoconfig.API_URL}/api/users/register`, {
@@ -124,7 +120,7 @@ const Signup = () => {
                     role: 'student',
                 }),
             });
-    
+
             if (response.ok) {
                 setModalMessage('Signup successful! Please check your email and confirm the link to complete registration.');
                 setModalVisible(true);
@@ -138,7 +134,10 @@ const Signup = () => {
                     router.push('/Login');
                 }, 2000);
             } else {
-                const errorMessage = await response.text();
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.error === 'User already exists' 
+                    ? 'User already exists. Please try logging in.' 
+                    : 'Signup failed. Please try again.';
                 throw new Error(errorMessage);
             }
         } catch (error) {
@@ -165,14 +164,16 @@ const Signup = () => {
     autoCapitalize="none"
     maxLength={30}
     onChangeText={(text) => {
-        const trimmedText = text.trimStart().charAt(0).toUpperCase() + text.trimStart().slice(1);
-        setFname(trimmedText);
-
-        // Clear error when valid input is entered
-        if (trimmedText) {
+        const formattedText = text
+            .trimStart()
+            .replace(/\s+/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+        setFname(formattedText);
+        if (formattedText) {
             setErrors((prevErrors) => ({ ...prevErrors, fname: '' }));
         }
     }}
+    onBlur={() => setFname(fname.trimEnd())}
 />
 
 <TextInput
@@ -182,14 +183,16 @@ const Signup = () => {
     autoCapitalize="none"
     maxLength={30}
     onChangeText={(text) => {
-        const trimmedText = text.trimStart().charAt(0).toUpperCase() + text.trimStart().slice(1);
-        setLname(trimmedText);
-
-        // Clear error when valid input is entered
-        if (trimmedText) {
+        const formattedText = text
+            .trimStart()
+            .replace(/\s+/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+        setLname(formattedText);
+        if (formattedText) {
             setErrors((prevErrors) => ({ ...prevErrors, lname: '' }));
         }
     }}
+    onBlur={() => setLname(lname.trimEnd())}
 />
 
 <TextInput
@@ -199,15 +202,15 @@ const Signup = () => {
     autoCapitalize="none"
     maxLength={50}
     onChangeText={(text) => {
-        const trimmedText = text.trimStart();
-        setEmail(trimmedText);
+        const formattedText = text.replace(/\s/g, ''); // Remove all spaces from email
+        setEmail(formattedText);
 
-        // Clear error when valid email is entered
-        if (trimmedText.endsWith('@cit.edu')) {
+        if (formattedText.endsWith('@cit.edu')) {
             setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
         }
     }}
 />
+
 {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
 
 <View style={styles.passwordContainer}>
@@ -218,7 +221,8 @@ const Signup = () => {
         placeholder="Password"
         autoCapitalize="none"
         onChangeText={(text) => {
-            setPassword(text);
+            const formattedText = text.replace(/\s/g, ''); // Remove spaces from password
+                            setPassword(formattedText);
 
             // Clear error when valid password is entered
             if (text.length >= 8 && /[A-Z]/.test(text) && /[0-9]/.test(text) && /[!@#$%^&*(),.?":{}|<>]/.test(text)) {
@@ -249,7 +253,8 @@ const Signup = () => {
         placeholder="Confirm Password"
         autoCapitalize="none"
         onChangeText={(text) => {
-            setCPassword(text);
+            const formattedText = text.replace(/\s/g, ''); // Remove spaces from confirm password
+                            setCPassword(formattedText);
 
             // Clear error when passwords match
             if (text === password) {
@@ -297,15 +302,21 @@ const Signup = () => {
                     onClose={() => setModalVisible(false)}
                 />
 
-                <PrivacyPolicyModal
-                    visible={privacyModalVisible}
-                    onAgree={() => {
-                        setHasAgreedToPrivacy(true);
-                        setPrivacyModalVisible(false);
-                        signup(true); // Trigger the signup function
-                    }}
-                    onClose={() => setPrivacyModalVisible(false)}
-/>
+{privacyModalVisible && (
+    <Modal visible={privacyModalVisible} transparent animationType="fade">
+        <View style={styles.modalWrapper}>
+            <PrivacyPolicyModal
+                visible={privacyModalVisible}
+                onAgree={() => {
+                    setHasAgreedToPrivacy(true);
+                    setPrivacyModalVisible(false);
+                    signup(true); // Trigger the signup function
+                }}
+                onClose={() => setPrivacyModalVisible(false)}
+            />
+        </View>
+    </Modal>
+)}
             </ScrollView>
         </View>
     );

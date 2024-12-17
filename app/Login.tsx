@@ -171,7 +171,7 @@ const Login = () => {
                     value={email}
                     placeholder='Email'
                     autoCapitalize="none"
-                    onChangeText={(text) => setEmail(text.trimEnd())}
+                    onChangeText={(text) => setEmail(text.replace(/\s/g, ''))} // Prevent spaces
                 />
                 <View style={styles.passwordContainer}>
                     <TextInput
@@ -180,8 +180,8 @@ const Login = () => {
                         value={password}
                         placeholder='Password'
                         autoCapitalize="none"
-                        onChangeText={setPassword}
-                    />
+                        onChangeText={(text) => setPassword(text.replace(/\s/g, ''))} // Prevent spaces
+                />
                     {password.length > 0 && (
                         <Pressable
                             onPress={() => setShowPassword(!showPassword)}

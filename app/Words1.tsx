@@ -13,21 +13,21 @@ const Words = () => {
   const [processedWords, setProcessedWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0); // Current word index
   const vocabulary = [
-    { word: "わたし", romaji: "watashi", translation: "I, me" },
-    { word: "わたしたち", romaji: "watashitachi", translation: "we" },
-    { word: "あなた", romaji: "anata", translation: "you" },
-    { word: "あなたたち", romaji: "anatatachi", translation: "you (plural)" },
-    { word: "かれ", romaji: "kare", translation: "he" },
-    { word: "かのじょ", romaji: "kanojo", translation: "she" },
-    { word: "あのひと", romaji: "ano hito", translation: "that person" },
-    { word: "あのかた", romaji: "ano kata", translation: "that person (polite)" },
-    { word: "ともだち", romaji: "tomodachi", translation: "friend" },
-    { word: "かぞく", romaji: "kazoku", translation: "family" },
-    { word: "こども", romaji: "kodomo", translation: "child" },
-    { word: "おとこのひと", romaji: "otoko no hito", translation: "man" },
-    { word: "おんなのひと", romaji: "onna no hito", translation: "woman" },
-    { word: "おとこのこ", romaji: "otoko no ko", translation: "boy" },
-    { word: "おんなのこ", romaji: "onna no ko", translation: "girl" }
+    { word: "わたし", romaji: "watashi", translation: "I, me", image: require('../assets/words_image/me.png') },
+    { word: "わたしたち", romaji: "watashitachi", translation: "we", image: require('../assets/words_image/we.png') },
+    { word: "あなた", romaji: "anata", translation: "you", image: require('../assets/words_image/you.png') },
+    { word: "あなたたち", romaji: "anatatachi", translation: "you (plural)", image: require('../assets/words_image/you_plural.png') },
+    { word: "かれ", romaji: "kare", translation: "he", image: require('../assets/words_image/he.png') },
+    { word: "かのじょ", romaji: "kanojo", translation: "she", image: require('../assets/words_image/she.png') },
+    { word: "あのひと", romaji: "ano hito", translation: "that person", image: require('../assets/words_image/that_person.png') },
+    { word: "あのかた", romaji: "ano kata", translation: "that person (polite)", image: require('../assets/words_image/that_person_polite.png') },
+    { word: "ともだち", romaji: "tomodachi", translation: "friend", image: require('../assets/words_image/friend.png') },
+    { word: "かぞく", romaji: "kazoku", translation: "family", image: require('../assets/words_image/family.png') },
+    { word: "こども", romaji: "kodomo", translation: "child", image: require('../assets/words_image/child.png') },
+    { word: "おとこのひと", romaji: "otoko no hito", translation: "man", image: require('../assets/words_image/man.png') },
+    { word: "おんなのひと", romaji: "onna no hito", translation: "woman", image: require('../assets/words_image/woman.png') },
+    { word: "おとこのこ", romaji: "otoko no ko", translation: "boy", image: require('../assets/words_image/boy.png') },
+    { word: "おんなのこ", romaji: "onna no ko", translation: "girl", image: require('../assets/words_image/girl.png') }
   ];
 
   const handleBackPress = () => {
@@ -99,7 +99,7 @@ const Words = () => {
         {currentWord ? (
           <View style={styles.contentContainer}>
             {/* Word Image */}
-            <Image source={require('../assets/hello.png')} style={styles.image} />
+            <Image source={currentWord.image} style={styles.image} />
             <Text style={styles.japanese}>{currentWord.word}</Text>
             <Text style={styles.romaji}>{currentWord.romaji}</Text>
             <Text style={styles.english}>{currentWord.translation}</Text>

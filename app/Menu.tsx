@@ -1,9 +1,8 @@
-import { SafeAreaView, Text, View, Pressable, FlatList, Image, ImageBackground } from 'react-native';
+import { SafeAreaView, Text, View, Pressable, FlatList, Image, ImageBackground, Platform, StatusBar } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import styles from '../styles/stylesMenu';
 import Profile from '../assets/svg/user_pf.svg';
-import Complete from '../assets/img/level_available.png';
 import Background from '../assets/img/MenuBackground.png';
 import { AuthContext } from '../context/AuthContext';
 import MenuButton from '../components/MenuButton';
@@ -13,7 +12,6 @@ const Menu = () => {
     const { user } = useContext(AuthContext);
     const router = useRouter();
     const [classCode, setClassCode] = useState('');
-
 
     useEffect(() => {
         const fetchClassCode = async () => {
@@ -36,11 +34,13 @@ const Menu = () => {
     }, [user]);
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#8423D9' }}> 
+            <StatusBar backgroundColor="#8423D9" barStyle="light-content" />
             <ImageBackground source={Background} style={styles.backgroundImage}>
                 <View style={styles.container}>
-                    {/* Purple Header */}
-                    <View style={[styles.header, { padding: 20 }]}>
+                   
+                    <View style={[styles.header, { paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) + 10 : 50
+                        }]}>
                         <View style={styles.leftContainer}>
                             <Text style={styles.hText}>Welcome Back</Text>
                             <Text style={styles.hText}>{user?.fname}</Text>
@@ -52,7 +52,7 @@ const Menu = () => {
                         </View>
                     </View>
 
-                    {/* Menu Options */}
+                    
                     <View style={styles.menuContainer}>
                         <View style={styles.classContainer}>
                             <Text style={styles.classText}>Foreign Language 3: Nihongo 1 - FLO33 {classCode}</Text>

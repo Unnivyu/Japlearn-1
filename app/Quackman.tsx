@@ -16,6 +16,7 @@ const allRomaji = [
 ];
 
 const Quackman = ({ navigation }) => {
+    const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
     const [data, setData] = useState([]);
     const [romajiGrid, setRomajiGrid] = useState([]);
     const [inputRomaji, setInputRomaji] = useState([]);
@@ -284,6 +285,7 @@ const Quackman = ({ navigation }) => {
             correctSound.playAsync();
 
             // Set the character to the jumping animation
+            setCorrectAnswersCount((prevCount) => prevCount + 1);
             setCharacterImage(require('../assets/Jumping_Animation.gif'));
 
             // Wait for the animation duration (e.g., 2 seconds)
@@ -418,7 +420,7 @@ const Quackman = ({ navigation }) => {
             <View style={[stylesQuackman.gameOverContainer]}>
                 <Text style={stylesQuackman.gameOverText}>Game Over!</Text>
                 <Text style={stylesQuackman.scoreText}>
-                    You answered {currentWordIndex} questions.
+                You answered {correctAnswersCount} question{correctAnswersCount === 1 ? '' : 's'}.
                 </Text>
                 <View style={stylesQuackman.buttonRow}>
                     <TouchableOpacity

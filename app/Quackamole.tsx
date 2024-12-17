@@ -11,6 +11,8 @@ import CheckImage from '../assets/check.png'; // Import the check image
 import WrongImage from '../assets/wrong.png'; // Import the wrong image
 import CustomButton from '../components/CustomButton';
 import expoconfig from '../expoconfig';
+import { Audio } from 'expo-av';
+
 
 
 const Quackamole = () => {
@@ -43,6 +45,26 @@ const Quackamole = () => {
     const [loading, setLoading] = useState(true);
     const [progress, setProgress] = useState(0);
     const fadeAnim = useRef(new Animated.Value(1)).current;
+    const [whackSound, setWhackSound] = useState();
+
+useEffect(() => {
+    const loadWhackSound = async () => {
+        const { sound } = await Audio.Sound.createAsync(
+            require('../assets/audio/sfx/whack.mp3') // Adjust path if needed
+        );
+        setWhackSound(sound);
+    };
+
+    loadWhackSound();
+
+    // Cleanup sound
+    return () => {
+        if (whackSound) {
+            whackSound.unloadAsync();
+        }
+    };
+}, []);
+
 
     const router = useRouter();
 
@@ -247,6 +269,10 @@ const Quackamole = () => {
             animateHammer(hammerX, hammerY);
             animateWhack(hammerX, hammerY);
         });
+
+        if (whackSound) {
+            whackSound.replayAsync();
+        }
 
         if (holes[index] === romajiCharacters[currentIndex]) {
             setCorrectAnswers((prev) => prev + 1); // Increment correct score

@@ -13,19 +13,19 @@ const Words = () => {
   const [processedWords, setProcessedWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0); // Current word index
   const vocabulary = [
-    { word: "きょうし", romaji: "kyoushi", translation: "teacher, instructor" },
-    { word: "せんせい", romaji: "sensei", translation: "teacher, instructor (as an address)" },
-    { word: "がくせい", romaji: "gakusei", translation: "student" },
-    { word: "りゅうがくせい", romaji: "ryuugakusei", translation: "foreign student" },
-    { word: "けんきゅうしゃ", romaji: "kenkyuusha", translation: "researcher, scholar" },
-    { word: "ぎんこういん", romaji: "ginkouin", translation: "bank employee" },
-    { word: "エンジニア", romaji: "enjinia", translation: "engineer" },
-    { word: "いしゃ", romaji: "isha", translation: "medical doctor" },
-    { word: "はいしゃ", romaji: "haisha", translation: "dentist" },
-    { word: "べんごし", romaji: "bengoshi", translation: "lawyer" },
-    { word: "とこや", romaji: "tokoya", translation: "barber" },
-    { word: "かいしゃいん", romaji: "kaishain", translation: "company employee" },
-    { word: "~しゃいん", romaji: "~shain", translation: "employee of ~" }
+    { word: "きょうし", romaji: "kyoushi", translation: "teacher, instructor", image: require('../assets/words_image/teacher.png') },
+    { word: "せんせい", romaji: "sensei", translation: "teacher, instructor (as an address)", image: require('../assets/words_image/teacher_address.png') },
+    { word: "がくせい", romaji: "gakusei", translation: "student", image: require('../assets/words_image/student.png') },
+    { word: "りゅうがくせい", romaji: "ryuugakusei", translation: "foreign student", image: require('../assets/words_image/foreign_student.png') },
+    { word: "けんきゅうしゃ", romaji: "kenkyuusha", translation: "researcher, scholar" , image: require('../assets/words_image/research.png')},
+    { word: "ぎんこういん", romaji: "ginkouin", translation: "bank employee", image: require('../assets/words_image/bank.png') },
+    { word: "エンジニア", romaji: "enjinia", translation: "engineer", image: require('../assets/words_image/engineer.png') },
+    { word: "いしゃ", romaji: "isha", translation: "medical doctor", image: require('../assets/words_image/doctor.png') },
+    { word: "はいしゃ", romaji: "haisha", translation: "dentist", image: require('../assets/words_image/dentist.png') },
+    { word: "べんごし", romaji: "bengoshi", translation: "lawyer", image: require('../assets/words_image/lawyer.png') },
+    { word: "とこや", romaji: "tokoya", translation: "barber", image: require('../assets/words_image/barber.png') },
+    { word: "かいしゃいん", romaji: "kaishain", translation: "company employee" , image: require('../assets/words_image/employee.png')},
+    { word: "~しゃいん", romaji: "~shain", translation: "employee of ~" , image: require('../assets/words_image/employee_of.png')}
   ];
 
   const handleBackPress = () => {
@@ -97,7 +97,7 @@ const Words = () => {
         {currentWord ? (
           <View style={styles.contentContainer}>
             {/* Word Image */}
-            <Image source={require('../assets/hello.png')} style={styles.image} />
+            <Image source={currentWord.image} style={styles.image} />
             <Text style={styles.japanese}>{currentWord.word}</Text>
             <Text style={styles.romaji}>{currentWord.romaji}</Text>
             <Text style={styles.english}>{currentWord.translation}</Text>

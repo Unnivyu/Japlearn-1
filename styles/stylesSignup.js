@@ -106,6 +106,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
+    modalWrapper: {
+        flex: 1,
+        justifyContent: 'center', // Centers vertically
+        alignItems: 'center',     // Centers horizontally
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dim the background
+    },
+
 });
 
 export default styles;

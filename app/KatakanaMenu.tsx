@@ -173,7 +173,7 @@ const KatakanaMenu = () => {
   const handleButtonPress = (buttonTitle) => {
     switch (buttonTitle) {
       case 'Katakana Basics 1':
-        router.push('/KatakanaIntro');
+        router.push('/KatakanaSet1');
         break;
       case 'Katakana Basics 2':
         if (completedLessons.katakana1) {
