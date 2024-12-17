@@ -81,7 +81,8 @@ const PendingApproval = () => {
                 </View>
 
                 {/* Pending Users Section */}
-                <ScrollView contentContainerStyle={stylesDashboard.classContainer}>
+                <ScrollView contentContainerStyle={stylesDashboard.classContainer} showsVerticalScrollIndicator={false}>
+                    
                     {pendingUsers.length > 0 ? (
                         pendingUsers.map(user => (
                             <View key={user.id} style={stylesDashboard.pendingUserContent}>

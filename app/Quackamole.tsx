@@ -131,6 +131,13 @@ useEffect(() => {
     };
 
     const updateMoles = () => {
+        if (currentIndex >= kanaCharacters.length) {
+            // Immediately end the game when no characters are left
+            setGameOver(true);
+            setIsGameStarted(false); // Stop game
+            return;
+        }
+
         if (secondCounter >= 30) {
             // If timer runs out, move to the next character
             setCurrentIndex((prev) => prev + 1); // Move to the next character
@@ -145,7 +152,7 @@ useEffect(() => {
         }
     
         let newHoles = new Array(9).fill(null);
-        const activeMolesCount = Math.floor(Math.random() * 4) + 1;
+        const activeMolesCount = Math.floor(Math.random() * 4) + 2;
         const activeIndexes = [];
     
         while (activeIndexes.length < activeMolesCount) {

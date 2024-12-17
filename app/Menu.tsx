@@ -34,6 +34,13 @@ const Menu = () => {
     }, [user]);
 
     return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent', }}>
+            {/* StatusBar Configuration */}
+            <StatusBar
+                barStyle="light-content"
+                backgroundColor="transparent"
+                translucent={true}
+            />
             <ImageBackground source={Background} style={styles.backgroundImage}>
                 <View style={styles.container}>
                    
@@ -72,7 +79,7 @@ const Menu = () => {
                     </View>
                 </View>
             </ImageBackground>
-        
+        </SafeAreaView>
     );
 };
 

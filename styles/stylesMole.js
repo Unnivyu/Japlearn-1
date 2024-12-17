@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
     displayContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 50,
+        
     },
     charText: {
         fontFamily: 'Jua',
@@ -42,8 +42,9 @@ export const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-around',
         alignItems: 'center',
-        padding: 20,
+        padding: 30,
         position: 'relative',
+        marginTop: 50,
     },
     hole: {
         width: 90,

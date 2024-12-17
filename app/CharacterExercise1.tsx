@@ -143,7 +143,7 @@ const CharacterExercise1 = () => {
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                    
+                            body: JSON.stringify({ email: user.email }) // Send the email in the body
                         }
                     );
     

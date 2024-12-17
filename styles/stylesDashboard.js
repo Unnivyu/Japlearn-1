@@ -86,7 +86,7 @@ export const stylesDashboard = StyleSheet.create({
     },
     classContainer: {
         alignItems: 'center',
-        flex: 1,
+        flexGrow: 1,
         padding: 20,
         justifyContent: 'flex-start',
     },
@@ -147,7 +147,7 @@ export const stylesDashboard = StyleSheet.create({
         marginTop: 20,
         padding: 20,
         borderRadius: 20,
-        width: 500,
+        width: '100%',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,

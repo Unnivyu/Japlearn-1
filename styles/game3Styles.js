@@ -7,9 +7,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
-    aspectRatio: 1080 / 2300,
-    
+    position: 'absolute', // Ensures the background is absolute and fills the parent
+    resizeMode: 'cover', // Stretches to cover the entire screen while maintaining aspect ratio
   },
   container: {
     flex: 1,
