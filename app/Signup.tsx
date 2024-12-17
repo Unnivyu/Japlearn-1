@@ -277,10 +277,6 @@ const Signup = () => {
 </View>
 {errors.cpassword ? <Text style={styles.errorText}>{errors.cpassword}</Text> : null}
 
-
-
-                    
-
                     <View style={styles.buttonContainer}>
                         {loading ? (
                             <ActivityIndicator size="large" color="#0000ff" />
@@ -301,11 +297,11 @@ const Signup = () => {
                     message={modalMessage}
                     onClose={() => setModalVisible(false)}
                 />
-
 {privacyModalVisible && (
     <Modal visible={privacyModalVisible} transparent animationType="fade">
         <View style={styles.modalWrapper}>
             <PrivacyPolicyModal
+                key={privacyModalVisible ? 'modal-opened' : 'modal-closed'} // Forces re-render
                 visible={privacyModalVisible}
                 onAgree={() => {
                     setHasAgreedToPrivacy(true);
@@ -317,6 +313,7 @@ const Signup = () => {
         </View>
     </Modal>
 )}
+
             </ScrollView>
         </View>
     );

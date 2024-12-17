@@ -34,8 +34,6 @@ const Menu = () => {
     }, [user]);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#8423D9' }}> 
-            <StatusBar backgroundColor="#8423D9" barStyle="light-content" />
             <ImageBackground source={Background} style={styles.backgroundImage}>
                 <View style={styles.container}>
                    
@@ -74,7 +72,7 @@ const Menu = () => {
                     </View>
                 </View>
             </ImageBackground>
-        </SafeAreaView>
+        
     );
 };
 

@@ -108,10 +108,19 @@ const styles = StyleSheet.create({
 
     modalWrapper: {
         flex: 1,
-        justifyContent: 'center', // Centers vertically
-        alignItems: 'center',     // Centers horizontally
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dim the background
+       
+        justifyContent: 'flex-start', // Align to the top for scrolling
+        paddingTop: 50, // Add space at the top
     },
+    
+    modalContent: {
+        width: '90%',
+        maxHeight: '80%', // Allow some space at the top and bottom
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+    },
+    
 
 });
 

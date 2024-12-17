@@ -1,50 +1,73 @@
-import React, { useState } from 'react';
-import { Modal, ScrollView, Text, View, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, ScrollView, Text, View, StyleSheet, Dimensions } from 'react-native';
 import CustomButton from './CustomButton'; // Assuming you have a CustomButton component
 
 const PrivacyPolicyModal = ({ visible, onAgree, onClose }) => {
     const [canAgree, setCanAgree] = useState(false);
+    const [renderKey, setRenderKey] = useState(0); // Key for re-rendering
+
+    const scrollViewRef = useRef<ScrollView>(null);
+
+    useEffect(() => {
+        if (visible) {
+            setCanAgree(false); // Reset the button state
+            setRenderKey((prevKey) => prevKey + 1); // Force re-render
+        }
+    }, [visible]);
 
     const handleScroll = (event) => {
         const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-        const isAtBottom =
-            layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+        const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
         setCanAgree(isAtBottom);
     };
 
     return (
         <Modal
             visible={visible}
-            animationType="slide"
+            animationType="fade"
             transparent={true}
-            onRequestClose={onClose} // Close the modal when the user presses the back button
+            onRequestClose={onClose}
+            key={renderKey} // Force re-render the modal when visible
         >
-            <View style={styles.modalContainer}>
+            <View style={styles.modalOverlay}>
                 <View style={styles.modalContent}>
                     <ScrollView
+                        ref={scrollViewRef}
                         contentContainerStyle={styles.scrollContainer}
                         onScroll={handleScroll}
-                        scrollEventThrottle={16} // Higher value to ensure smooth scroll tracking
+                        scrollEventThrottle={16}
+                        showsVerticalScrollIndicator={false}
                     >
                         <Text style={styles.header}>JapLearn Privacy Policy</Text>
-                        <Text style={styles.intro}>
-                        </Text>
                         <Text style={styles.paragraph}>
-                            Welcome to JapLearn. Your privacy is our priority, and we are committed to safeguarding your personal data. This Privacy Policy outlines the information we collect, how we use it, and the measures we take to protect it. By using our application, you consent to the practices described in this policy. If you have any concerns about how we handle your information, please contact us directly using the details provided below.
+                            Welcome to JapLearn. Your privacy is our priority, and we are committed
+                            to safeguarding your personal data. This Privacy Policy outlines the
+                            information we collect, how we use it, and the measures we take to
+                            protect it. By using our application, you consent to the practices
+                            described in this policy. If you have any concerns about how we handle
+                            your information, please contact us directly using the details provided
+                            below.
                         </Text>
 
                         <Text style={styles.subtitle}>1. Information We Collect</Text>
                         <Text style={styles.paragraph}>
-                            To enhance your experience and provide our services effectively, we collect and process the following types of information:
+                            To enhance your experience and provide our services effectively, we
+                            collect and process the following types of information:
                         </Text>
                         <Text style={styles.listItem}>
-                            - <Text style={styles.bold}>Personal Information:</Text> Your name, email address, and other contact details provided during account registration.
+                            - <Text style={styles.bold}>Personal Information:</Text> Your name,
+                            email address, and other contact details provided during account
+                            registration.
                         </Text>
                         <Text style={styles.listItem}>
-                            - <Text style={styles.bold}>Usage Data:</Text> Information such as your app activity, learning scores, and progress logs. We use this data to analyze your learning journey and provide tailored recommendations.
+                            - <Text style={styles.bold}>Usage Data:</Text> Information such as your
+                            app activity, learning scores, and progress logs. We use this data to
+                            analyze your learning journey and provide tailored recommendations.
                         </Text>
                         <Text style={styles.listItem}>
-                            - <Text style={styles.bold}>Device Information:</Text> Details about your device, such as type, operating system, and app version, to ensure compatibility and optimize performance.
+                            - <Text style={styles.bold}>Device Information:</Text> Details about your
+                            device, such as type, operating system, and app version, to ensure
+                            compatibility and optimize performance.
                         </Text>
 
                         <Text style={styles.subtitle}>2. How We Use Your Information</Text>
@@ -66,18 +89,14 @@ const PrivacyPolicyModal = ({ visible, onAgree, onClose }) => {
 
                         <Text style={styles.subtitle}>3. Data Security</Text>
                         <Text style={styles.paragraph}>
-                            We implement strict security measures to protect your data from unauthorized access, loss, or misuse. While no system is entirely secure, we follow industry best practices to safeguard your information.
+                            We implement strict security measures to protect your data from
+                            unauthorized access, loss, or misuse. While no system is entirely secure,
+                            we follow industry best practices to safeguard your information.
                         </Text>
                         <Text style={styles.paragraph}>
-                            In the unlikely event of a data breach, we will promptly notify affected users and take immediate steps to minimize risks.
+                            In the unlikely event of a data breach, we will promptly notify affected
+                            users and take immediate steps to minimize risks.
                         </Text>
-
-                        <Text style={styles.subtitle}>4. Contact Us</Text>
-                        <Text style={styles.paragraph}>
-                            If you have any questions or concerns about this Privacy Policy, please contact us at:
-                        </Text>
-                        <Text style={styles.contactInfo}>Email: support@japlearn.com</Text>
-                        <Text style={styles.contactInfo}>Address: JapLearn Headquarters, 123 Learning Lane, Knowledge City</Text>
                     </ScrollView>
                     <CustomButton
                         title="I Agree"
@@ -90,7 +109,7 @@ const PrivacyPolicyModal = ({ visible, onAgree, onClose }) => {
                             styles.agreeButtonText,
                             { color: canAgree ? '#fff' : '#666' },
                         ]}
-                        disabled={!canAgree} // Disable button if not at the bottom
+                        disabled={!canAgree}
                     />
                 </View>
             </View>
@@ -98,16 +117,18 @@ const PrivacyPolicyModal = ({ visible, onAgree, onClose }) => {
     );
 };
 
+const { height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-    modalContainer: {
+    modalOverlay: {
         flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
     },
     modalContent: {
         width: '90%',
-        height: '80%',
+        maxHeight: height * 0.8,
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,
@@ -118,53 +139,41 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 15,
         textAlign: 'center',
+        marginBottom: 20,
         color: '#4CAF50',
         fontFamily: 'Jua',
     },
-    intro: {
-        fontSize: 16,
-        marginBottom: 15,
-        textAlign: 'center',
-        color: '#333',
-        fontFamily: 'Jua',
-    },
     subtitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginVertical: 10,
+        marginTop: 10,
+        marginBottom: 5,
         color: '#4CAF50',
         fontFamily: 'Jua',
     },
     paragraph: {
         fontSize: 16,
-        lineHeight: 24,
+        lineHeight: 22,
         marginBottom: 10,
-        color: '#4F4F4F',
+        color: '#555',
         fontFamily: 'Jua',
     },
     listItem: {
         fontSize: 16,
         lineHeight: 24,
         marginBottom: 5,
-        color: '#4F4F4F',
+        color: '#555',
         fontFamily: 'Jua',
     },
     bold: {
         fontWeight: 'bold',
         fontFamily: 'Jua',
     },
-    contactInfo: {
-        fontSize: 16,
-        color: '#4CAF50',
-        marginBottom: 5,
-        fontFamily: 'Jua',
-    },
     agreeButton: {
         paddingVertical: 12,
         borderRadius: 8,
-        marginTop: 20,
+        marginTop: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
