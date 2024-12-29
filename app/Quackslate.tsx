@@ -41,40 +41,30 @@ const Quackslate = () => {
     const incorrectGif = require('../assets/gif/wrong.gif');
     const image = isAnswerCorrect ? correctGif : incorrectGif;
     const { user } = useContext(AuthContext); 
+    const [classCode, setClassCode] = useState(null);
+    
 
-    const saveScore = async () => {
-        const fullName = `${user.fname} ${user.lname}`; // Combine first and last names
-        const currentDate = new Date();
-        const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`; // Format date as YYYY-MM-DD
-    
-        const scoreData = {
-            name: fullName,
-            email: user.email,
-            date: formattedDate, // Use the formatted date
-            score: score
-        };
-    
+    const fetchClassCodeByEmail = async (email) => {
         try {
-            const response = await fetch(`${expoconfig.API_URL}/api/scores/save`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(scoreData)
-            });
+            const response = await fetch(`${expoconfig.API_URL}/api/users/${email}/classCode`);
             if (!response.ok) {
-                throw new Error('Failed to save score');
+                console.error('Failed to fetch classCode:', await response.text());
+                return null;
             }
-            console.log('Score saved successfully');
+            const data = await response.json();
+            return data.classCode; // Extract the classCode from the response
         } catch (error) {
-            console.error('Error saving score:', error);
+            console.error('Error fetching classCode:', error);
+            return null;
         }
     };
-    
 
     useEffect(() => {
         const playBackgroundMusic = async () => {
             try {
                 await backgroundMusic.current.loadAsync(require('../assets/audio/sfx/quiz.mp3')); // Path to quiz.mp3
                 await backgroundMusic.current.setVolumeAsync(0.1); // Set the volume to low
+                await backgroundMusic.current.setIsLoopingAsync(true);
                 await backgroundMusic.current.playAsync(); // Play the background music
                 console.log("Background music started...");
             } catch (error) {
@@ -334,8 +324,7 @@ const playAnswerSound = async (isCorrect: boolean) => {
 
     const handleSubmit = () => {
         if (isGameFinished || isWaitingForNext || !isMounted.current) {
-            console.log("handleSubmit skipped: game finished, waiting for next, or navigation occurred.");
-            return; // Prevent execution
+            return;
         }
     
         const correctAnswerArray = correctAnswer.split(' ').map((word) => word.trim().toLowerCase());
@@ -347,35 +336,52 @@ const playAnswerSound = async (isCorrect: boolean) => {
     
         setIsAnswerCorrect(isAnswerCorrect);
     
-        if (isAnswerCorrect) {
-            setScore((prevScore) => prevScore + 1);
-        }
+        // Calculate new score
+        const newScore = isAnswerCorrect ? score + 1 : score;
+        setScore(newScore);
     
-        // Ensure modal only appears if game is not finished and this isn't a stale timer submission
         if (currentIndex === content.length - 1 && isMounted.current) {
-            console.log("Last question reached. Showing completion modal...");
             setIsLastQuestionAnswered(true);
             setIsAnswerModalVisible(true);
             setIsWaitingForNext(true);
-            
-        
+    
             setTimeout(async () => {
-                if (isMounted.current) { // Ensure state changes only if the component is mounted
-                    console.log("Hiding modal and marking game as finished.");
+                if (isMounted.current) {
                     setIsAnswerModalVisible(false);
                     setIsGameFinished(true);
-                    await saveScore();
+                    
+                    // Save the new score directly instead of relying on state
+                    const scoreData = {
+                        gameCode,
+                        classCode: await fetchClassCodeByEmail(user.email),
+                        name: `${user.fname} ${user.lname}`,
+                        email: user.email,
+                        date: new Date().toISOString().split('T')[0],
+                        score: newScore  // Use the calculated score instead of the state
+                    };
+    
+                    try {
+                        const response = await fetch(`${expoconfig.API_URL}/api/scores/save`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(scoreData)
+                        });
+                        if (!response.ok) {
+                            throw new Error('Failed to save score');
+                        }
+                        console.log('Score saved successfully:', newScore);
+                    } catch (error) {
+                        console.error('Error saving score:', error);
+                    }
+    
                     setIsLastQuestionAnswered(false);
                 }
             }, 3000);
         } else if (isMounted.current && !isGameFinished) {
-            // Add a guard here to prevent modal from showing after navigation
-            console.log("Not the last question. Preparing for the next...");
             setIsWaitingForNext(true);
             setTimer(0);
-            setIsAnswerModalVisible(true); // This should only run during active gameplay
+            setIsAnswerModalVisible(true);
         }
-        
     };
     
 

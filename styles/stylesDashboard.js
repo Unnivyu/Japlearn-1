@@ -63,7 +63,7 @@ export const stylesDashboard = StyleSheet.create({
         marginRight: -120,
     },
     buttonText: {
-        fontSize: 20,
+        fontSize: 18,
         color: 'white', // Ensure text is white
     },
     pictureCircle: {
@@ -130,34 +130,43 @@ export const stylesDashboard = StyleSheet.create({
     
 
     buttonApprove: {
-        backgroundColor:'#8ED94D',
+        backgroundColor: '#8ED94D',
         padding: 10,
         height: 40,
-        width: 110,
+        flex: 1, // Equal button width
+        marginRight: 5, // Spacing between buttons
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    rejectButton: {
+        backgroundColor: 'red',
+        padding: 10,
+        height: 40,
+        flex: 1, // Equal button width
+        marginLeft: 5, // Spacing between buttons
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
     },
 
     pendingUserContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: 'lightgray', 
-        marginTop: 20,
-        padding: 20,
+        flexDirection: 'column', // Stack user info and buttons vertically
+        alignItems: 'stretch', // Ensure items take up the container width
+        backgroundColor: 'lightgray',
+        marginVertical: 10, // Reduce vertical spacing between containers
+        padding: 15, // Reduce padding inside the container
         borderRadius: 20,
-        width: '100%',
+        width: '90%', // Ensure container fits the screen
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 3,
-        alignSelf: 'center'
+        alignSelf: 'center', // Center the container horizontally
     },
     userInfoContainer: {
-        flex: 1,  // Allows the container to take up available space
-        alignItems: 'flex-start', // Aligns text to the left within the container
+        marginBottom: 5, // Minimal spacing between user info and buttons
     },
     pendingUserText: {
         color: '#333',
@@ -184,5 +193,13 @@ export const stylesDashboard = StyleSheet.create({
         backgroundColor: '#462A5E',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+
+    actionContainer: {
+        flexDirection: 'row', // Layout buttons in a row
+        justifyContent: 'space-between', // Space buttons evenly
+        alignItems: 'center',
+        marginTop: 5, // Slight spacing above buttons
+        width: '100%', // Ensure buttons take up the full width of the container
     },
 });
